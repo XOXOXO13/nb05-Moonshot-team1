@@ -1,0 +1,30 @@
+{
+  "name": "nb05-moonshot-team1",
+  "version": "1.0.0",
+  "description": "- (팀 협업 문서 링크 게시)",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XOXOXO13/nb05-Moonshot-team1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/XOXOXO13/nb05-Moonshot-team1/issues"
+  },
+  "homepage": "https://github.com/XOXOXO13/nb05-Moonshot-team1#readme",
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "prettier": "^3.6.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.1",
+    "husky": "^9.1.7",
+    "prisma": "^6.19.0"
+  }
+}
