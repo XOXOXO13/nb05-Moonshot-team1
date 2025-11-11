@@ -1,3 +1,3 @@
 export interface ITestService {
-    getTest() :string
+  getTest(): string;
 }

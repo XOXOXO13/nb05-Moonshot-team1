@@ -1,5 +1,5 @@
-import express from "express"
-import cors from "cors"
+import express from "express";
+import cors from "cors";
 import morgan from "morgan";
 
 export class Server {
@@ -8,8 +8,7 @@ export class Server {
 
   constructor(controllers: any) {
     this._app = express();
-    this._controllers = controllers
-
+    this._controllers = controllers;
   }
 
   registerMiddlewares() {
@@ -19,14 +18,14 @@ export class Server {
 
   registerControllers() {
     for (const controller of this._controllers) {
-      this._app.use(controller.basePath, controller.router)
+      this._app.use(controller.basePath, controller.router);
     }
   }
 
-  listen(){
-    this._app.listen(3000, ()=> {
-        console.log("listening on port 3000");
-    })
+  listen() {
+    this._app.listen(3000, () => {
+      console.log("listening on port 3000");
+    });
   }
 
   run() {
