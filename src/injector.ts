@@ -3,7 +3,6 @@ import { TestRepository } from "./outbound/repos/test-repository";
 import { Server } from "./server";
 import { TestService } from "./domain/services/test-service";
 import { TestController } from "./inbound/controllers/test-controller";
-
 export class DependencyInjector {
   private _server: Server;
 
