@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { ITestRepository } from "../../domain/ports/repositories/I-test-repository";
+import { ITestRepository } from "../../domain/ports/repos/I-test-repository";
 
 export class TestRepository implements ITestRepository {
   private _prisma;
