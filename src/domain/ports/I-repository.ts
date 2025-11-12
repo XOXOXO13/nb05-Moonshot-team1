@@ -1,4 +1,4 @@
-import { ITestRepository } from "./repos/I-test-repository";
+import { ITestRepository } from "./repositories/I-test-repository";
 
 export interface IRepository {
   testRepository: ITestRepository;
