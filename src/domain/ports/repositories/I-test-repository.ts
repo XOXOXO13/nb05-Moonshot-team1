@@ -1,3 +1,1 @@
-export interface ITestRepository {
-  findTest(): string;
-}
+export interface ITestRepository {}

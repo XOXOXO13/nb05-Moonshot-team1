@@ -1,5 +1,5 @@
 import { ITestService } from "../../inbound/ports/services/I-test-service";
-import { IRepository } from "../ports/I-repository";
+import { IRepository } from "../ports/repositories-interface";
 
 export class TestService implements ITestService {
   private _repo;
