@@ -2,9 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import { IRepositories } from "../domain/ports/repositories-interface";
 import { RepositoryFactory } from "./repository-factory";
 
-export class UnitOfWork{
+export class UnitOfWork {
   private _prismaClient: PrismaClient;
-  private _repoFactory
+  private _repoFactory;
   private _repos: IRepositories;
 
   constructor(prismaClient: PrismaClient, repoFactory: RepositoryFactory) {

@@ -117,20 +117,20 @@ export class ProjectEntity {
     return entity;
   }
 
-  updateName(newName: string): void{
-    if(newName === this._name) return;
+  updateName(newName: string): void {
+    if (newName === this._name) return;
     this._name = newName;
     this._isModified = true;
   }
 
-  updateDescription(newDescription: string): void{
-    if(newDescription === this._description) return;
+  updateDescription(newDescription: string): void {
+    if (newDescription === this._description) return;
     this._description = newDescription;
     this._isModified = true;
   }
 
-  incrementVersion(): void{
-    if(this._isModified){
+  incrementVersion(): void {
+    if (this._isModified) {
       this._version++;
     }
   }

@@ -201,3 +201,26 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,node
+
+
+# --------------------
+# 1. TypeScript 컴파일 결과물 (JavaScript)
+# --------------------
+# src 폴더 내에서 생성되는 .js, .js.map, .d.ts 파일 제외
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+
+# node_modules와는 별도로 TypeScript 캐시 파일 제외
+.tsbuildinfo
+
+# --------------------
+# 2. 환경 변수 파일 (스크린샷 기반)
+# --------------------
+.env.dev
+.env.prod
+
+# --------------------
+# 3. 자동 생성된 코드
+# --------------------
+src/generated/

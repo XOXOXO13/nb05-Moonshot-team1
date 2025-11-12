@@ -1,7 +1,8 @@
-import { PersistProjectEntity, NewProjectEntity } from "../../entities/project/project-entity";
+import {
+  PersistProjectEntity,
+  NewProjectEntity,
+} from "../../entities/project/project-entity";
 
 export type LockType = "share" | "beta";
 
-export interface IProjectRepository{
-  
-}
+export interface IProjectRepository {}

@@ -1,2 +1,1 @@
-export interface ITestRepository {
-}
+export interface ITestRepository {}
