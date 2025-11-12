@@ -3,7 +3,4 @@ export type ProjectCreateData = {
   description?: string;
 };
 
-
-export class ProjectEntity{
-
-}
+export class ProjectEntity {}

@@ -1,39 +1,39 @@
 export type MemberData = {
   userId: string;
   role: MemberRole;
-  status: MemberStatus
-}
-export type MemberRole = 'OWNER' | 'MEMBER' | 'GUEST';
-export type MemberStatus = 'ACTIVE' | 'PENDING' | 'REMOVED';
+  status: MemberStatus;
+};
+export type MemberRole = "OWNER" | "MEMBER" | "GUEST";
+export type MemberStatus = "ACTIVE" | "PENDING" | "REMOVED";
 
-export class MemberVo{
+export class MemberVo {
   private readonly _userId: string;
-  private readonly _role : MemberRole;
+  private readonly _role: MemberRole;
   private readonly _status: MemberStatus;
 
   constructor(attrs: {
     userId: string;
     role: MemberRole;
-    status: MemberStatus
-  }){
+    status: MemberStatus;
+  }) {
     this._userId = attrs.userId;
     this._role = attrs.role;
     this._status = attrs.status;
   }
 
-  get userId(){
+  get userId() {
     return this._userId;
   }
 
-  get role(){
+  get role() {
     return this._role;
   }
 
-  get status(){
+  get status() {
     return this._status;
   }
 
-  isEquals(vo: MemberVo): boolean{
+  isEquals(vo: MemberVo): boolean {
     if (this.userId !== vo.userId) {
       return false;
     }
@@ -46,24 +46,24 @@ export class MemberVo{
     return true;
   }
 
-  toData(): MemberData{
+  toData(): MemberData {
     return {
-    userId: this._userId,
-    role: this._role,
-    status: this._status,
+      userId: this._userId,
+      role: this._role,
+      status: this._status,
     };
   }
 
-  static createNew(params:{
+  static createNew(params: {
     userId: string;
     role: MemberRole;
     status: MemberStatus;
-  }): MemberVo{
+  }): MemberVo {
     // 룰체크 추후 추가
     return new MemberVo({ ...params });
   }
 
-  static createPersist(params: MemberData):MemberVo{
+  static createPersist(params: MemberData): MemberVo {
     // 룰체크 추후 추가
     return new MemberVo(params);
   }
