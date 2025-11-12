@@ -1,5 +1,5 @@
 export type MemberData = {
-  userId: string;
+  userId: Number;
   role: MemberRole;
   status: MemberStatus
 }
@@ -7,12 +7,12 @@ export type MemberRole = 'OWNER' | 'MEMBER' | 'GUEST';
 export type MemberStatus = 'ACTIVE' | 'PENDING' | 'REMOVED';
 
 export class MemberVo{
-  private readonly _userId: string;
+  private readonly _userId: Number;
   private readonly _role : MemberRole;
   private readonly _status: MemberStatus;
 
   constructor(attrs: {
-    userId: string;
+    userId: Number;
     role: MemberRole;
     status: MemberStatus
   }){
@@ -55,7 +55,7 @@ export class MemberVo{
   }
 
   static createNew(params:{
-    userId: string;
+    userId: Number;
     role: MemberRole;
     status: MemberStatus;
   }): MemberVo{

@@ -5,5 +5,6 @@ export type ProjectCreateData = {
 
 
 export class ProjectEntity{
-
+  private readonly _id : Number;
+  
 }
