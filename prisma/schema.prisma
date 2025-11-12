@@ -37,7 +37,7 @@ model User {
   assignedTasks       Task[]
   comments            Comment[]
   invitationsCreated  Invitation[]      @relation("CreatorInvitations")
-  invitationsReceiced Invitation[]      @relation("InviteeInvitations")
+  invitationsReceived  Invitation[]      @relation("InviteeInvitations")
 }
 
 model UserJoinProject {
