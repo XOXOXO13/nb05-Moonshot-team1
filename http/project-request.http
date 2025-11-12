@@ -1,0 +1,14 @@
+{
+  "name": "프로젝트 1",
+  "description": "프로젝트 1 설명"
+}
+
+POST http://localhost:4000/project/a7d256e3-8016-439a-b5e6-2fdb8e2847b5
+Content-Type: application/json
+
+{
+  "name": "프로젝트 1",
+  "description": "프로젝트 1 설명"
+}
+
+###
