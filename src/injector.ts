@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { TestRepository } from "./outbound/repos/test-repository";
+import { TestRepository } from "./outbound/repositories/test-repository";
 import { Server } from "./server";
 import { TestService } from "./domain/services/test-service";
 import { TestController } from "./inbound/controllers/test-controller";
