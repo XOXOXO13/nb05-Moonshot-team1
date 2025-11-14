@@ -7,3 +7,4 @@ export interface IProjectRepository{
   findById(projectId: number): Promise<PersistProjectEntity | null>;
   update(entity:ProjectEntity): Promise<PersistProjectEntity>;
 }
+

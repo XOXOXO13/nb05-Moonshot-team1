@@ -1,3 +1,1 @@
-export interface ITestRepository {
-  getTest(): string
-}
+export interface ITestRepository {}
