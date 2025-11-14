@@ -224,3 +224,6 @@ src/**/*.d.ts
 # 3. 자동 생성된 코드
 # --------------------
 src/generated/
+
+# prisma/migrations 프리즈마 마이그레이션 디렉토리
+prisma/migrations
