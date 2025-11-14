@@ -84,6 +84,9 @@ export class ProjectEntity {
   get version() {
     return this._version;
   }
+  get isModified() {
+    return this._isModified;
+  }
 
   toCreateData(): ProjectData {
     return {
