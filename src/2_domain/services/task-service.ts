@@ -12,7 +12,8 @@ export class TaskService implements ITaskService {
 
   async createTask(dto: TaskReqDto): Promise<TaskResDto> {
     const newTaskEntity = new TaskEntity(dto);
-    const persistTaskEntity = await this._repo.taskRepository.create(newTaskEntity);
+    const persistTaskEntity =
+      await this._repo.taskRepository.create(newTaskEntity);
     const taskResDto = new TaskResDto(persistTaskEntity);
     return taskResDto;
   }

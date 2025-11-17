@@ -12,15 +12,14 @@ export const taskReqSchema = z.object({
     status: z.enum(["todo", "in_progress", "done"]),
     tags: z.array(z.string()),
     attachments: z.array(z.string()),
-    assigneeId: z.number()
+    assigneeId: z.number(),
   }),
   params: z.object({
-    projectId: z.coerce.number().int()
+    projectId: z.coerce.number().int(),
   }),
   headers: z.object({
-    authorization: z.string()
-  })
+    authorization: z.string(),
+  }),
 });
-
 
 export type TaskReqDto = z.infer<typeof taskReqSchema>;

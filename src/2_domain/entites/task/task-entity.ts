@@ -5,7 +5,6 @@ import { TagEntity } from "../tag/tag-entity";
 import { UserEntity } from "../user/user-entity";
 import { AttachmentEntity } from "../attachment/attachment-entity";
 
-
 export class PersistTaskEntity {
   private readonly _id: number;
   private readonly _projectId: number;
@@ -19,19 +18,18 @@ export class PersistTaskEntity {
   private readonly _createdAt: Date;
   private readonly _updatedAt: Date;
 
-
   constructor(data: {
-    id: number,
-    projectId: number,
-    title: string,
-    startDate: Date | null,
-    endDate: Date | null,
-    status: string
-    assignee: UserEntity | null,
-    tags: TagEntity[]
-    attachments: AttachmentEntity[],
-    createdAt: Date,
-    updatedAt: Date,
+    id: number;
+    projectId: number;
+    title: string;
+    startDate: Date | null;
+    endDate: Date | null;
+    status: string;
+    assignee: UserEntity | null;
+    tags: TagEntity[];
+    attachments: AttachmentEntity[];
+    createdAt: Date;
+    updatedAt: Date;
   }) {
     this._id = data.id;
     this._projectId = data.projectId;
@@ -45,7 +43,6 @@ export class PersistTaskEntity {
     this._createdAt = data.createdAt;
     this._updatedAt = data.updatedAt;
   }
-
 
   get id() {
     return this._id;
@@ -90,9 +87,7 @@ export class PersistTaskEntity {
   get updatedAt() {
     return this._updatedAt;
   }
-
 }
-
 
 export class TaskEntity {
   private readonly _projectId: number;
@@ -109,22 +104,18 @@ export class TaskEntity {
   constructor(data: TaskReqDto) {
     this._projectId = data.params.projectId;
     this._title = data.body.title;
-  
 
-    this._startDate = new Date(Date.UTC(
-      data.body.startYear,
-      data.body.startMonth - 1,
-      data.body.startDay
-    ));
+    this._startDate = new Date(
+      Date.UTC(
+        data.body.startYear,
+        data.body.startMonth - 1,
+        data.body.startDay,
+      ),
+    );
 
-
-
-    this._endDate = new Date(Date.UTC(
-      data.body.endYear,
-      data.body.endMonth - 1,
-      data.body.endDay
-    ));
-
+    this._endDate = new Date(
+      Date.UTC(data.body.endYear, data.body.endMonth - 1, data.body.endDay),
+    );
 
     this._status = data.body.status;
     this._attachments = data.body.attachments;
@@ -171,5 +162,4 @@ export class TaskEntity {
   get tags() {
     return this._tags;
   }
-
 }
