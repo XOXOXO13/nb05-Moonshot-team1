@@ -1,5 +1,5 @@
-import { IServices } from "../ports/I-services";
 import express from "express";
+import { IServices } from "../../inbound/ports/I-services";
 export class BaseController {
   private _basePath;
   private _services;
