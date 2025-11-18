@@ -1,5 +1,5 @@
 import { PersistTaskEntity } from "../../../2_domain/entites/task/task-entity";
-import { TaskReqDto } from "../../requests/task-req-dto";
+import { TaskReqDto, TaskViewReqDto } from "../../requests/task-req-dto";
 import { TaskResDto } from "../../responses/task-res-dto";
 
 export interface ITaskService {

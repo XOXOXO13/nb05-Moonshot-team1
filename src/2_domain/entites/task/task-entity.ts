@@ -92,35 +92,38 @@ export class PersistTaskEntity {
 export class TaskEntity {
   private readonly _projectId: number;
   private readonly _title: string;
-  private readonly _startDate?: Date | null;
-  private readonly _endDate?: Date | null;
+  private readonly _startDate: Date | null;
+  private readonly _endDate: Date | null;
   private readonly _status: string;
-  private readonly _createdAt?: Date;
-  private readonly _updatedAt?: Date;
   private readonly _attachments: string[];
   private readonly _assigneeId: number | null;
   private readonly _tags: string[];
 
-  constructor(data: TaskReqDto) {
-    this._projectId = data.params.projectId;
-    this._title = data.body.title;
+  constructor(
+    projectId: number,
+    title: string,
+    startYear: number,
+    startMonth: number,
+    startDay: number,
+    endYear: number,
+    endMonth: number,
+    endDay: number,
+    status: string,
+    attachments: string[],
+    assigneeId: number | null,
+    tags: string[],
+  ) {
+    this._projectId = projectId;
+    this._title = title;
 
-    this._startDate = new Date(
-      Date.UTC(
-        data.body.startYear,
-        data.body.startMonth - 1,
-        data.body.startDay,
-      ),
-    );
+    this._startDate = new Date(Date.UTC(startYear, startMonth - 1, startDay));
 
-    this._endDate = new Date(
-      Date.UTC(data.body.endYear, data.body.endMonth - 1, data.body.endDay),
-    );
+    this._endDate = new Date(Date.UTC(endYear, endMonth - 1, endDay));
 
-    this._status = data.body.status;
-    this._attachments = data.body.attachments;
-    this._assigneeId = data.body.assigneeId;
-    this._tags = data.body.tags;
+    this._status = status;
+    this._attachments = attachments;
+    this._assigneeId = assigneeId;
+    this._tags = tags;
   }
 
   get projectId() {
@@ -143,21 +146,13 @@ export class TaskEntity {
     return this._status;
   }
 
-  get createdAt() {
-    return this._createdAt;
-  }
-
-  get updatedAt() {
-    return this._updatedAt;
-  }
-
   get attachments() {
     return this._attachments;
   }
 
-  // get assigneeId() {
-  //   return this._assigneeId;
-  // }
+  get assigneeId() {
+    return this._assigneeId;
+  }
 
   get tags() {
     return this._tags;

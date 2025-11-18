@@ -14,6 +14,7 @@ export class Server {
   registerMiddlewares() {
     this._app.use(cors());
     this._app.use(morgan("dev"));
+    this._app.use(express.json());
   }
 
   registerControllers() {
