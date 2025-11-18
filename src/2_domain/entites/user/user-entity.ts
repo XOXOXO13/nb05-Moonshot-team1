@@ -23,7 +23,7 @@ export class UserEntity {
       password: string | null;
       refreshToken: string | null;
       version: number;
-      profileImage: string;
+      profileImage: string | null;
     } | null,
   ) {
     if (!record) {
