@@ -20,27 +20,39 @@ export class TaskResDto {
   private readonly createdAt: Date;
   private readonly updatedAt: Date;
 
-  constructor(data: PersistTaskEntity) {
-    this.id = data.id;
-    this.projectId = data.projectId;
-    this.title = data.title;
-    if (data.startDate) {
-      this.startYear = data.startDate.getFullYear();
-      this.startMonth = data.startDate.getMonth() + 1;
-      this.startDay = data.startDate.getDate();
+  constructor(
+    id: number,
+    projectId: number,
+    title: string,
+    startDate: Date | null,
+    endDate: Date | null,
+    status: string,
+    assignee: UserEntity | null,
+    attachments: AttachmentEntity[] | undefined,
+    tags: TagEntity[] | undefined,
+    createdAt: Date,
+    updatedAt: Date,
+  ) {
+    this.id = id;
+    this.projectId = projectId;
+    this.title = title;
+    if (startDate) {
+      this.startYear = startDate.getFullYear();
+      this.startMonth = startDate.getMonth() + 1;
+      this.startDay = startDate.getDate();
     }
 
-    if (data.endDate) {
-      this.endYear = data.endDate.getFullYear();
-      this.endMonth = data.endDate.getMonth() + 1;
-      this.endDay = data.endDate.getDate();
+    if (endDate) {
+      this.endYear = endDate.getFullYear();
+      this.endMonth = endDate.getMonth() + 1;
+      this.endDay = endDate.getDate();
     }
 
-    this.status = data.status;
-    this.assignee = data.assignee;
-    this.tags = data.tags;
-    this.attachments = data.attachments;
-    this.createdAt = data.createdAt;
-    this.updatedAt = data.updatedAt;
+    this.status = status;
+    this.assignee = assignee;
+    this.tags = tags;
+    this.attachments = attachments;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 }

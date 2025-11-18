@@ -7,6 +7,8 @@ import {
 import { UserEntity } from "../../2_domain/entites/user/user-entity";
 import { TagEntity } from "../../2_domain/entites/tag/tag-entity";
 import { AttachmentEntity } from "../../2_domain/entites/attachment/attachment-entity";
+import { TaskViewReqDto } from "../../1_inbound/requests/task-req-dto";
+import { TaskMapper } from "../mappers/task-mapper";
 
 export class TaskRepository implements ITaskRepository {
   private _prisma;
@@ -16,10 +18,9 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async create(entity: TaskEntity): Promise<PersistTaskEntity> {
-    const tags: TagEntity[] = [];
-    const attachments: AttachmentEntity[] = [];
-
-    const taskRecords = await this._prisma.$transaction(async (tx) => {
+    // [Transaction으로 Inconsistent Read 방지]
+    // [태그와 첨부파일 생성할때 deadlock 발생 안함 (for루프 => createMany 수정함)]
+    const taskRecord = await this._prisma.$transaction(async (tx) => {
       // 할일 생성하기
       const newTaskRecord = await tx.task.create({
         data: {
@@ -33,68 +34,45 @@ export class TaskRepository implements ITaskRepository {
       });
 
       // 태그 생성하기
-      for (const tag of entity.tags) {
-        const newTagRecord = await tx.tag.create({
-          data: {
+      await tx.tag.createMany({
+        data: entity.tags.map((tag) => {
+          return {
             taskId: newTaskRecord.id,
             name: tag,
-          },
-        });
-
-        tags.push(new TagEntity(newTagRecord));
-      }
+          };
+        }),
+      });
 
       // 첨부파일 추가하기
-      for (const attachment of entity.attachments) {
-        const newAttachmentRecord = await tx.file.create({
-          data: {
+      await tx.attachment.createMany({
+        data: entity.attachments.map((attachment) => {
+          return {
             taskId: newTaskRecord.id,
-            fileUrl: attachment,
-          },
-        });
-        attachments.push(new AttachmentEntity(newAttachmentRecord));
-      }
-
-      // Assignee 조회하기
-      const assigneeRecord = await tx.user.findUnique({
-        where: { id: 1 },
+            attachmentUrl: attachment,
+          };
+        }),
       });
-      const assignee = assigneeRecord
-        ? new UserEntity({
-            ...assigneeRecord,
-            profileImage: assigneeRecord.profileImageUrl ?? "",
-          })
-        : null;
 
-      const responseData = {
-        task: newTaskRecord,
-        tags: tags,
-        attachments: attachments,
-        assignee: assignee,
-      };
+      // 등록된 할일 조회 (태그 + 첨부파일 포함)
+      const createdTask = await tx.task.findUnique({
+        where: {
+          id: newTaskRecord.id,
+        },
+        include: {
+          assignee: true,
+          tags: true,
+          attachments: true,
+        },
+      });
 
-      return {
-        task: newTaskRecord,
-        tags: tags,
-        attachments: attachments,
-        assignee: assignee,
-      };
+      return createdTask;
     });
 
-    const taskEntity = new PersistTaskEntity({
-      id: taskRecords.task.id,
-      projectId: taskRecords.task.projectId,
-      title: taskRecords.task.title,
-      startDate: taskRecords.task.startDate,
-      endDate: taskRecords.task.endDate,
-      status: taskRecords.task.status,
-      assignee: taskRecords.assignee,
-      tags: taskRecords.tags,
-      attachments: taskRecords.attachments,
-      createdAt: taskRecords.task.createdAt,
-      updatedAt: taskRecords.task.updatedAt,
-    });
+    if (!taskRecord) {
+      throw new Error("Failed to create task");
+    }
 
+    const taskEntity = TaskMapper.toPersistEntity(taskRecord);
     return taskEntity;
   }
 }

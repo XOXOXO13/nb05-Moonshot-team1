@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const taskReqSchema = z.object({
+export const createTaskReqSchema = z.object({
   body: z.object({
     title: z.string(),
     startYear: z.number(),
@@ -22,4 +22,21 @@ export const taskReqSchema = z.object({
   }),
 });
 
-export type TaskReqDto = z.infer<typeof taskReqSchema>;
+export const viewTaskReqSchema = z.object({
+  headers: z.object({
+    authorization: z.string(),
+  }),
+
+  query: z.object({
+    page: z.coerce.number().optional(),
+    limit: z.coerce.number().optional(),
+    status: z.enum(["todo", "in_progress", "done"]).optional(),
+    assignee: z.coerce.number().optional(),
+    keyword: z.string().optional(),
+    order: z.enum(["asc", "desc"]).optional(),
+    order_by: z.enum(["created_at", "name", "end_date"]).optional(),
+  }),
+});
+
+export type TaskReqDto = z.infer<typeof createTaskReqSchema>;
+export type TaskViewReqDto = z.infer<typeof viewTaskReqSchema>;
