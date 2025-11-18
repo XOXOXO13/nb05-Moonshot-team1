@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { IServices } from "../ports/I-services";
 import { BaseController } from "./base-controller";
 import { TaskMapper } from "../../3_outbound/mappers/task-mapper";
+import { IServices } from "../../inbound/ports/I-services";
 
 export class TaskController extends BaseController {
   constructor(services: IServices) {
