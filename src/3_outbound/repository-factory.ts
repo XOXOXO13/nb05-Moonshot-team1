@@ -1,5 +1,5 @@
 import { IRepositories } from "../domain/ports/repositories-interface";
-import { BasePrismaClient } from "./repos/base-repository";
+import { BasePrismaClient } from "../outbound/repos/base-repository";
 
 type repositoryGenerator = (
   client: BasePrismaClient

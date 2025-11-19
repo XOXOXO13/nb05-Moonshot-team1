@@ -1,13 +1,13 @@
 import { PrismaClient } from "@prisma/client";
-import { ITaskRepository } from "../../2_domain/ports/repositories/I-task-repository";
+import { ITaskRepository } from "../../domain/ports/repositories/I-task-repository";
 import {
   PersistTaskEntity,
   TaskEntity,
-} from "../../2_domain/entites/task/task-entity";
-import { UserEntity } from "../../2_domain/entites/user/user-entity";
-import { TagEntity } from "../../2_domain/entites/tag/tag-entity";
-import { AttachmentEntity } from "../../2_domain/entites/attachment/attachment-entity";
-import { TaskViewReqDto } from "../../1_inbound/requests/task-req-dto";
+} from "../../domain/entites/task/task-entity";
+import { UserEntity } from "../../domain/entites/user/user-entity";
+import { TagEntity } from "../../domain/entites/tag/tag-entity";
+import { AttachmentEntity } from "../../domain/entites/attachment/attachment-entity";
+import { TaskViewReqDto } from "../../inbound/requests/task-req-dto";
 import { TaskMapper } from "../mappers/task-mapper";
 
 export class TaskRepository implements ITaskRepository {

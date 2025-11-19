@@ -2,7 +2,7 @@ import { MemberData, MemberVo } from "./member-vo";
 
 export type ProjectData = {
   name: string;
-  description?: string;
+  description?: string | null;
   userId: number;
   members?: MemberData[];
   version: number;
@@ -24,7 +24,7 @@ export interface PersistProjectEntity extends ProjectEntity {
 export class ProjectEntity {
   private readonly _id?: number;
   private _name: string;
-  private _description?: string;
+  private _description?: string | null;
   private readonly _userId: number;
   private readonly _createdAt?: Date;
   private readonly _updatedAt?: Date;
@@ -38,7 +38,7 @@ export class ProjectEntity {
   constructor(attrs: {
     id?: number;
     name: string;
-    description?: string;
+    description?: string | null;
     userId: number;
     createdAt?: Date;
     updatedAt?: Date;
@@ -118,6 +118,20 @@ export class ProjectEntity {
       version: 1,
     });
     return entity;
+  }
+
+  static createPersist(parmas: {
+    id?: number;
+    name: string;
+    description?: string | null;
+    userId: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+    members: MemberVo[];
+    // tasks? : TaskVo[];
+    version: number;
+  }) {
+    return new ProjectEntity(parmas);
   }
 
   updateName(newName: string): void {

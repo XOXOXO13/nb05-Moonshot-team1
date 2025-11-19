@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { BaseController } from "./base-controller";
-import { TaskMapper } from "../../3_outbound/mappers/task-mapper";
+import { TaskMapper } from "../../outbound/mappers/task-mapper";
 import { IServices } from "../../inbound/ports/I-services";
 
 export class TaskController extends BaseController {

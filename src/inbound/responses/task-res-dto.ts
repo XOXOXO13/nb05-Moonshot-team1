@@ -1,7 +1,7 @@
-import { UserEntity } from "../../2_domain/entites/user/user-entity";
-import { TagEntity } from "../../2_domain/entites/tag/tag-entity";
-import { AttachmentEntity } from "../../2_domain/entites/attachment/attachment-entity";
-import { PersistTaskEntity } from "../../2_domain/entites/task/task-entity";
+import { UserEntity } from "../../domain/entites/user/user-entity";
+import { TagEntity } from "../../domain/entites/tag/tag-entity";
+import { AttachmentEntity } from "../../domain/entites/attachment/attachment-entity";
+import { PersistTaskEntity } from "../../domain/entites/task/task-entity";
 
 export class TaskResDto {
   private readonly id: number;
@@ -31,7 +31,7 @@ export class TaskResDto {
     attachments: AttachmentEntity[] | undefined,
     tags: TagEntity[] | undefined,
     createdAt: Date,
-    updatedAt: Date,
+    updatedAt: Date
   ) {
     this.id = id;
     this.projectId = projectId;

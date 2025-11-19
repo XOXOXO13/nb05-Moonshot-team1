@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Server } from "./server";
-import { TaskController } from "./1_inbound/controllers/task-controller";
-import { TaskService } from "./2_domain/services/task-service";
-import { TaskRepository } from "./3_outbound/repos/task-repository";
+import { TaskController } from "./inbound/controllers/task-controller";
+import { TaskService } from "./domain/services/task-service";
+import { TaskRepository } from "./outbound/repos/task-repository";
 
 export class DependencyInjector {
   private _server: Server;
