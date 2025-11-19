@@ -26,7 +26,7 @@ model User {
   name            String
   refreshToken    String?
   version         Int      @default(1)
-  profileImageUrl String?
+  profileImage String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -93,7 +93,7 @@ model Task {
   project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   comments   Comment[]
   tags       Tag[]
-  files      File[]
+  attachments      Attachment[]
 }
 
 model Comment {
@@ -113,13 +113,17 @@ model Tag {
   name   String
   taskId Int
   task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, name])
 }
 
-model File {
+model Attachment {
   id      Int   @id @default(autoincrement())
   taskId  Int
   task    Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  fileUrl String
+  attachmentUrl String
+
+  @@unique([taskId, attachmentUrl])
 }
 
 model Invitation {

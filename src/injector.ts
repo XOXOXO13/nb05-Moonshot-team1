@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { TestRepository } from "./outbound/repositories/test-repository";
 import { Server } from "./server";
-import { TestService } from "./domain/services/test-service";
-import { TestController } from "./inbound/controllers/test-controller";
+import { TaskController } from "./1_inbound/controllers/task-controller";
+import { TaskService } from "./2_domain/services/task-service";
+import { TaskRepository } from "./3_outbound/repos/task-repository";
+
 export class DependencyInjector {
   private _server: Server;
 
@@ -13,18 +14,21 @@ export class DependencyInjector {
   inject() {
     const prisma = new PrismaClient();
 
-    const testRepository = new TestRepository(prisma);
+    const taskRepository = new TaskRepository(prisma);
+
     const repositories = {
-      testRepository: testRepository,
+      taskRepository: taskRepository,
     };
 
-    const testService = new TestService(repositories);
+    const taskService = new TaskService(repositories);
+
     const services = {
-      testService: testService,
+      taskService: taskService,
     };
 
-    const testController = new TestController(services);
-    const controllers = [testController];
+    const taskController = new TaskController(services);
+
+    const controllers = [taskController];
 
     return new Server(controllers);
   }

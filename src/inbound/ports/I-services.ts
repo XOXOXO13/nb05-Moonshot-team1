@@ -1,5 +1,5 @@
-import { ITestService } from "./services/I-test-service";
+import { ITaskService } from "../../1_inbound/ports/services/I-task-service";
 
 export interface IServices {
-  testService: ITestService;
+  taskService: ITaskService;
 }
