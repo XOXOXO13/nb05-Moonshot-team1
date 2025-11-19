@@ -36,7 +36,7 @@ export class ProjectEntity {
   private readonly _createdAt?: Date;
   private readonly _updatedAt?: Date;
   private _members?: MemberVo[];
-  private _tasks? : TaskEntity[]
+  private _tasks?: TaskEntity[];
 
   // 낙관적 락을 위한 버전
   private _version: number;
@@ -50,7 +50,7 @@ export class ProjectEntity {
     createdAt?: Date;
     updatedAt?: Date;
     members: MemberVo[];
-    tasks? : TaskEntity[];
+    tasks?: TaskEntity[];
     version: number;
   }) {
     this._id = attrs.id;
@@ -85,7 +85,7 @@ export class ProjectEntity {
   get members() {
     return this._members;
   }
-  get tasks(){
+  get tasks() {
     return this._tasks;
   }
   get version() {
@@ -105,14 +105,14 @@ export class ProjectEntity {
     };
   }
 
-  toUpdateData(): ProjectUpdateData{
-    if(!this._isModified){
+  toUpdateData(): ProjectUpdateData {
+    if (!this._isModified) {
       return {};
     }
     const updateData: ProjectUpdateData = {};
     updateData.name = this._name;
     updateData.description = this._description;
-    
+
     return updateData;
   }
 
@@ -146,7 +146,7 @@ export class ProjectEntity {
     createdAt?: Date;
     updatedAt?: Date;
     members: MemberVo[];
-    tasks? : TaskEntity[];
+    tasks?: TaskEntity[];
     version: number;
   }) {
     return new ProjectEntity(parmas);

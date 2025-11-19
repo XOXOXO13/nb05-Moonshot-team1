@@ -31,7 +31,7 @@ export class TaskResDto {
     attachments: AttachmentEntity[] | undefined,
     tags: TagEntity[] | undefined,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
   ) {
     this.id = id;
     this.projectId = projectId;

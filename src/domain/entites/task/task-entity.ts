@@ -111,7 +111,7 @@ export class TaskEntity {
     status: string,
     attachments: string[],
     assigneeId: number | null,
-    tags: string[]
+    tags: string[],
   ) {
     this._projectId = projectId;
     this._title = title;
