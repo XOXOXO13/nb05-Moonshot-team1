@@ -1,4 +1,3 @@
 export class BaseService {
-  constructor(
-  ) {}
+  constructor() {}
 }

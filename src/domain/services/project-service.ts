@@ -1,21 +1,24 @@
-import { IProjectService } from "../../inbound/ports/services/project-service-interface"
+import { IProjectService } from "../../inbound/ports/services/project-service-interface";
 import { UnitOfWork } from "../../outbound/unit-of-work";
-import { PersistProjectEntity, ProjectEntity } from "../entities/project/project-entity";
+import {
+  PersistProjectEntity,
+  ProjectEntity,
+} from "../entities/project/project-entity";
 // IUnitOfWork 구현후 대체
 
-export class ProjectService implements IProjectService{
+export class ProjectService implements IProjectService {
   private readonly _unitOfWokr;
-   
-  constructor(unitOfWork : UnitOfWork){
+
+  constructor(unitOfWork: UnitOfWork) {
     this._unitOfWokr = unitOfWork;
   }
 
-  async createProject(dto: any): Promise<PersistProjectEntity>{
-    return this._unitOfWokr.do(async(repos)=>{
+  async createProject(dto: any): Promise<PersistProjectEntity> {
+    return this._unitOfWokr.do(async (repos) => {
       const newProject = ProjectEntity.createNew({
         name: dto.name,
         description: dto.description,
-        userId: dto.userId
+        userId: dto.userId,
       });
 
       return await repos.projectRepository.create(newProject);
@@ -23,29 +26,30 @@ export class ProjectService implements IProjectService{
   }
 
   // 쓰기 작업을 하기 때문에 낙관적 락 이용
-  async updateProject(dto: any): Promise<PersistProjectEntity>{
-    return this._unitOfWokr.do(async (repos)=>{
+  async updateProject(dto: any): Promise<PersistProjectEntity> {
+    return this._unitOfWokr.do(async (repos) => {
       const project = await repos.projectRepository.findById(dto.projectId);
 
-      if(!project){
-        throw new Error('Not found');
+      if (!project) {
+        throw new Error("Not found");
       }
-      if(dto.name){
+      if (dto.name) {
         project.updateName(dto.name);
       }
-      if(dto.description){
+      if (dto.description) {
         project.updateDescription(dto.description);
       }
 
       project.incrementVersion();
 
       return await repos.projectRepository.update(project);
-
-    })
+    });
   }
 
   // 읽기 전용 => 낙관적 락 불필요
-  async getProjectById(projectId: number): Promise<PersistProjectEntity | null>{
-    return this._unitOfWokr.repos.projectRepository.findById(projectId)
+  async getProjectById(
+    projectId: number,
+  ): Promise<PersistProjectEntity | null> {
+    return this._unitOfWokr.repos.projectRepository.findById(projectId);
   }
 }
