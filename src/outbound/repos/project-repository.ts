@@ -9,7 +9,7 @@ import { Member, Project } from "@prisma/client";
 import { ProjectMapper } from "../mappers/project-mapper";
 
 export type PersistProject = Project & {
-  members: Member[] | null;
+  members: Member[];
 };
 
 export class ProjectRepository

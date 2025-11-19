@@ -1,4 +1,5 @@
 import { MemberData, MemberVo } from "./member-vo";
+import { TaskEntity } from "../task/task-entity";
 
 export type ProjectData = {
   name: string;
@@ -6,6 +7,12 @@ export type ProjectData = {
   userId: number;
   members?: MemberData[];
   version: number;
+};
+
+export type ProjectUpdateData = {
+  name?: string;
+  description?: string | null;
+  // members와 version은 별도 처리.
 };
 
 // 영속화 전
@@ -29,7 +36,7 @@ export class ProjectEntity {
   private readonly _createdAt?: Date;
   private readonly _updatedAt?: Date;
   private _members?: MemberVo[];
-  // private _tasks? : TaskVo[]
+  private _tasks? : TaskEntity[]
 
   // 낙관적 락을 위한 버전
   private _version: number;
@@ -43,7 +50,7 @@ export class ProjectEntity {
     createdAt?: Date;
     updatedAt?: Date;
     members: MemberVo[];
-    // tasks? : TaskVo[];
+    tasks? : TaskEntity[];
     version: number;
   }) {
     this._id = attrs.id;
@@ -53,7 +60,7 @@ export class ProjectEntity {
     this._createdAt = attrs.createdAt;
     this._updatedAt = attrs.updatedAt;
     this._members = attrs.members;
-    // this._tasks = attrs.tasks;
+    this._tasks = attrs.tasks;
     this._version = attrs.version;
   }
 
@@ -78,9 +85,9 @@ export class ProjectEntity {
   get members() {
     return this._members;
   }
-  // get tasks(){
-  //   return this._taks;
-  // }
+  get tasks(){
+    return this._tasks;
+  }
   get version() {
     return this._version;
   }
@@ -128,7 +135,7 @@ export class ProjectEntity {
     createdAt?: Date;
     updatedAt?: Date;
     members: MemberVo[];
-    // tasks? : TaskVo[];
+    tasks? : TaskEntity[];
     version: number;
   }) {
     return new ProjectEntity(parmas);
