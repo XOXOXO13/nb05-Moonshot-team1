@@ -1,11 +1,11 @@
-import { MemberData, MemberVo } from "../../domain/entities/project/member-vo";
+import { MemberData, MemberVo } from "../../domain/entites/project/member-vo";
 import {
   NewProjectEntity,
   PersistProjectEntity,
   ProjectData,
   ProjectEntity,
-} from "../../domain/entities/project/project-entity";
-import { PersistProject } from "../repositories/project-repository";
+} from "../../domain/entites/project/project-entity";
+import { PersistProject } from "../repos/project-repository";
 
 export class ProjectMapper {
   static toPersistEntity(project: PersistProject): PersistProjectEntity {

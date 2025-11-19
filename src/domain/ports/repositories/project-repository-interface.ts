@@ -2,7 +2,7 @@ import {
   PersistProjectEntity,
   NewProjectEntity,
   ProjectEntity,
-} from "../../entities/project/project-entity";
+} from "../../entites/project/project-entity";
 
 export type LockType = "share" | "beta";
 

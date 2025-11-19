@@ -4,7 +4,7 @@ import {
   NewProjectEntity,
   PersistProjectEntity,
   ProjectEntity,
-} from "../../domain/entities/project/project-entity";
+} from "../../domain/entites/project/project-entity";
 import { Member, Project } from "@prisma/client";
 import { ProjectMapper } from "../mappers/project-mapper";
 

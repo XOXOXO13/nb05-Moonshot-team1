@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
-import { TaskReqDto } from "../../../1_inbound/requests/task-req-dto";
-import { TaskResDto } from "../../../1_inbound/responses/task-res-dto";
+import { TaskReqDto } from "../../../inbound/requests/task-req-dto";
+import { TaskResDto } from "../../../inbound/responses/task-res-dto";
 import { TagEntity } from "../tag/tag-entity";
 import { UserEntity } from "../user/user-entity";
 import { AttachmentEntity } from "../attachment/attachment-entity";
@@ -111,7 +111,7 @@ export class TaskEntity {
     status: string,
     attachments: string[],
     assigneeId: number | null,
-    tags: string[],
+    tags: string[]
   ) {
     this._projectId = projectId;
     this._title = title;

@@ -1,15 +1,15 @@
 import {
   createTaskReqSchema,
   TaskReqDto,
-} from "../../1_inbound/requests/task-req-dto";
-import { TaskResDto } from "../../1_inbound/responses/task-res-dto";
-import { AttachmentEntity } from "../../2_domain/entites/attachment/attachment-entity";
-import { TagEntity } from "../../2_domain/entites/tag/tag-entity";
+} from "../../inbound/requests/task-req-dto";
+import { TaskResDto } from "../../inbound/responses/task-res-dto";
+import { AttachmentEntity } from "../../domain/entites/attachment/attachment-entity";
+import { TagEntity } from "../../domain/entites/tag/tag-entity";
 import {
   PersistTaskEntity,
   TaskEntity,
-} from "../../2_domain/entites/task/task-entity";
-import { UserEntity } from "../../2_domain/entites/user/user-entity";
+} from "../../domain/entites/task/task-entity";
+import { UserEntity } from "../../domain/entites/user/user-entity";
 import { Request } from "express";
 
 export class TaskMapper {
@@ -40,7 +40,7 @@ export class TaskMapper {
       dto.body.status,
       dto.body.attachments,
       dto.body.assigneeId,
-      dto.body.tags,
+      dto.body.tags
     );
   }
 
@@ -77,7 +77,7 @@ export class TaskMapper {
       endDate: Date | null;
       createdAt: Date;
       updatedAt: Date;
-    },
+    }
   ) {
     return new PersistTaskEntity({
       id: record.id,
@@ -110,7 +110,7 @@ export class TaskMapper {
       entity.attachments,
       entity.tags,
       entity.createdAt,
-      entity.updatedAt,
+      entity.updatedAt
     );
   }
 }
