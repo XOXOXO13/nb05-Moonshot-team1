@@ -105,6 +105,17 @@ export class ProjectEntity {
     };
   }
 
+  toUpdateData(): ProjectUpdateData{
+    if(!this._isModified){
+      return {};
+    }
+    const updateData: ProjectUpdateData = {};
+    updateData.name = this._name;
+    updateData.description = this._description;
+    
+    return updateData;
+  }
+
   static createNew(params: {
     name: string;
     description?: string;
