@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { BaseController } from "./base-controller";
 import { TaskMapper } from "../../outbound/mappers/task-mapper";
-import { IServices } from "../../inbound/ports/I-services";
+import { IServices } from "../../inbound/ports/services-interface";
 
 export class TaskController extends BaseController {
   constructor(services: IServices) {
@@ -15,7 +15,7 @@ export class TaskController extends BaseController {
 
   createTask = async (req: Request, res: Response) => {
     const taskReqDto = TaskMapper.toReqDto(req);
-    const taskResDto = await this.services.taskService.createTask(taskReqDto);
+    const taskResDto = await this.services.task.createTask(taskReqDto);
     res.json(taskResDto);
   };
 }
