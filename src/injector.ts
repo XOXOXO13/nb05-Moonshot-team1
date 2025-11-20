@@ -12,7 +12,13 @@ export class DependencyInjector {
   }
 
   inject() {
-    const prisma = new PrismaClient();
+    const prisma = new PrismaClient({
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL
+        },
+      },
+    });
 
     const taskRepository = new TaskRepository(prisma);
 
