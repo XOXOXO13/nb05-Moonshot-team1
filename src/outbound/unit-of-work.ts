@@ -4,7 +4,7 @@ import { RepositoryFactory } from "./repository-factory";
 
 export class UnitOfWork {
   private _prismaClient: PrismaClient;
-  private _repoFactory;
+  private _repoFactory: RepositoryFactory;
   private _repos: IRepositories;
 
   constructor(prismaClient: PrismaClient, repoFactory: RepositoryFactory) {
@@ -23,37 +23,56 @@ export class UnitOfWork {
     isolationLevel:
       | "ReadCommitted"
       | "RepeatableRead"
-      | "Serializable" = "ReadCommitted",
+      | "Serializable" = "ReadCommitted"
   ): Promise<T> {
     const maxRetries = isOptimistic ? 5 : 1;
 
     for (let i = 0; i < maxRetries; i++) {
       try {
         return await this._prismaClient.$transaction(
-          async (tx) => {
+          async (tx: PrismaClient) => {
             const txRepos: IRepositories = this._repoFactory.create(tx);
             return await work(txRepos);
           },
           {
             isolationLevel,
-          },
+          }
         );
       } catch (err) {
-        // Exception 구현 필요
-        // if (
-        //   err instanceof TechnicalException &&
-        //   err.type === TechnicalExceptionType.OPTIMISTIC_LOCK_FAILED
-        // ) {
-        //   if (i < maxRetries - 1) {
-        //     console.warn(`${i + 1}th 재시도(최대 ${maxRetries}회)`);
-        //     await new Promise((resolve) => setTimeout(resolve, 100 * (i + 1)));
-        //     continue;
-        //   }
-        // }
+        if (this.isRetryableError(err) && isOptimistic && i < maxRetries - 1) {
+          console.warn(
+            `트랜잭션 재시도 ${i + 1}/${maxRetries} - ${err instanceof Error ? err.message : "Unknown error"}`
+          );
+          await this.delay(Math.pow(2, i) * 100);
+          continue;
+        }
         throw err;
       }
     }
 
     throw new Error("최대 시도 횟수를 초과했습니다.");
+  }
+
+  private isRetryableError(err: unknown): boolean {
+    if (!(err instanceof Error)) {
+      return false;
+    }
+
+    const retryableErrorCodes = [
+      "P2034", // 트랜잭션 충돌
+      "P2002", // 유니크 제약 조건 위반
+      "P1008", // 작업 타임아웃
+    ];
+
+    return (
+      retryableErrorCodes.some((code) => err.message.includes(code)) ||
+      err.message.includes("Transaction deadlock") ||
+      err.message.includes("could not serialize access") ||
+      err.message.includes("restart transaction")
+    );
+  }
+
+  private async delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
