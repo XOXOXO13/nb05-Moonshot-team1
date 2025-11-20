@@ -16,15 +16,15 @@ export class RepositoryFactory {
   }
 
   public create(prismaClient: BasePrismaClient): IRepositories {
-    const repos = {} as IRepositories;
+    const repos: Record<string, any> = {}; 
     const repoKeys = Object.keys(
       this._repositoryGenerators,
     ) as (keyof IRepositories)[];
 
     for (const key of repoKeys) {
-      // repos[key] = this._repositoryGenerators[key](prismaClient);
+      repos[key] = this._repositoryGenerators[key](prismaClient);
     }
 
-    return repos;
+    return repos as IRepositories;
   }
 }
