@@ -2,7 +2,12 @@ import { Request, Response } from "express";
 import { BaseController } from "./base-controller";
 import { TaskMapper } from "../../3_outbound/mappers/task-mapper";
 import { IServices } from "../../inbound/ports/I-services";
-import { createTaskReqSchema, viewTaskReqSchema as viewProjectTaskReqSchema, viewTaskInfoReqSchema } from "../requests/task-req-dto";
+import {
+  createTaskReqSchema,
+  updateTaskReqSchema,
+  viewProjectTaskReqSchema,
+  viewTaskInfoReqSchema,
+} from "../requests/task-req-dto";
 
 export class TaskController extends BaseController {
   constructor(services: IServices) {
@@ -15,6 +20,7 @@ export class TaskController extends BaseController {
     this.router.get("/projects/:projectId/tasks", this.getProjectTasks);
     this.router.get("/tasks/:taskId", this.getTaskInfo);
     this.router.patch("/tasks/:taskId", this.editTaskInfo);
+    this.router.delete("/tasks/:taskId", this.deleteTask);
   }
 
   createTask = async (req: Request, res: Response) => {
@@ -23,10 +29,10 @@ export class TaskController extends BaseController {
     res.json(taskResDto);
   };
 
-
   getProjectTasks = async (req: Request, res: Response) => {
     const taskReqDto = TaskMapper.toReqDto(viewProjectTaskReqSchema, req);
-    const taskResDto = await this.services.taskService.getProjectTasks(taskReqDto);
+    const taskResDto =
+      await this.services.taskService.getProjectTasks(taskReqDto);
     res.json(taskResDto);
   };
 
@@ -37,11 +43,14 @@ export class TaskController extends BaseController {
   };
 
   editTaskInfo = async (req: Request, res: Response) => {
-    const taskReqDto = TaskMapper.toReqDto(createTaskReqSchema, req);
+    const taskReqDto = TaskMapper.toReqDto(updateTaskReqSchema, req);
     const taskResDto = await this.services.taskService.editTaskInfo(taskReqDto);
     res.json(taskResDto);
   };
 
+  deleteTask = async (req: Request, res: Response) => {
+    const taskReqDto = TaskMapper.toReqDto(viewTaskInfoReqSchema, req);
+    await this.services.taskService.deleteTaskInfo(taskReqDto);
+    res.status(200).json();
+  };
 }
-
-
