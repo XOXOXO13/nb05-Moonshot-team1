@@ -56,10 +56,9 @@ export class TaskResDto {
   }
 }
 
-
 export class TaskResDtos {
   private readonly data: TaskResDto[];
-  private readonly total : number;
+  private readonly total: number;
 
   constructor(data: TaskResDto[]) {
     this.data = data;
