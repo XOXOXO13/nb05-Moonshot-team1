@@ -27,7 +27,7 @@ export class UserController {
   private setTokenCookies(
     res: Response,
     accessToken: string,
-    refreshToken: string
+    refreshToken: string,
   ) {
     const cookieOptions = {
       httpOnly: false,

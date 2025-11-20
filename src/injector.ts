@@ -34,7 +34,7 @@ export class DependencyInjector {
     const repoFactory = new RepositoryFactory({
       projectRepository: (_prisma) => new ProjectRepository(prisma),
       taskRepository: (_prisma) => new TaskRepository(prisma),
-      userRepository: (_prisma) => new UserRepository(_prisma)
+      userRepository: (_prisma) => new UserRepository(_prisma),
     });
     const unitOfWork: UnitOfWork = new UnitOfWork(prisma, repoFactory);
 

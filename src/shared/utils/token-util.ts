@@ -14,12 +14,14 @@ export interface ITokenUtil {
 }
 
 export class TokenUtil implements ITokenUtil {
-  constructor(private _config: IConfigUtil){}
+  constructor(private _config: IConfigUtil) {}
 
   verifyToken(params: { token: string; ignoreExpiration?: boolean }) {
     try {
       const { token, ignoreExpiration } = params;
-      return jwt.verify(token,this._config.parsed().TOKEN_SECRET,{ignoreExpiration}) as TokenPayload;
+      return jwt.verify(token, this._config.parsed().TOKEN_SECRET, {
+        ignoreExpiration,
+      }) as TokenPayload;
     } catch (err) {
       throw err;
     }

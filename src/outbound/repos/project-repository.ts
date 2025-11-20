@@ -82,9 +82,9 @@ export class ProjectRepository
   async delete(projectId: number): Promise<void> {
     try {
       await this._prismaClient.project.delete({
-        where:{
-          id:projectId
-        }
+        where: {
+          id: projectId,
+        },
       });
     } catch (err) {
       // 에러 처리 추후 구현

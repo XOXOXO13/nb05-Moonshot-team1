@@ -1,5 +1,8 @@
 import { PersistProjectEntity } from "../../../domain/entites/project/project-entity";
-import { CreateProjectDto, UpdateProjectDto } from "../../requests/project-req-dto";
+import {
+  CreateProjectDto,
+  UpdateProjectDto,
+} from "../../requests/project-req-dto";
 
 export interface IProjectService {
   createProject(dto: CreateProjectDto): Promise<PersistProjectEntity>;

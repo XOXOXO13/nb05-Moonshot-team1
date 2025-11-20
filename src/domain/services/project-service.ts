@@ -53,22 +53,22 @@ export class ProjectService implements IProjectService {
   ): Promise<PersistProjectEntity | null> {
     return this._unitOfWokr.repos.projectRepository.findById(projectId);
   }
-  
+
   async deleteProject(projectId: number, userId: number): Promise<void> {
-    return this._unitOfWokr.do(async (repos)=>{
+    return this._unitOfWokr.do(async (repos) => {
       const project = await repos.projectRepository.findById(projectId);
 
-      if(!project){
+      if (!project) {
         // 에러 처리
-        throw new Error;
+        throw new Error();
       }
 
-      if(project.userId !== userId){
+      if (project.userId !== userId) {
         // 에러 처리 : 권한 없음
-        throw new Error;
+        throw new Error();
       }
 
       await repos.projectRepository.delete(projectId);
-    })
+    });
   }
 }
