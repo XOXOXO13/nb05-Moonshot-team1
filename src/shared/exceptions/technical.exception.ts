@@ -3,7 +3,8 @@ export enum TechnicalExceptionType {
 }
 
 const TechnicalExceptionTable: Record<TechnicalExceptionType, string> = {
-  [TechnicalExceptionType.UNKNOWN_SERVER_ERROR]: "알 수 없는 서버 에러가 발생하였습니다."
+  [TechnicalExceptionType.UNKNOWN_SERVER_ERROR]:
+    "알 수 없는 서버 에러가 발생하였습니다.",
 };
 
 export class TechnicalException extends Error {
