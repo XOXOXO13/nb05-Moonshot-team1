@@ -1,20 +1,13 @@
 import {
-  TaskReqDto,
-  ProjectTaskReqDto,
-  TaskInfoReqDto,
-} from "../../1_inbound/requests/task-req-dto";
-import { TaskResDto, TaskResDtos } from "../../1_inbound/responses/task-res-dto";
+  TaskResDto,
+  TaskResDtos,
+} from "../../1_inbound/responses/task-res-dto";
 import { AttachmentEntity } from "../../2_domain/entites/attachment/attachment-entity";
 import { TagEntity } from "../../2_domain/entites/tag/tag-entity";
-import {
-  ViewTaskEntity,
-  PersistTaskEntity,
-  TaskEntity,
-  ViewProjectTaskEntity,
-} from "../../2_domain/entites/task/task-entity";
-import { UserEntity } from "../../2_domain/entites/user/user-entity";
+import { PersistTaskEntity } from "../../2_domain/entites/task/persist-task-entity";
 import { Request } from "express";
-import { z } from "zod"
+import { z } from "zod";
+import { UserEntity } from "../../2_domain/entites/user/user-entity";
 
 export class TaskMapper {
   static toReqDto<T extends z.ZodTypeAny>(schema: T, req: Request) {
@@ -30,47 +23,6 @@ export class TaskMapper {
 
     return reqData.data;
   }
-
-  static toEntity(dto: TaskReqDto) {
-    return new TaskEntity({
-      taskId: dto.params.taskId,
-      projectId: dto.params.projectId,
-      title: dto.body.title,
-      startYear: dto.body.startYear,
-      startMonth: dto.body.startMonth,
-      startDay: dto.body.startDay,
-      endYear: dto.body.endYear,
-      endMonth: dto.body.endMonth,
-      endDay: dto.body.endDay,
-      status: dto.body.status,
-      attachments: dto.body.attachments,
-      assigneeId: dto.body.assigneeId,
-      tags: dto.body.tags,
-    }
-
-    );
-  }
-
-  static toViewEntity(dto: ProjectTaskReqDto) {
-    return new ViewProjectTaskEntity(
-      dto.params.projectId,
-      dto.query?.page,
-      dto.query?.limit,
-      dto.query?.status,
-      dto.query?.assignee,
-      dto.query?.keyword,
-      dto.query?.order,
-      dto.query?.order_by
-    )
-  }
-
-  static toModifyTaskEntity(dto: TaskInfoReqDto) {
-    return new ViewTaskEntity(
-      1,
-      dto.params.taskId
-    )
-  }
-
 
   static toPersistEntity(
     record: {
@@ -94,7 +46,7 @@ export class TaskMapper {
         refreshToken: string | null;
         version: number;
         profileImage: string | null;
-      } | null;
+      };
     } & {
       title: string;
       status: string;
@@ -142,11 +94,10 @@ export class TaskMapper {
     );
   }
 
-
   static toResDtos(entities: PersistTaskEntity[]): TaskResDtos {
     const taskResDto = entities.map((entity) => {
-      return TaskMapper.toResDto(entity)
-    })
+      return TaskMapper.toResDto(entity);
+    });
     const taskResDtos = new TaskResDtos(taskResDto);
     return taskResDtos;
   }
