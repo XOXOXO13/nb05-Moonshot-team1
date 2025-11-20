@@ -1,9 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import { ITaskRepository } from "../../domain/ports/repositories/I-task-repository";
-import { CreateTaskEntity, ModifyTaskEntity } from "../../domain/entites/task/task-entity";
+import {
+  CreateTaskEntity,
+  ModifyTaskEntity,
+} from "../../domain/entites/task/task-entity";
 import { PersistTaskEntity } from "../../domain/entites/task/persist-task-entity";
 import { TaskMapper } from "../mappers/task-mapper";
-import { ViewProjectTaskEntity, ViewTaskEntity } from "../../domain/entites/task/view-task-entity";
+import {
+  ViewProjectTaskEntity,
+  ViewTaskEntity,
+} from "../../domain/entites/task/view-task-entity";
 
 export class TaskRepository implements ITaskRepository {
   private _prisma;
