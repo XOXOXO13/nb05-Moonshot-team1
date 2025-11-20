@@ -227,3 +227,6 @@ src/generated/
 
 # prisma/migrations 프리즈마 마이그레이션 디렉토리
 prisma/migrations
+
+# test 를 위한 http request 디렉토리
+http

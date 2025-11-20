@@ -1,5 +1,5 @@
 import { IRepositories } from "../domain/ports/repositories-interface";
-import { BasePrismaClient } from "./repositories/base-repository";
+import { BasePrismaClient } from "./repos/base-repository";
 
 type repositoryGenerator = (
   client: BasePrismaClient,
@@ -16,7 +16,7 @@ export class RepositoryFactory {
   }
 
   public create(prismaClient: BasePrismaClient): IRepositories {
-    const repos = {} as IRepositories;
+    const repos: Record<string, any> = {};
     const repoKeys = Object.keys(
       this._repositoryGenerators,
     ) as (keyof IRepositories)[];
@@ -25,6 +25,6 @@ export class RepositoryFactory {
       repos[key] = this._repositoryGenerators[key](prismaClient);
     }
 
-    return repos;
+    return repos as IRepositories;
   }
 }

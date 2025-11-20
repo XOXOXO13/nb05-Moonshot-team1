@@ -1,9 +1,10 @@
 import { IProjectService } from "../../inbound/ports/services/project-service-interface";
+import { CreateProjectDto } from "../../inbound/requests/project-req-dto";
 import { UnitOfWork } from "../../outbound/unit-of-work";
 import {
   PersistProjectEntity,
   ProjectEntity,
-} from "../entities/project/project-entity";
+} from "../entites/project/project-entity";
 // IUnitOfWork 구현후 대체
 
 export class ProjectService implements IProjectService {
@@ -13,7 +14,7 @@ export class ProjectService implements IProjectService {
     this._unitOfWokr = unitOfWork;
   }
 
-  async createProject(dto: any): Promise<PersistProjectEntity> {
+  async createProject(dto: CreateProjectDto): Promise<PersistProjectEntity> {
     return this._unitOfWokr.do(async (repos) => {
       const newProject = ProjectEntity.createNew({
         name: dto.name,
@@ -51,5 +52,23 @@ export class ProjectService implements IProjectService {
     projectId: number,
   ): Promise<PersistProjectEntity | null> {
     return this._unitOfWokr.repos.projectRepository.findById(projectId);
+  }
+
+  async deleteProject(projectId: number, userId: number): Promise<void> {
+    return this._unitOfWokr.do(async (repos) => {
+      const project = await repos.projectRepository.findById(projectId);
+
+      if (!project) {
+        // 에러 처리
+        throw new Error();
+      }
+
+      if (project.userId !== userId) {
+        // 에러 처리 : 권한 없음
+        throw new Error();
+      }
+
+      await repos.projectRepository.delete(projectId);
+    });
   }
 }

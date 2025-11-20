@@ -32,18 +32,19 @@ model User {
 
   socialAccounts      SocialAccount[]
   projects            Project[]
-  userJoinProjects    UserJoinProject[]
+  members             Member[]
   assignedTasks       Task[]
   comments            Comment[]
   invitationsCreated  Invitation[]      @relation("CreatorInvitations")
   invitationsReceived  Invitation[]      @relation("InviteeInvitations")
 }
 
-model UserJoinProject {
+model Member {
   userId    Int
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   projectId Int
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  role      MemberRole @default(MEMBER)
 
   status   MemberStatus @default(ACTIVE)
   joinedAt DateTime     @default(now())
@@ -51,10 +52,16 @@ model UserJoinProject {
   @@id([userId, projectId])
 }
 
+enum MemberRole {
+  OWNER
+  MEMBER
+  GUEST
+}
+
 enum MemberStatus {
   ACTIVE
-  INVITED
-  LEFT
+  PENDING
+  REMOVED
 }
 
 model Project {
@@ -64,9 +71,10 @@ model Project {
   userId      Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  version     Int @default(1)
   user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks       Task[]
-  members     UserJoinProject[]
+  members     Member[]
   invitations Invitation[]
 }
 

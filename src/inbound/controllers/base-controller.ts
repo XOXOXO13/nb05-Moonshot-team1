@@ -1,5 +1,10 @@
-import { IServices } from "../ports/I-services";
-import express from "express";
+import express, {
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+} from "express";
+import { IServices } from "../../inbound/ports/services-interface";
 export class BaseController {
   private _basePath;
   private _services;
@@ -27,5 +32,14 @@ export class BaseController {
 
   get services(): IServices {
     return this._services;
+  }
+  catch(handler: RequestHandler) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        await handler(req, res, next);
+      } catch (err) {
+        next(err);
+      }
+    };
   }
 }
