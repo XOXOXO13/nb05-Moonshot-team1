@@ -78,4 +78,17 @@ export class ProjectRepository
       throw err;
     }
   }
+
+  async delete(projectId: number): Promise<void> {
+    try {
+      await this._prismaClient.project.delete({
+        where:{
+          id:projectId
+        }
+      });
+    } catch (err) {
+      // 에러 처리 추후 구현
+      throw err;
+    }
+  }
 }

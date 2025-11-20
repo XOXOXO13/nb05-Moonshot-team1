@@ -10,4 +10,5 @@ export interface IProjectRepository {
   create(entity: NewProjectEntity): any;
   findById(projectId: number): Promise<PersistProjectEntity | null>;
   update(entity: ProjectEntity): Promise<PersistProjectEntity>;
+  delete(projectId: number): Promise<void>;
 }
