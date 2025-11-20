@@ -9,7 +9,7 @@ import { Member, Project } from "@prisma/client";
 import { ProjectMapper } from "../mappers/project-mapper";
 
 export type PersistProject = Project & {
-  members: Member[] | null;
+  members: Member[];
 };
 
 export class ProjectRepository
@@ -73,6 +73,19 @@ export class ProjectRepository
       })) as PersistProject;
 
       return ProjectMapper.toPersistEntity(updatedProject);
+    } catch (err) {
+      // 에러 처리 추후 구현
+      throw err;
+    }
+  }
+
+  async delete(projectId: number): Promise<void> {
+    try {
+      await this._prismaClient.project.delete({
+        where:{
+          id:projectId
+        }
+      });
     } catch (err) {
       // 에러 처리 추후 구현
       throw err;

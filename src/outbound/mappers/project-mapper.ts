@@ -4,6 +4,7 @@ import {
   PersistProjectEntity,
   ProjectData,
   ProjectEntity,
+  ProjectUpdateData,
 } from "../../domain/entites/project/project-entity";
 import { PersistProject } from "../repos/project-repository";
 
@@ -51,7 +52,8 @@ export class ProjectMapper {
 
     return prismaData;
   }
-  static toUpdateData(entity: ProjectEntity) {
-    return entity;
+  static toUpdateData(entity: ProjectEntity): ProjectUpdateData {
+    const updateData = entity.toUpdateData();
+    return updateData;
   }
 }

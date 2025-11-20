@@ -40,7 +40,7 @@ export class TaskMapper {
       dto.body.status,
       dto.body.attachments,
       dto.body.assigneeId,
-      dto.body.tags
+      dto.body.tags,
     );
   }
 
@@ -77,7 +77,7 @@ export class TaskMapper {
       endDate: Date | null;
       createdAt: Date;
       updatedAt: Date;
-    }
+    },
   ) {
     return new PersistTaskEntity({
       id: record.id,
@@ -110,7 +110,7 @@ export class TaskMapper {
       entity.attachments,
       entity.tags,
       entity.createdAt,
-      entity.updatedAt
+      entity.updatedAt,
     );
   }
 }
