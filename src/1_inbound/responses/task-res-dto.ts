@@ -1,7 +1,6 @@
 import { UserEntity } from "../../2_domain/entites/user/user-entity";
 import { TagEntity } from "../../2_domain/entites/tag/tag-entity";
 import { AttachmentEntity } from "../../2_domain/entites/attachment/attachment-entity";
-import { PersistTaskEntity } from "../../2_domain/entites/task/task-entity";
 
 export class TaskResDto {
   private readonly id: number;
@@ -54,5 +53,16 @@ export class TaskResDto {
     this.attachments = attachments;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+  }
+}
+
+
+export class TaskResDtos {
+  private readonly data: TaskResDto[];
+  private readonly total : number;
+
+  constructor(data: TaskResDto[]) {
+    this.data = data;
+    this.total = data.length;
   }
 }

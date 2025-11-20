@@ -4,6 +4,7 @@ import { TaskResDto } from "../../../1_inbound/responses/task-res-dto";
 import { TagEntity } from "../tag/tag-entity";
 import { UserEntity } from "../user/user-entity";
 import { AttachmentEntity } from "../attachment/attachment-entity";
+import { stat } from "fs";
 
 export class PersistTaskEntity {
   private readonly _id: number;
@@ -90,6 +91,7 @@ export class PersistTaskEntity {
 }
 
 export class TaskEntity {
+  private readonly _taskId: number;
   private readonly _projectId: number;
   private readonly _title: string;
   private readonly _startDate: Date | null;
@@ -99,7 +101,8 @@ export class TaskEntity {
   private readonly _assigneeId: number | null;
   private readonly _tags: string[];
 
-  constructor(
+  constructor(params: {
+    taskId: number,
     projectId: number,
     title: string,
     startYear: number,
@@ -112,18 +115,22 @@ export class TaskEntity {
     attachments: string[],
     assigneeId: number | null,
     tags: string[],
-  ) {
-    this._projectId = projectId;
-    this._title = title;
+  }) {
+    this._taskId = params.taskId;
+    this._projectId = params.projectId;
+    this._title = params.title;
 
-    this._startDate = new Date(Date.UTC(startYear, startMonth - 1, startDay));
+    this._startDate = new Date(Date.UTC(params.startYear, params.startMonth - 1, params.startDay));
 
-    this._endDate = new Date(Date.UTC(endYear, endMonth - 1, endDay));
+    this._endDate = new Date(Date.UTC(params.endYear, params.endMonth - 1, params.endDay));
 
-    this._status = status;
-    this._attachments = attachments;
-    this._assigneeId = assigneeId;
-    this._tags = tags;
+    this._status = params.status;
+    this._attachments = params.attachments;
+    this._assigneeId = params.assigneeId;
+    this._tags = params.tags;
+  }
+  get taskId() {
+    return this._taskId;
   }
 
   get projectId() {
@@ -156,5 +163,91 @@ export class TaskEntity {
 
   get tags() {
     return this._tags;
+  }
+}
+
+export class ViewProjectTaskEntity {
+  private readonly _projectId: number;
+  private readonly _page?: number;
+  private readonly _limit?: number;
+  private readonly _status?: string;
+  private readonly _assignee?: number;
+  private readonly _keyword?: string;
+  private readonly _order?: string;
+  private readonly _orderBy?: string;
+
+  constructor(
+    projectId: number,
+    page: number | undefined,
+    limit: number | undefined,
+    status: string | undefined,
+    assignee: number | undefined,
+    keyword: string | undefined,
+    order: string | undefined,
+    orderBy: string | undefined
+  ) {
+    this._projectId = projectId;
+    this._page = page;
+    this._limit = limit;
+    this._status = status;
+    this._assignee = assignee;
+    this._keyword = keyword;
+    this._order = order;
+    this._orderBy = orderBy;
+  }
+
+  get projectId() {
+    return this._projectId;
+  }
+
+  get page() {
+    return this._page;
+  }
+
+  get limit() {
+    return this._limit;
+  }
+
+  get status() {
+    return this._status;
+  }
+
+  get assignee() {
+    return this._assignee;
+  }
+
+  get keyword() {
+    return this._keyword;
+  }
+
+  get order() {
+    return this._order;
+  }
+
+  get orderBy() {
+    return this._orderBy;
+  }
+}
+
+
+
+export class ViewTaskEntity {
+  private readonly _userId: number;
+  private readonly _taskId: number
+
+  constructor(
+    userId: number,
+    taskId: number
+  ) {
+    this._userId = userId;
+    this._taskId = taskId;
+  }
+
+  get userId() {
+    return this._userId;
+  }
+
+  get taskId() {
+    return this._taskId;
   }
 }

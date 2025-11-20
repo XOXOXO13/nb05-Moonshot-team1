@@ -15,6 +15,7 @@ export const createTaskReqSchema = z.object({
     assigneeId: z.number(),
   }),
   params: z.object({
+    taskId: z.coerce.number().int(),
     projectId: z.coerce.number().int(),
   }),
   headers: z.object({
@@ -35,8 +36,22 @@ export const viewTaskReqSchema = z.object({
     keyword: z.string().optional(),
     order: z.enum(["asc", "desc"]).optional(),
     order_by: z.enum(["created_at", "name", "end_date"]).optional(),
-  }),
+  }).optional(),
+  params: z.object({
+    projectId: z.coerce.number()
+  })
 });
 
+
+export const viewTaskInfoReqSchema = z.object({
+  headers: z.object({
+    authorization: z.string(),
+  }),
+  params : z.object({
+    taskId : z.coerce.number()
+  })
+})
+
 export type TaskReqDto = z.infer<typeof createTaskReqSchema>;
-export type TaskViewReqDto = z.infer<typeof viewTaskReqSchema>;
+export type ProjectTaskReqDto = z.infer<typeof viewTaskReqSchema>;
+export type TaskInfoReqDto = z.infer<typeof viewTaskInfoReqSchema>;
