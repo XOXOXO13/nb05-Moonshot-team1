@@ -27,7 +27,7 @@ export class UserController {
   private setTokenCookies(
     res: Response,
     accessToken: string,
-    refreshToken: string
+    refreshToken: string,
   ) {
     const cookieOptions = {
       httpOnly: false,
@@ -98,12 +98,12 @@ export class UserController {
       message: "Google OAuth가 아직 구현되지 않았습니다.",
     });
   }
-    async googleCallback(req: Request, res: Response) {
-      res.status(501).json({
-        error: "NOT_IMPLEMENTED",
-        message: "Google OAuth 콜백이 아직 구현되지 않았습니다.",
-      });
-    }
+  async googleCallback(req: Request, res: Response) {
+    res.status(501).json({
+      error: "NOT_IMPLEMENTED",
+      message: "Google OAuth 콜백이 아직 구현되지 않았습니다.",
+    });
+  }
 
   async register(req: Request, res: Response) {
     try {

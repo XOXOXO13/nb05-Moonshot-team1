@@ -23,7 +23,7 @@ export class UnitOfWork {
     isolationLevel:
       | "ReadCommitted"
       | "RepeatableRead"
-      | "Serializable" = "ReadCommitted"
+      | "Serializable" = "ReadCommitted",
   ): Promise<T> {
     const maxRetries = isOptimistic ? 5 : 1;
 
@@ -36,12 +36,12 @@ export class UnitOfWork {
           },
           {
             isolationLevel,
-          }
+          },
         );
       } catch (err) {
         if (this.isRetryableError(err) && isOptimistic && i < maxRetries - 1) {
           console.warn(
-            `트랜잭션 재시도 ${i + 1}/${maxRetries} - ${err instanceof Error ? err.message : "Unknown error"}`
+            `트랜잭션 재시도 ${i + 1}/${maxRetries} - ${err instanceof Error ? err.message : "Unknown error"}`,
           );
           await this.delay(Math.pow(2, i) * 100);
           continue;

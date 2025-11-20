@@ -113,25 +113,24 @@ export class AuthMiddleware {
   static optionalAuth(req: Request, res: Response, next: NextFunction): void {
     try {
       const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      next();
-      return;
-    }
-    const token = authHeader.substring(7);
-      
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        next();
+        return;
+      }
+      const token = authHeader.substring(7);
+
       if (token) {
         try {
           const decoded = AuthMiddleware.verifyToken(token);
           req.user = {
             userId: decoded.userId,
-            email: decoded.email
+            email: decoded.email,
           };
-        } catch (error) {
-        }
+        } catch (error) {}
       }
-       next();
+      next();
     } catch (error) {
       next();
     }
-}
+  }
 }

@@ -39,6 +39,15 @@ export class DependencyInjector {
       taskRepository: taskRepository,
       projectRepository: projectRepository,
     };
+    const hashManager = new BcryptHashManager();
+
+    const testService = new TestService(repositories);
+    const userService = new UserService(userRepository, hashManager);
+
+    const services = {
+      testService: testService,
+      userService: userService,
+    };
 
     const taskService = new TaskService(repositories);
     const projectService = new ProjectService(unitOfWork);

@@ -24,19 +24,19 @@ export interface IUserService {
   loginLocal(email: string, password: string): Promise<UserEntity>;
   loginSocial(
     provider: SocialProvider,
-    providerId: string
+    providerId: string,
   ): Promise<UserEntity | null>;
 
   findById(id: number): Promise<UserEntity | null>;
   findByEmail(email: string): Promise<UserEntity | null>;
   updateProfile(
     userId: number,
-    params: { name?: string; profileImageUrl?: string }
+    params: { name?: string; profileImageUrl?: string },
   ): Promise<UserEntity>;
   updatePassword(
     userId: number,
     currentPassword: string,
-    newPassword: string
+    newPassword: string,
   ): Promise<void>;
 
   updateRefreshToken(userId: number, refreshToken: string): Promise<void>;
@@ -46,7 +46,7 @@ export interface IUserService {
   linkSocialAccount(
     userId: number,
     provider: SocialProvider,
-    providerId: string
+    providerId: string,
   ): Promise<void>;
   unlinkSocialAccount(userId: number, provider: SocialProvider): Promise<void>;
 }
@@ -54,7 +54,7 @@ export interface IUserService {
 export class UserService implements IUserService {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly hashManager: IHashManager
+    private readonly hashManager: IHashManager,
   ) {}
   async registerLocal(params: {
     email: string;
@@ -82,7 +82,7 @@ export class UserService implements IUserService {
   }): Promise<UserEntity> {
     const existingUser = await this.userRepository.findBySocialAccount(
       params.provider,
-      params.providerId
+      params.providerId,
     );
     if (existingUser) {
       throw new Error("이미 연결된 소셜 계정입니다.");
@@ -120,7 +120,7 @@ export class UserService implements IUserService {
 
     const isPasswordValid = await user.isPasswordMatch(
       password,
-      this.hashManager
+      this.hashManager,
     );
     if (!isPasswordValid) {
       throw new Error("비밀번호가 일치하지 않습니다.");
@@ -130,7 +130,7 @@ export class UserService implements IUserService {
   }
   async loginSocial(
     provider: SocialProvider,
-    providerId: string
+    providerId: string,
   ): Promise<UserEntity | null> {
     return await this.userRepository.findBySocialAccount(provider, providerId);
   }
@@ -145,7 +145,7 @@ export class UserService implements IUserService {
 
   async updateProfile(
     userId: number,
-    params: { name?: string; profileImageUrl?: string }
+    params: { name?: string; profileImageUrl?: string },
   ): Promise<UserEntity> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -159,7 +159,7 @@ export class UserService implements IUserService {
   async updatePassword(
     userId: number,
     currentPassword: string,
-    newPassword: string
+    newPassword: string,
   ): Promise<void> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -168,7 +168,7 @@ export class UserService implements IUserService {
 
     const isCurrentPasswordValid = await user.isPasswordMatch(
       currentPassword,
-      this.hashManager
+      this.hashManager,
     );
     if (!isCurrentPasswordValid) {
       throw new Error("현재 비밀번호가 일치하지 않습니다.");
@@ -178,7 +178,10 @@ export class UserService implements IUserService {
     await this.userRepository.update(user);
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string): Promise<void> {
+  async updateRefreshToken(
+    userId: number,
+    refreshToken: string,
+  ): Promise<void> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new Error("사용자를 찾을 수 없습니다.");
@@ -190,7 +193,7 @@ export class UserService implements IUserService {
 
   async validateRefreshToken(
     userId: number,
-    refreshToken: string
+    refreshToken: string,
   ): Promise<boolean> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -213,11 +216,11 @@ export class UserService implements IUserService {
   async linkSocialAccount(
     userId: number,
     provider: SocialProvider,
-    providerId: string
+    providerId: string,
   ): Promise<void> {
-     const existingUser = await this.userRepository.findBySocialAccount(
+    const existingUser = await this.userRepository.findBySocialAccount(
       provider,
-      providerId
+      providerId,
     );
     if (existingUser && existingUser.id !== userId) {
       throw new Error("다른 사용자에게 이미 연결된 소셜 계정입니다.");
@@ -244,7 +247,7 @@ export class UserService implements IUserService {
 
   async unlinkSocialAccount(
     userId: number,
-    provider: SocialProvider
+    provider: SocialProvider,
   ): Promise<void> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -256,7 +259,7 @@ export class UserService implements IUserService {
     }
     if (!user.password && user.socialAccounts.length === 1) {
       throw new Error(
-        "최소 하나의 로그인 방법이 필요합니다. 비밀번호를 설정하거나 다른 소셜 계정을 연결해주세요."
+        "최소 하나의 로그인 방법이 필요합니다. 비밀번호를 설정하거나 다른 소셜 계정을 연결해주세요.",
       );
     }
 

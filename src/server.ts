@@ -29,11 +29,11 @@ export class Server {
         ],
         exposedHeaders: ["Set-Cookie"],
         optionsSuccessStatus: 200,
-      })
+      }),
     );
-     this._app.use(cookieParser());
-     this._app.use(express.json({ limit: "10mb" }));
-     this._app.use(express.urlencoded({ extended: true }));
+    this._app.use(cookieParser());
+    this._app.use(express.json({ limit: "10mb" }));
+    this._app.use(express.urlencoded({ extended: true }));
 
     this._app.use(morgan("dev"));
     this._app.use(express.json());

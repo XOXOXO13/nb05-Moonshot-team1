@@ -1,5 +1,3 @@
-
-
 export enum SocialProvider {
   GOOGLE = "google",
 }

@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from "bcrypt";
 import { IHashManager } from "../../domain/ports/managers/I-hash-manager";
 
 export class BcryptHashManager implements IHashManager {
