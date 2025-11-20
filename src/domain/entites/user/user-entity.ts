@@ -196,7 +196,7 @@ export class UserEntity {
 
   async isPasswordMatch(
     password: string,
-    hashManager: IHashManager,
+    hashManager: IHashManager
   ): Promise<boolean> {
     if (!this._password) {
       throw new Error("일치하는 계정이 존재하지 않습니다.");
@@ -207,7 +207,7 @@ export class UserEntity {
 
   async updatePassword(
     newPassword: string,
-    hashManager: IHashManager,
+    hashManager: IHashManager
   ): Promise<void> {
     UserEntity.validatePassword(newPassword);
     this._password = await hashManager.hash(newPassword);
@@ -227,7 +227,7 @@ export class UserEntity {
   }
   async updateRefreshToken(
     refreshToken: string,
-    hashManager: IHashManager,
+    hashManager: IHashManager
   ): Promise<void> {
     const hashedToken = await hashManager.hash(refreshToken);
     this._refreshToken = hashedToken;
@@ -241,7 +241,7 @@ export class UserEntity {
 
   async isRefreshTokenMatch(
     refreshToken: string,
-    hashManager: IHashManager,
+    hashManager: IHashManager
   ): Promise<boolean> {
     if (!this._refreshToken) {
       return false;
@@ -261,7 +261,7 @@ export class UserEntity {
 
   addSocialAccount(socialAccount: SocialAccountEntity): void {
     const existingAccount = this._socialAccounts.find(
-      (account) => account.provider === socialAccount.provider,
+      (account) => account.provider === socialAccount.provider
     );
 
     if (existingAccount) {
@@ -274,7 +274,7 @@ export class UserEntity {
 
   removeSocialAccount(provider: SocialProvider): void {
     const index = this._socialAccounts.findIndex(
-      (account) => account.provider === provider,
+      (account) => account.provider === provider
     );
 
     if (index === -1) {
@@ -286,7 +286,7 @@ export class UserEntity {
   }
 
   getSocialAccountByProvider(
-    provider: SocialProvider,
+    provider: SocialProvider
   ): SocialAccountEntity | null {
     return (
       this._socialAccounts.find((account) => account.provider === provider) ||
@@ -295,7 +295,7 @@ export class UserEntity {
   }
   hasSocialAccount(provider: SocialProvider): boolean {
     return this._socialAccounts.some(
-      (account) => account.provider === provider,
+      (account) => account.provider === provider
     );
   }
 }

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { IUserService } from "../../domain/services/user-service";
-import { AuthMiddleware } from "../middlewares/auth-middlewares";
-import { SocialProvider } from "../../domain/entities/social-account/social-account-entity";
+import { AuthMiddleware } from "../middlewares/auth-middleware";
+import { SocialProvider } from "../../domain/entites/social-account/social-account-entity";
 
 export class UserController {
   public basePath = "";
@@ -27,7 +27,7 @@ export class UserController {
   private setTokenCookies(
     res: Response,
     accessToken: string,
-    refreshToken: string,
+    refreshToken: string
   ) {
     const cookieOptions = {
       httpOnly: false,

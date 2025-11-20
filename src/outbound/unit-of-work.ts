@@ -1,11 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import { IRepositories } from "../domain/ports/repositories-interface";
+import { UserRepository } from "./repos/user-repository";
+import { IUserRepository } from "../domain/ports/repositories/I-user-repository";
 import { RepositoryFactory } from "./repository-factory";
 
 export class UnitOfWork {
   private _prismaClient: PrismaClient;
   private _repoFactory: RepositoryFactory;
   private _repos: IRepositories;
+  private _userRepository?: UserRepository;
 
   constructor(prismaClient: PrismaClient, repoFactory: RepositoryFactory) {
     this._prismaClient = prismaClient;
@@ -16,6 +19,12 @@ export class UnitOfWork {
   get repos(): IRepositories {
     return this._repos;
   }
+  get userRepository(): IUserRepository {
+    if (!this._userRepository) {
+      this._userRepository = new UserRepository(this._prismaClient);
+    }
+    return this._userRepository;
+  }
 
   async do<T>(
     work: (repos: IRepositories) => Promise<T>,
@@ -23,7 +32,7 @@ export class UnitOfWork {
     isolationLevel:
       | "ReadCommitted"
       | "RepeatableRead"
-      | "Serializable" = "ReadCommitted",
+      | "Serializable" = "ReadCommitted"
   ): Promise<T> {
     const maxRetries = isOptimistic ? 5 : 1;
 
@@ -36,12 +45,12 @@ export class UnitOfWork {
           },
           {
             isolationLevel,
-          },
+          }
         );
       } catch (err) {
         if (this.isRetryableError(err) && isOptimistic && i < maxRetries - 1) {
           console.warn(
-            `트랜잭션 재시도 ${i + 1}/${maxRetries} - ${err instanceof Error ? err.message : "Unknown error"}`,
+            `트랜잭션 재시도 ${i + 1}/${maxRetries} - ${err instanceof Error ? err.message : "Unknown error"}`
           );
           await this.delay(Math.pow(2, i) * 100);
           continue;
