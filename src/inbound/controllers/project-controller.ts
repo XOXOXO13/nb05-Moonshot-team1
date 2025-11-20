@@ -33,7 +33,7 @@ export class ProjectController extends BaseController {
     this.router.delete(
       "/:projectId",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this._authMiddlewares.isUser),
+      this.catch(this.deleteProject),
     );
 
     // 프로젝트 멤버 조회
