@@ -42,15 +42,20 @@ export class DependencyInjector {
       taskRepository: (prismaClient) => new TaskRepository(prismaClient),
       userRepository: (prismaClient) => new UserRepository(prismaClient),
     });
-    const prismaClient = new PrismaClient();
-    const unitOfWork: UnitOfWork = new UnitOfWork(prismaClient, repoFactory);
+    
+    // 주석 처리 이유 :  Prisma 인스턴스 중복 생성, UnitOfWork 사용 불일치,저장소 접근 일관성 부족, 타입 호환성 문제사유로 주석처리했습니다. 
+    // const prismaClient = new PrismaClient();
+    // const unitOfWork: UnitOfWork = new UnitOfWork(prismaClient, repoFactory);
 
-    const taskRepository = new TaskRepository(prisma);
-    const projectRepository = new ProjectRepository(prisma);
-    const repositories = {
-      taskRepository: taskRepository,
-      projectRepository: projectRepository,
-    };
+    // const taskRepository = new TaskRepository(prisma);
+    // const projectRepository = new ProjectRepository(prisma);
+    // const repositories = {
+    //   taskRepository: taskRepository,
+    //   projectRepository: projectRepository,
+    // };
+
+    const unitOfWork: UnitOfWork = new UnitOfWork(prisma, repoFactory);
+    const repositories = unitOfWork.repos;
 
     const taskService = new TaskService(repositories);
     const projectService = new ProjectService(unitOfWork);

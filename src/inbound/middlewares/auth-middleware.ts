@@ -1,136 +1,81 @@
 import { Request, Response, NextFunction } from "express";
+import { IUtils } from "../../shared/utils-interface";
+import { TokenGenerateParams } from "../../shared/utils/token-util";
 import jwt from "jsonwebtoken";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        userId: number;
-        email: string;
-      };
-    }
+declare module "express-serve-static-core" {
+  interface Request {
+    userId?: string;
+    user?: {
+      userId: number;
+      email: string;
+    };
   }
-}
-export interface JWTPayload {
-  userId: number;
-  email: string;
-  iat?: number;
-  exp?: number;
 }
 
 export class AuthMiddleware {
-  private static readonly JWT_SECRET =
-    process.env.JWT_SECRET || "secret-jwt-key";
+  constructor(private _utils: IUtils) {}
 
-  static generateToken(payload: { userId: number; email: string }): string {
-    return jwt.sign(payload, this.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-  }
-  static verifyToken(token: string): JWTPayload {
+  static generateToken = (
+    params: TokenGenerateParams,
+    utils: IUtils,
+  ): string => {
+    return utils.token.generateToken(params);
+  };
+
+  static verifyToken = (token: string, utils: IUtils) => {
+    return utils.token.verifyToken({ token });
+  };
+
+  isUser = (req: Request, res: Response, next: NextFunction) => {
     try {
-      const decoded = jwt.verify(token, this.JWT_SECRET) as JWTPayload;
-      return decoded;
-    } catch (error) {
-      throw new Error("Invalid or expired token");
-    }
-  }
+      const authHeader = req.headers.authorization || req.headers.Authorization;
 
-  static authenticate(req: Request, res: Response, next: NextFunction): void {
-    try {
-      let token: string | undefined;
-      const authHeader = req.headers.authorization;
-      if (authHeader && authHeader.startsWith("Bearer ")) {
-        token = authHeader.substring(7);
-      }
-      if (!token && req.cookies) {
-        const cookieTokens = [
-          req.cookies.accessToken,
-          req.cookies.authToken,
-          req.cookies.token,
-          req.cookies.access_token,
-          req.cookies.jwt,
-          req.cookies.auth,
-        ].filter(Boolean);
-
-        if (cookieTokens.length > 0) {
-          token = cookieTokens[0];
-        }
-      }
-      if (!token) {
-        const headerSources = [
-          req.headers["x-auth-token"],
-          req.headers["x-access-token"],
-          req.headers["x-token"],
-          req.headers["auth-token"],
-          req.headers["access-token"],
-          req.headers["jwt"],
-          req.headers["token"],
-        ];
-
-        for (const headerToken of headerSources) {
-          if (headerToken && typeof headerToken === "string") {
-            token = headerToken;
-            break;
-          }
-        }
-      }
-      if (!token && req.query.token && typeof req.query.token === "string") {
-        token = req.query.token;
-      }
-
-      if (!token) {
-        res.status(401).json({
-          error: "AUTHENTICATION_REQUIRED",
-          message: "로그인이 필요합니다.",
+      if (!authHeader || typeof authHeader !== "string") {
+        return res.status(401).json({
+          error: "UNAUTHORIZED",
+          message: "인증 토큰이 필요합니다.",
         });
-        return;
       }
-      const decoded = AuthMiddleware.verifyToken(token);
+
+      const tokenParts = authHeader.split(" ");
+      if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+        return res.status(401).json({
+          error: "INVALID_TOKEN_FORMAT",
+          message:
+            "토큰 형식이 올바르지 않습니다. 'Bearer {token}' 형식을 사용하세요.",
+        });
+      }
+
+      const accessToken = tokenParts[1];
+      const payload = this._utils.token.verifyToken({ token: accessToken });
+
+      req.userId = payload.userId.toString();
       req.user = {
-        userId: decoded.userId,
-        email: decoded.email,
+        userId: payload.userId,
+        email: payload.email,
       };
 
-      next();
+      return next();
     } catch (error: any) {
-      console.error("Authentication error:", error);
-
-      if (error.message.includes("Invalid or expired token")) {
-        res.status(401).json({
-          error: "INVALID_TOKEN",
-          message: "토큰이 유효하지 않거나 만료되었습니다.",
+      if (error.name === "TokenExpiredError") {
+        return res.status(401).json({
+          error: "TOKEN_EXPIRED",
+          message: "토큰이 만료되었습니다.",
         });
-        return;
       }
 
-      res.status(500).json({
-        error: "AUTHENTICATION_ERROR",
-        message: "인증 처리 중 오류가 발생했습니다.",
+      if (error.name === "JsonWebTokenError") {
+        return res.status(401).json({
+          error: "INVALID_TOKEN",
+          message: "유효하지 않은 토큰입니다.",
+        });
+      }
+
+      return res.status(500).json({
+        error: "INTERNAL_SERVER_ERROR",
+        message: "토큰 검증 중 오류가 발생했습니다.",
       });
     }
-  }
-  static optionalAuth(req: Request, res: Response, next: NextFunction): void {
-    try {
-      const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        next();
-        return;
-      }
-      const token = authHeader.substring(7);
-
-      if (token) {
-        try {
-          const decoded = AuthMiddleware.verifyToken(token);
-          req.user = {
-            userId: decoded.userId,
-            email: decoded.email,
-          };
-        } catch (error) {}
-      }
-      next();
-    } catch (error) {
-      next();
-    }
-  }
+  };
 }

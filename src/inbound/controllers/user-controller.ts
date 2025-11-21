@@ -21,16 +21,16 @@ export class UserController extends BaseController {
   private initializeRoutes() {
     // 사용자 인증 관련
     this.router.post("/register", this.registerUser.bind(this));
-    this.router.post("/auth/login", this.login.bind(this));
-    this.router.post("/auth/refresh", this.refresh.bind(this));
-    this.router.get("/auth/google", this.googleAuth.bind(this));
-    this.router.get("/auth/google/callback", this.googleCallback.bind(this));
+    this.router.post("/login", this.login.bind(this));
+    this.router.post("/refresh", this.refresh.bind(this));
+    this.router.get("/google", this.googleAuth.bind(this));
+    this.router.get("/google/callback", this.googleCallback.bind(this));
 
     // === 사용자 정보 관리 (나중에 구현할 예정) ===
-    // this.router.get('/users/me', AuthMiddleware.authenticate, this.getMe.bind(this));
-    // this.router.patch('/users/me', AuthMiddleware.authenticate, this.updateMe.bind(this));
-    // this.router.get('/users/me/projects', AuthMiddleware.authenticate, this.getUserProjects.bind(this));
-    // this.router.get('/users/me/tasks', AuthMiddleware.authenticate, this.getUserTasks.bind(this));
+    // this.router.get('/users/me', this.AuthMiddleware.isUser, this.getMe.bind(this));
+    // this.router.patch('/users/me', this.AuthMiddleware.isUser, this.updateMe.bind(this));
+    // this.router.get('/users/me/projects', this.AuthMiddleware.isUser, this.getUserProjects.bind(this));
+    // this.router.get('/users/me/tasks', this.AuthMiddleware.isUser, this.getUserTasks.bind(this));
   }
 
   private setTokenCookies = (
@@ -52,12 +52,12 @@ export class UserController extends BaseController {
   };
 
   private generateTokenResponse = (user: any, res: Response) => {
-    const accessToken = AuthMiddleware.generateToken({
+    const accessToken = this.utils.token.generateAccessToken({
       userId: user.id,
       email: user.email,
     });
-    const refreshToken = AuthMiddleware.generateToken({
-      userId: user.id!,
+    const refreshToken = this.utils.token.generateRefreshToken({
+      userId: user.id,
       email: user.email,
     });
     this.setTokenCookies(res, accessToken, refreshToken);
@@ -76,7 +76,7 @@ export class UserController extends BaseController {
         });
       }
 
-      const decoded = AuthMiddleware.verifyToken(refreshToken);
+      const decoded = AuthMiddleware.verifyToken(refreshToken, this.utils);
 
       const user = await this.services.user.findById(decoded.userId);
       if (!user) {
@@ -195,12 +195,12 @@ export class UserController extends BaseController {
         error.message.includes("비밀번호가 일치하지 않습니다.")
       ) {
         return res.status(401).json({
-          error: "Invalid_credentials",
+          error: "INVALID_CREDENTIALS",
           message: "이메일 또는 비밀번호가 올바르지 않습니다.",
         });
       }
       res.status(500).json({
-        error: "Internam_server_error",
+        error: "INTERNAL_SERVER_ERROR",
         message: "서버 내부 오류가 발생했습니다.",
       });
     }

@@ -8,9 +8,10 @@ import {
   IUserRepository,
   LockType,
 } from "../../domain/ports/repositories/I-user-repository";
+import { BasePrismaClient } from "./base-repository";
 
 export class UserRepository implements IUserRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: BasePrismaClient) {}
 
   async findByEmail(
     email: string,
@@ -56,7 +57,7 @@ export class UserRepository implements IUserRepository {
         email: userData.email,
         password: userData.password,
         name: userData.name,
-        profileImageUrl: userData.profileImageUrl,
+        profileImage: userData.profileImageUrl,
         refreshToken: userData.refreshToken,
         version: userData.version,
         socialAccounts:
@@ -93,7 +94,7 @@ export class UserRepository implements IUserRepository {
       data: {
         password: updateData.password,
         name: updateData.name,
-        profileImageUrl: updateData.profileImageUrl,
+        profileImage: updateData.profileImageUrl,
         refreshToken: updateData.refreshToken,
         version: updateData.version,
       },
@@ -159,7 +160,7 @@ export class UserRepository implements IUserRepository {
       email: prismaUser.email,
       password: prismaUser.password,
       name: prismaUser.name,
-      profileImageUrl: prismaUser.profileImageUrl,
+      profileImageUrl: prismaUser.profileImage,
       version: prismaUser.version,
       refreshToken: prismaUser.refreshToken,
       createdAt: prismaUser.createdAt,
