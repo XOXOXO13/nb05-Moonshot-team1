@@ -1,14 +1,14 @@
 import { ITaskService } from "../../inbound/ports/services/I-task-service";
 import {
-  CreateTaskReqDto,
-  ProjectTaskReqDto,
-  TaskInfoReqDto,
-  UpdateTaskReqDto,
+  CreateTaskDto,
+  ProjectTaskDto,
+  TaskDto,
+  UpdateTaskDto,
 } from "../../inbound/requests/task-req-dto";
 import { TaskResDto, TaskResDtos } from "../../inbound/responses/task-res-dto";
 import { TaskMapper } from "../../outbound/mappers/task-mapper";
-import { ModifyTaskEntity } from "../entites/task/task-entity";
-import { ViewTaskEntity } from "../entites/task/view-task-entity";
+import { TaskEntity } from "../entites/task/task-entity";
+import { TaskQuery } from "../entites/task/view-task-entity";
 import { IRepositories } from "../ports/repositories-interface";
 
 export class TaskService implements ITaskService {
@@ -17,40 +17,32 @@ export class TaskService implements ITaskService {
     this._repo = repositories;
   }
 
-  async createTask(dto: CreateTaskReqDto): Promise<TaskResDto> {
-    const newTaskEntity = ModifyTaskEntity.toCreateTaskEntity(dto);
-    const persistTaskEntity =
-      await this._repo.taskRepository.create(newTaskEntity);
-    const taskResDto = TaskMapper.toResDto(persistTaskEntity);
-    return taskResDto;
+  async createTask(dto: CreateTaskDto): Promise<TaskResDto> {
+    const entity = TaskEntity.fromCreateDto(dto);
+    const task = await this._repo.taskRepository.create(entity);
+    return TaskMapper.toResDto(task);
   }
 
-  async getProjectTasks(dto: ProjectTaskReqDto): Promise<TaskResDtos> {
-    const viewTaskEntity = ViewTaskEntity.toViewProjectTaskEntity(dto);
-    const persistTaskEntities =
-      await this._repo.taskRepository.getProjectTasks(viewTaskEntity);
-    const taskResDtos = TaskMapper.toResDtos(persistTaskEntities);
-    return taskResDtos;
+  async getProjectTasks(dto: ProjectTaskDto): Promise<TaskResDtos> {
+    const entity = TaskQuery.fromProjectTaskDto(dto);
+    const tasks = await this._repo.taskRepository.getProjectTasks(entity);
+    return TaskMapper.toResDtos(tasks);
   }
 
-  async getTaskInfo(dto: TaskInfoReqDto): Promise<TaskResDto> {
-    const viewTaskEntity = ViewTaskEntity.toViewTaskInfoEntity(dto);
-    const persistTaskEntity =
-      await this._repo.taskRepository.getTaskInfo(viewTaskEntity);
-    const taskResDtos = TaskMapper.toResDto(persistTaskEntity);
-    return taskResDtos;
+  async getTaskInfo(dto: TaskDto): Promise<TaskResDto> {
+    const entity = TaskQuery.fromTaskInfoDto(dto);
+    const task = await this._repo.taskRepository.getTaskInfo(entity);
+    return TaskMapper.toResDto(task);
   }
 
-  async editTaskInfo(dto: UpdateTaskReqDto): Promise<TaskResDto> {
-    const newTaskEntity = ModifyTaskEntity.toUpdateTaskEntity(dto);
-    const persistTaskEntity =
-      await this._repo.taskRepository.update(newTaskEntity);
-    const taskResDto = TaskMapper.toResDto(persistTaskEntity);
-    return taskResDto;
+  async editTaskInfo(dto: UpdateTaskDto): Promise<TaskResDto> {
+    const entity = TaskEntity.fromUpdateDto(dto);
+    const task = await this._repo.taskRepository.update(entity);
+    return TaskMapper.toResDto(task);
   }
 
-  async deleteTaskInfo(dto: TaskInfoReqDto): Promise<void> {
-    const newTaskEntity = ViewTaskEntity.toViewTaskInfoEntity(dto);
-    await this._repo.taskRepository.delete(newTaskEntity);
+  async deleteTaskInfo(dto: TaskDto): Promise<void> {
+    const entity = TaskQuery.fromTaskInfoDto(dto);
+    await this._repo.taskRepository.delete(entity);
   }
 }

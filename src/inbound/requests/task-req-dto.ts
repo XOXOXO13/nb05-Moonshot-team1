@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createTaskReqSchema = z.object({
+export const createTaskSchema = z.object({
   body: z.object({
     title: z.string(),
     startYear: z.number(),
@@ -22,7 +22,7 @@ export const createTaskReqSchema = z.object({
   }),
 });
 
-export const updateTaskReqSchema = z.object({
+export const updateTaskSchema = z.object({
   body: z.object({
     title: z.string(),
     startYear: z.number(),
@@ -44,7 +44,7 @@ export const updateTaskReqSchema = z.object({
   }),
 });
 
-export const viewProjectTaskReqSchema = z.object({
+export const ProjectTaskSchema = z.object({
   headers: z.object({
     authorization: z.string(),
   }),
@@ -65,7 +65,7 @@ export const viewProjectTaskReqSchema = z.object({
   }),
 });
 
-export const viewTaskInfoReqSchema = z.object({
+export const TaskInfoReqSchema = z.object({
   headers: z.object({
     authorization: z.string(),
   }),
@@ -74,7 +74,7 @@ export const viewTaskInfoReqSchema = z.object({
   }),
 });
 
-export type CreateTaskReqDto = z.infer<typeof createTaskReqSchema>;
-export type UpdateTaskReqDto = z.infer<typeof updateTaskReqSchema>;
-export type ProjectTaskReqDto = z.infer<typeof viewProjectTaskReqSchema>;
-export type TaskInfoReqDto = z.infer<typeof viewTaskInfoReqSchema>;
+export type CreateTaskDto = z.infer<typeof createTaskSchema>;
+export type UpdateTaskDto = z.infer<typeof updateTaskSchema>;
+export type ProjectTaskDto = z.infer<typeof ProjectTaskSchema>;
+export type TaskDto = z.infer<typeof TaskInfoReqSchema>;

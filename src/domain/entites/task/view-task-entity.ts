@@ -3,19 +3,39 @@
 // Delete
 
 import {
-  ProjectTaskReqDto,
-  TaskInfoReqDto,
+  ProjectTaskDto,
+  TaskDto,
 } from "../../../inbound/requests/task-req-dto";
 
-export interface ViewProjectTaskEntity extends ViewTaskEntity {
+export interface ViewProjectTaskEntity extends TaskQuery {
   projectId: number;
 }
 
-export interface ViewTaskInfoEntity extends ViewTaskEntity {
+export interface ViewTaskInfoEntity extends TaskQuery {
   taskId: number;
 }
 
-export class ViewTaskEntity {
+export class TaskQuery {
+  static fromProjectTaskDto(dto: ProjectTaskDto) {
+    return new TaskQuery({
+      userId: 1,
+      projectId: dto.params.projectId,
+      page: dto.query?.page,
+      limit: dto.query?.limit,
+      status: dto.query?.status,
+      assignee: dto.query?.assignee,
+      keyword: dto.query?.keyword,
+      order: dto.query?.order,
+      orderBy: dto.query?.order_by,
+    }) as ViewProjectTaskEntity;
+  }
+
+  static fromTaskInfoDto(dto: TaskDto) {
+    return new TaskQuery({
+      userId: 1,
+      taskId: dto.params.taskId,
+    }) as ViewTaskInfoEntity;
+  }
   private readonly _userId: number;
   private readonly _projectId?: number;
   private readonly _taskId?: number;
@@ -51,26 +71,7 @@ export class ViewTaskEntity {
     this._orderBy = params.orderBy;
   }
 
-  static toViewProjectTaskEntity(dto: ProjectTaskReqDto) {
-    return new ViewTaskEntity({
-      userId: 1,
-      projectId: dto.params.projectId,
-      page: dto.query?.page,
-      limit: dto.query?.limit,
-      status: dto.query?.status,
-      assignee: dto.query?.assignee,
-      keyword: dto.query?.keyword,
-      order: dto.query?.order,
-      orderBy: dto.query?.order_by,
-    }) as ViewProjectTaskEntity;
-  }
 
-  static toViewTaskInfoEntity(dto: TaskInfoReqDto) {
-    return new ViewTaskEntity({
-      userId: 1,
-      taskId: dto.params.taskId,
-    }) as ViewTaskInfoEntity;
-  }
 
   get userId() {
     return this._userId;

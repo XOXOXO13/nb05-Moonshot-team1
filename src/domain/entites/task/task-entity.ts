@@ -5,19 +5,53 @@ import { UserEntity } from "../user/user-entity";
 import { AttachmentEntity } from "../attachment/attachment-entity";
 import { stat } from "fs";
 import {
-  CreateTaskReqDto,
-  UpdateTaskReqDto,
+  CreateTaskDto,
+  UpdateTaskDto,
 } from "../../../inbound/requests/task-req-dto";
 
-export interface CreateTaskEntity extends ModifyTaskEntity {
+export interface CreateTaskEntity extends TaskEntity {
   projectId: number;
 }
 
-export interface UpdateTaskEntity extends ModifyTaskEntity {
+export interface UpdateTaskEntity extends TaskEntity {
   taskId: number;
 }
 
-export class ModifyTaskEntity {
+export class TaskEntity {
+  static fromCreateDto(dto: CreateTaskDto) {
+    return new TaskEntity({
+      projectId: dto.params.projectId,
+      title: dto.body.title,
+      startYear: dto.body.startYear,
+      startMonth: dto.body.startMonth,
+      startDay: dto.body.startDay,
+      endYear: dto.body.endYear,
+      endMonth: dto.body.endMonth,
+      endDay: dto.body.endDay,
+      status: dto.body.status,
+      attachments: dto.body.attachments,
+      assigneeId: dto.body.assigneeId,
+      tags: dto.body.tags,
+    }) as CreateTaskEntity;
+  }
+
+  static fromUpdateDto(dto: UpdateTaskDto) {
+    return new TaskEntity({
+      taskId: dto.params.taskId,
+      title: dto.body.title,
+      startYear: dto.body.startYear,
+      startMonth: dto.body.startMonth,
+      startDay: dto.body.startDay,
+      endYear: dto.body.endYear,
+      endMonth: dto.body.endMonth,
+      endDay: dto.body.endDay,
+      status: dto.body.status,
+      attachments: dto.body.attachments,
+      assigneeId: dto.body.assigneeId,
+      tags: dto.body.tags,
+    }) as CreateTaskEntity;
+  }
+  
   private readonly _taskId?: number;
   private readonly _projectId?: number;
   private readonly _title: string;
@@ -61,39 +95,7 @@ export class ModifyTaskEntity {
     this._tags = params.tags;
   }
 
-  static toCreateTaskEntity(dto: CreateTaskReqDto) {
-    return new ModifyTaskEntity({
-      projectId: dto.params.projectId,
-      title: dto.body.title,
-      startYear: dto.body.startYear,
-      startMonth: dto.body.startMonth,
-      startDay: dto.body.startDay,
-      endYear: dto.body.endYear,
-      endMonth: dto.body.endMonth,
-      endDay: dto.body.endDay,
-      status: dto.body.status,
-      attachments: dto.body.attachments,
-      assigneeId: dto.body.assigneeId,
-      tags: dto.body.tags,
-    }) as CreateTaskEntity;
-  }
 
-  static toUpdateTaskEntity(dto: UpdateTaskReqDto) {
-    return new ModifyTaskEntity({
-      taskId: dto.params.taskId,
-      title: dto.body.title,
-      startYear: dto.body.startYear,
-      startMonth: dto.body.startMonth,
-      startDay: dto.body.startDay,
-      endYear: dto.body.endYear,
-      endMonth: dto.body.endMonth,
-      endDay: dto.body.endDay,
-      status: dto.body.status,
-      attachments: dto.body.attachments,
-      assigneeId: dto.body.assigneeId,
-      tags: dto.body.tags,
-    }) as CreateTaskEntity;
-  }
 
   get taskId() {
     return this._taskId;

@@ -2,13 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import { ITaskRepository } from "../../domain/ports/repositories/I-task-repository";
 import {
   CreateTaskEntity,
-  ModifyTaskEntity,
+  TaskEntity,
 } from "../../domain/entites/task/task-entity";
 import { PersistTaskEntity } from "../../domain/entites/task/persist-task-entity";
 import { TaskMapper } from "../mappers/task-mapper";
 import {
   ViewProjectTaskEntity,
-  ViewTaskEntity,
+  TaskQuery,
 } from "../../domain/entites/task/view-task-entity";
 
 export class TaskRepository implements ITaskRepository {
@@ -98,7 +98,7 @@ export class TaskRepository implements ITaskRepository {
     return taskEntity;
   }
 
-  async getTaskInfo(entity: ViewTaskEntity): Promise<PersistTaskEntity> {
+  async getTaskInfo(entity: TaskQuery): Promise<PersistTaskEntity> {
     const record = await this._prisma.task.findUnique({
       where: {
         id: entity.taskId,
@@ -118,7 +118,7 @@ export class TaskRepository implements ITaskRepository {
     return taskEntity;
   }
 
-  async update(entity: ModifyTaskEntity): Promise<PersistTaskEntity> {
+  async update(entity: TaskEntity): Promise<PersistTaskEntity> {
     // [Transaction으로 Inconsistent Read 방지]
     // [태그와 첨부파일 생성할때 deadlock 발생 안함 (for루프 => createMany 수정함)]
     const taskRecord = await this._prisma.$transaction(async (tx) => {
