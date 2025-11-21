@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { IUtils } from "../../shared/utils-interface";
 import { TokenGenerateParams } from "../../shared/utils/token-util";
 import jwt from "jsonwebtoken";
-
 declare module "express-serve-static-core" {
   interface Request {
     userId?: string;
