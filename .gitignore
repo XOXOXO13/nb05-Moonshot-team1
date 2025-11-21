@@ -230,3 +230,21 @@ prisma/migrations
 
 # test 를 위한 http request 디렉토리
 http
+# vscode관련
+.vscode/settings.json
+.vscode/launch.json
+# 로그 파일들
+*.log
+logs/
+# 임시 파일들
+tmp/
+temp/
+# 백업 파일들
+*.bak
+*.backup
+*.old
+
+# TypeScript 빌드 출력
+build/
+dist/
+out/

@@ -36,7 +36,6 @@ export class DependencyInjector {
     const prisma = new PrismaClient();
 
     const hashManager = new BcryptHashManager();
-    
 
     const repoFactory = new RepositoryFactory({
       projectRepository: (prismaClient) => new ProjectRepository(prismaClient),
@@ -53,7 +52,6 @@ export class DependencyInjector {
       projectRepository: projectRepository,
     };
 
-
     const taskService = new TaskService(repositories);
     const projectService = new ProjectService(unitOfWork);
     const userService = new UserService(unitOfWork.userRepository, hashManager);
@@ -64,10 +62,10 @@ export class DependencyInjector {
 
     const taskController = new TaskController(services);
     const projectController = new ProjectController(services, authMiddleware);
-    const userController = new UserController(userService);
+    const userController = new UserController(services, utils, authMiddleware);
     const controllers = [taskController, projectController, userController];
 
-    const port = parseInt(process.env.PORT || "3001", 10);
+    const port = parseInt(process.env.PORT || "4000", 10);
     return new Server(controllers, port);
   }
 }

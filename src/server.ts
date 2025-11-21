@@ -8,16 +8,17 @@ export class Server {
   private _controllers;
   private _port: number;
 
-  constructor(controllers: any, port: number = 3001) {
+  constructor(controllers: any, port: number = parseInt(process.env.PORT || "4000", 10)) {
     this._app = express();
     this._controllers = controllers;
     this._port = port;
   }
 
   registerMiddlewares() {
+    const clientDomain = process.env.CLIENT_DOMAIN || "localhost:3000";
     this._app.use(
       cors({
-        origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+        origin: [`http://${clientDomain}`, `http://127.0.0.1:3000`],
         credentials: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: [
