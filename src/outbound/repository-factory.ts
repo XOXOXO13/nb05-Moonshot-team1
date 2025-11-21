@@ -16,7 +16,7 @@ export class RepositoryFactory {
   }
 
   public create(prismaClient: BasePrismaClient): IRepositories {
-    const repos: Record<string, any> = {}; 
+    const repos: Record<string, any> = {};
     const repoKeys = Object.keys(
       this._repositoryGenerators,
     ) as (keyof IRepositories)[];

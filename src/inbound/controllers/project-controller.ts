@@ -36,12 +36,12 @@ export class ProjectController extends BaseController {
       this.catch(this.deleteProject),
     );
 
-    // 프로젝트 멤버 조회
-    this.router.get("/:projectId/users");
-    // 프로젝트에서 유저 제외하기
-    this.router.delete("/:projectId/users/:userId");
-    // 프로젝트에 멤버 초대
-    this.router.post("/:projectId/invitations");
+    // // 프로젝트 멤버 조회
+    // this.router.get("/:projectId/users");
+    // // 프로젝트에서 유저 제외하기
+    // this.router.delete("/:projectId/users/:userId");
+    // // 프로젝트에 멤버 초대
+    // this.router.post("/:projectId/invitations");
   }
 
   getProject = async (req: Request, res: Response) => {

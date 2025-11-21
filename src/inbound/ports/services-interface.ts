@@ -3,5 +3,5 @@ import { IProjectService } from "./services/project-service-interface";
 
 export interface IServices {
   task: ITaskService;
-  project: IProjectService
+  project: IProjectService;
 }

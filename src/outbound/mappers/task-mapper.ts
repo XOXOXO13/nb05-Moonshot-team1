@@ -1,20 +1,15 @@
-import {
-  createTaskReqSchema,
-  TaskReqDto,
-} from "../../inbound/requests/task-req-dto";
-import { TaskResDto } from "../../inbound/responses/task-res-dto";
+import { TaskResDto, TaskResDtos } from "../../inbound/responses/task-res-dto";
 import { AttachmentEntity } from "../../domain/entites/attachment/attachment-entity";
 import { TagEntity } from "../../domain/entites/tag/tag-entity";
-import {
-  PersistTaskEntity,
-  TaskEntity,
-} from "../../domain/entites/task/task-entity";
+
 import { UserEntity } from "../../domain/entites/user/user-entity";
 import { Request } from "express";
+import { z } from "zod";
+import { PersistTaskEntity } from "../../domain/entites/task/persist-task-entity";
 
 export class TaskMapper {
-  static toReqDto(req: Request) {
-    const reqData = createTaskReqSchema.safeParse({
+  static toReqDto<T extends z.ZodTypeAny>(schema: T, req: Request) {
+    const reqData = schema.safeParse({
       body: req.body,
       params: req.params,
       headers: req.headers,
@@ -25,23 +20,6 @@ export class TaskMapper {
     }
 
     return reqData.data;
-  }
-
-  static toEntity(dto: TaskReqDto) {
-    return new TaskEntity(
-      dto.params.projectId,
-      dto.body.title,
-      dto.body.startYear,
-      dto.body.startMonth,
-      dto.body.startDay,
-      dto.body.endYear,
-      dto.body.endMonth,
-      dto.body.endDay,
-      dto.body.status,
-      dto.body.attachments,
-      dto.body.assigneeId,
-      dto.body.tags,
-    );
   }
 
   static toPersistEntity(
@@ -66,7 +44,7 @@ export class TaskMapper {
         refreshToken: string | null;
         version: number;
         profileImage: string | null;
-      } | null;
+      };
     } & {
       title: string;
       status: string;
@@ -86,7 +64,13 @@ export class TaskMapper {
       startDate: record.startDate,
       endDate: record.endDate,
       status: record.status,
-      assignee: new UserEntity(record.assignee),
+      assignee: new UserEntity({
+        id: record.assignee.id,
+        name: record.assignee.name,
+        email: record.assignee.email,
+        profileImageUrl: record.assignee.profileImage ?? undefined,
+        version: record.assignee.version
+      }),
       tags: record.tags.map((tag) => {
         return new TagEntity(tag);
       }),
@@ -112,5 +96,13 @@ export class TaskMapper {
       entity.createdAt,
       entity.updatedAt,
     );
+  }
+
+  static toResDtos(entities: PersistTaskEntity[]): TaskResDtos {
+    const taskResDto = entities.map((entity) => {
+      return TaskMapper.toResDto(entity);
+    });
+    const taskResDtos = new TaskResDtos(taskResDto);
+    return taskResDtos;
   }
 }

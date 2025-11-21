@@ -1,5 +1,5 @@
 import { MemberData, MemberVo } from "./member-vo";
-import { TaskEntity } from "../task/task-entity";
+import { PersistTaskEntity } from "../task/persist-task-entity";
 
 export type ProjectData = {
   name: string;
@@ -36,7 +36,7 @@ export class ProjectEntity {
   private readonly _createdAt?: Date;
   private readonly _updatedAt?: Date;
   private _members?: MemberVo[];
-  private _tasks?: TaskEntity[];
+  private _tasks?: PersistTaskEntity[];
 
   // 낙관적 락을 위한 버전
   private _version: number;
@@ -50,7 +50,7 @@ export class ProjectEntity {
     createdAt?: Date;
     updatedAt?: Date;
     members: MemberVo[];
-    tasks?: TaskEntity[];
+    tasks?: PersistTaskEntity[];
     version: number;
   }) {
     this._id = attrs.id;
@@ -146,7 +146,7 @@ export class ProjectEntity {
     createdAt?: Date;
     updatedAt?: Date;
     members: MemberVo[];
-    tasks?: TaskEntity[];
+    tasks?: PersistTaskEntity[];
     version: number;
   }) {
     return new ProjectEntity(parmas);
