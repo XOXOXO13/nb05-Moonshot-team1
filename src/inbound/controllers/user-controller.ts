@@ -1,18 +1,26 @@
 import { Router, Request, Response } from "express";
 import { IUserService } from "../../domain/services/user-service";
+import { IServices } from "../ports/services-interface";
+import { IUtils } from "../../shared/utils-interface";
 import { AuthMiddleware } from "../middlewares/auth-middleware";
-import { SocialProvider } from "../../domain/entites/social-account/social-account-entity";
+import { BaseController } from "./base-controller";
 
-export class UserController {
-  public basePath = "";
-  public router = Router();
-
-  constructor(private userService: IUserService) {
-    this.initRoutes();
+export class UserController extends BaseController {
+  constructor(
+    _services: IServices,
+    private utils: IUtils,
+    private authMiddleware: AuthMiddleware,
+  ) {
+    super({
+      basePath: "/auth",
+      services: _services,
+    });
+    this.initializeRoutes();
   }
 
-  private initRoutes() {
-    this.router.post("/auth/register", this.register.bind(this));
+  private initializeRoutes() {
+    // 사용자 인증 관련
+    this.router.post("/register", this.registerUser.bind(this));
     this.router.post("/auth/login", this.login.bind(this));
     this.router.post("/auth/refresh", this.refresh.bind(this));
     this.router.get("/auth/google", this.googleAuth.bind(this));
@@ -24,11 +32,12 @@ export class UserController {
     // this.router.get('/users/me/projects', AuthMiddleware.authenticate, this.getUserProjects.bind(this));
     // this.router.get('/users/me/tasks', AuthMiddleware.authenticate, this.getUserTasks.bind(this));
   }
-  private setTokenCookies(
+
+  private setTokenCookies = (
     res: Response,
     accessToken: string,
     refreshToken: string,
-  ) {
+  ) => {
     const cookieOptions = {
       httpOnly: false,
       secure: false,
@@ -40,9 +49,9 @@ export class UserController {
     res.cookie("authToken", accessToken, cookieOptions);
     res.cookie("accessToken", accessToken, cookieOptions);
     res.cookie("refreshToken", refreshToken, cookieOptions);
-  }
+  };
 
-  private generateTokenResponse(user: any, res: Response) {
+  private generateTokenResponse = (user: any, res: Response) => {
     const accessToken = AuthMiddleware.generateToken({
       userId: user.id,
       email: user.email,
@@ -54,9 +63,9 @@ export class UserController {
     this.setTokenCookies(res, accessToken, refreshToken);
 
     return { accessToken, refreshToken };
-  }
+  };
 
-  async refresh(req: Request, res: Response) {
+  refresh = async (req: Request, res: Response) => {
     try {
       const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
 
@@ -69,7 +78,7 @@ export class UserController {
 
       const decoded = AuthMiddleware.verifyToken(refreshToken);
 
-      const user = await this.userService.findById(decoded.userId);
+      const user = await this.services.user.findById(decoded.userId);
       if (!user) {
         return res.status(404).json({
           error: "USER_NOT_FOUND",
@@ -90,22 +99,24 @@ export class UserController {
         message: "Refresh token이 유효하지 않습니다.",
       });
     }
-  }
-  //임시구현 google
-  async googleAuth(req: Request, res: Response) {
+  };
+
+  // 임시 구현 - Google OAuth
+  googleAuth = async (req: Request, res: Response) => {
     res.status(501).json({
       error: "NOT_IMPLEMENTED",
       message: "Google OAuth가 아직 구현되지 않았습니다.",
     });
-  }
-  async googleCallback(req: Request, res: Response) {
+  };
+
+  googleCallback = async (req: Request, res: Response) => {
     res.status(501).json({
       error: "NOT_IMPLEMENTED",
       message: "Google OAuth 콜백이 아직 구현되지 않았습니다.",
     });
-  }
+  };
 
-  async register(req: Request, res: Response) {
+  registerUser = async (req: Request, res: Response) => {
     try {
       const { email, password, name, profileImageUrl } = req.body;
 
@@ -116,7 +127,7 @@ export class UserController {
         });
       }
 
-      const user = await this.userService.registerLocal({
+      const user = await this.services.user.registerLocal({
         email,
         password,
         name,
@@ -158,8 +169,9 @@ export class UserController {
         message: "서버 내부 오류가 발생했습니다.",
       });
     }
-  }
-  async login(req: Request, res: Response) {
+  };
+
+  login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
       if (!email || !password) {
@@ -168,7 +180,7 @@ export class UserController {
           message: "이메일과 비밀번호는 필수입니다.",
         });
       }
-      const user = await this.userService.loginLocal(email, password);
+      const user = await this.services.user.loginLocal(email, password);
       const tokens = this.generateTokenResponse(user, res);
 
       res.status(200).json({
@@ -192,12 +204,12 @@ export class UserController {
         message: "서버 내부 오류가 발생했습니다.",
       });
     }
-  }
+  };
 
-  async getMe(req: Request, res: Response) {
+  getMe = async (req: Request, res: Response) => {
     try {
       const userId = req.user!.userId;
-      const user = await this.userService.findById(userId);
+      const user = await this.services.user.findById(userId);
 
       if (!user) {
         return res.status(404).json({
@@ -212,7 +224,7 @@ export class UserController {
           email: user.email,
           name: user.name,
           profileImageUrl: user.profileImageUrl,
-          socialAccounts: user.socialAccounts.map((account) => ({
+          socialAccounts: user.socialAccounts.map((account: any) => ({
             provider: account.provider,
             createdAt: account.createdAt,
           })),
@@ -225,15 +237,14 @@ export class UserController {
         message: "서버 내부 오류가 발생했습니다.",
       });
     }
-  }
+  };
 
-  // 사용자 정보 수정
-  async updateMe(req: Request, res: Response) {
+  updateMe = async (req: Request, res: Response) => {
     try {
       const userId = req.user!.userId;
       const { name, profileImageUrl } = req.body;
 
-      const user = await this.userService.updateProfile(userId, {
+      const user = await this.services.user.updateProfile(userId, {
         name,
         profileImageUrl,
       });
@@ -262,5 +273,5 @@ export class UserController {
         message: "서버 내부 오류가 발생했습니다.",
       });
     }
-  }
+  };
 }
