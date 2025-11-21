@@ -23,12 +23,16 @@ export class ProjectController extends BaseController {
     this.router.get(
       "/:projectId",
       this.catch(this._authMiddlewares.isUser),
+
       this.catch(this.getProject));
+
     // 프로젝트 수정
     this.router.patch(
       "/:projectId",
       this.catch(this._authMiddlewares.isUser),
+
       this.catch(this.updateProject));
+
     // 프로젝트 삭제
     this.router.delete(
       "/:projectId",
@@ -42,6 +46,7 @@ export class ProjectController extends BaseController {
     // this.router.delete("/:projectId/users/:userId");
     // // 프로젝트에 멤버 초대
     // this.router.post("/:projectId/invitations");
+
   }
 
   getProject = async (req: Request, res: Response) => {
@@ -73,4 +78,5 @@ export class ProjectController extends BaseController {
     await this.services.project.deleteProject(projectId, userId);
     return res.status(204).json();
   };
+
 }

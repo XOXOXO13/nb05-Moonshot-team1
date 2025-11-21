@@ -1,4 +1,10 @@
 import { PrismaClient } from "@prisma/client";
+import { UserController } from "./inbound/controllers/user-controller";
+import { AuthMiddleware } from "./inbound/middlewares/auth-middleware";
+import { UserService } from "./domain/services/user-service";
+import { BcryptHashManager } from "./outbound/managers/bcrypt-hash-manager";
+import { UserRepository } from "./outbound/repos/user-repository";
+import { Services } from "./domain/sevices";
 import { Server } from "./server";
 import { TaskController } from "./inbound/controllers/task-controller";
 import { TaskService } from "./domain/services/task-service";
@@ -10,8 +16,6 @@ import { TokenUtil } from "./shared/utils/token-util";
 import { Utils } from "./shared/utils-interface";
 import { RepositoryFactory } from "./outbound/repository-factory";
 import { UnitOfWork } from "./outbound/unit-of-work";
-import { Services } from "./domain/sevices";
-import { AuthMiddleware } from "./inbound/middlewares/auth-middleware";
 import { ProjectController } from "./inbound/controllers/project-controller";
 
 export class DependencyInjector {
@@ -21,17 +25,26 @@ export class DependencyInjector {
     this._server = this.inject();
   }
 
+  get server() {
+    return this._server;
+  }
+
   inject() {
     const configUtil = new ConfigUtil();
     const tokenUtil = new TokenUtil(configUtil);
     const utils = new Utils(configUtil, tokenUtil);
     const prisma = new PrismaClient();
 
+    const hashManager = new BcryptHashManager();
+    
+
     const repoFactory = new RepositoryFactory({
-      projectRepository: (_prisma) => new ProjectRepository(prisma),
-      taskRepository: (_prisma) => new TaskRepository(prisma),
+      projectRepository: (prismaClient) => new ProjectRepository(prismaClient),
+      taskRepository: (prismaClient) => new TaskRepository(prismaClient),
+      userRepository: (prismaClient) => new UserRepository(prismaClient),
     });
-    const unitOfWork: UnitOfWork = new UnitOfWork(prisma, repoFactory);
+    const prismaClient = new PrismaClient();
+    const unitOfWork: UnitOfWork = new UnitOfWork(prismaClient, repoFactory);
 
     const taskRepository = new TaskRepository(prisma);
     const projectRepository = new ProjectRepository(prisma);
@@ -40,8 +53,10 @@ export class DependencyInjector {
       projectRepository: projectRepository,
     };
 
+
     const taskService = new TaskService(repositories);
     const projectService = new ProjectService(unitOfWork);
+    const userService = new UserService(unitOfWork.userRepository, hashManager);
     const services = new Services(taskService, projectService);
 
     const authMiddleware = new AuthMiddleware(utils);
@@ -49,12 +64,10 @@ export class DependencyInjector {
 
     const taskController = new TaskController(services);
     const projectController = new ProjectController(services, authMiddleware);
-    const controllers = [taskController, projectController];
+    const userController = new UserController(userService);
+    const controllers = [taskController, projectController, userController];
 
-    return new Server(controllers);
-  }
-
-  get server() {
-    return this._server;
+    const port = parseInt(process.env.PORT || "3001", 10);
+    return new Server(controllers, port);
   }
 }

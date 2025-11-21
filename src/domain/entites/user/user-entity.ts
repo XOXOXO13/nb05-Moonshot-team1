@@ -1,3 +1,9 @@
+import { IHashManager } from "../../ports/managers/I-hash-manager";
+import {
+  SocialAccountEntity,
+  SocialProvider,
+} from "../social-account/social-account-entity";
+
 export type UserCreateData = {
   email: string;
   password?: string;
@@ -23,11 +29,6 @@ export interface PersistUserEntity {
   updatedAt: Date;
 }
 
-export interface IHashManager {
-  hash(plainText: string): Promise<string>;
-  compare(hasedText: string, plainText: string): Promise<boolean>;
-}
-
 export class UserEntity {
   private readonly _id?: number;
   private _email: string;
@@ -39,6 +40,7 @@ export class UserEntity {
   private _version: number;
   private readonly _createdAt?: Date;
   private readonly _updatedAt?: Date;
+  private _socialAccounts: SocialAccountEntity[];
 
   constructor(attrs: {
     id?: number;
@@ -50,6 +52,7 @@ export class UserEntity {
     refreshToken?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    socialAccounts?: SocialAccountEntity[];
   }) {
     this._id = attrs.id;
     this._email = attrs.email;
@@ -61,6 +64,7 @@ export class UserEntity {
     this._refreshToken = attrs.refreshToken;
     this._createdAt = attrs.createdAt;
     this._updatedAt = attrs.updatedAt;
+    this._socialAccounts = attrs.socialAccounts || [];
   }
 
   get id() {
@@ -137,6 +141,26 @@ export class UserEntity {
       version: 1,
     });
   }
+
+  static createNewSocial(params: {
+    email: string;
+    name: string;
+    socialAccount: SocialAccountEntity;
+  }): UserEntity {
+    const { email, name, socialAccount } = params;
+
+    UserEntity.validateName(name);
+    UserEntity.validateEmail(email);
+
+    return new UserEntity({
+      email,
+      name,
+      version: 1,
+      socialAccounts: [socialAccount],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
   static createPersist(params: {
     id: number;
     email: string;
@@ -147,6 +171,7 @@ export class UserEntity {
     refreshToken?: string;
     createdAt: Date;
     updatedAt: Date;
+    socialAccounts?: SocialAccountEntity[];
   }): UserEntity {
     return new UserEntity(params);
   }
@@ -177,7 +202,7 @@ export class UserEntity {
       throw new Error("일치하는 계정이 존재하지 않습니다.");
     }
 
-    return await hashManager.compare(this._password, password);
+    return await hashManager.compare(password, this._password);
   }
 
   async updatePassword(
@@ -222,12 +247,55 @@ export class UserEntity {
       return false;
     }
 
-    return await hashManager.compare(this._refreshToken, refreshToken);
+    return await hashManager.compare(refreshToken, this._refreshToken);
   }
 
   incrementVersion(): void {
     if (this._isModified) {
       this._version++;
     }
+  }
+  get socialAccounts(): SocialAccountEntity[] {
+    return this._socialAccounts;
+  }
+
+  addSocialAccount(socialAccount: SocialAccountEntity): void {
+    const existingAccount = this._socialAccounts.find(
+      (account) => account.provider === socialAccount.provider,
+    );
+
+    if (existingAccount) {
+      throw new Error(`User already has a ${socialAccount.provider} account`);
+    }
+
+    this._socialAccounts.push(socialAccount);
+    this._isModified = true;
+  }
+
+  removeSocialAccount(provider: SocialProvider): void {
+    const index = this._socialAccounts.findIndex(
+      (account) => account.provider === provider,
+    );
+
+    if (index === -1) {
+      throw new Error(`Social account with provider ${provider} not found`);
+    }
+
+    this._socialAccounts.splice(index, 1);
+    this._isModified = true;
+  }
+
+  getSocialAccountByProvider(
+    provider: SocialProvider,
+  ): SocialAccountEntity | null {
+    return (
+      this._socialAccounts.find((account) => account.provider === provider) ||
+      null
+    );
+  }
+  hasSocialAccount(provider: SocialProvider): boolean {
+    return this._socialAccounts.some(
+      (account) => account.provider === provider,
+    );
   }
 }
