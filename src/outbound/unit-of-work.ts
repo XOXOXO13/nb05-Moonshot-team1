@@ -39,7 +39,7 @@ export class UnitOfWork {
     for (let i = 0; i < maxRetries; i++) {
       try {
         return await this._prismaClient.$transaction(
-          async (tx: PrismaClient) => {
+          async (tx) => {
             const txRepos: IRepositories = this._repoFactory.create(tx);
             return await work(txRepos);
           },
