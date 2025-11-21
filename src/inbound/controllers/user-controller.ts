@@ -7,12 +7,12 @@ import { BaseController } from "./base-controller";
 
 export class UserController extends BaseController {
   constructor(
-    _services: IServices, 
-    private utils: IUtils, 
-    private authMiddleware: AuthMiddleware
+    _services: IServices,
+    private utils: IUtils,
+    private authMiddleware: AuthMiddleware,
   ) {
     super({
-      basePath: "/auth", 
+      basePath: "/auth",
       services: _services,
     });
     this.initializeRoutes();
@@ -65,7 +65,7 @@ export class UserController extends BaseController {
     return { accessToken, refreshToken };
   };
 
- refresh = async (req: Request, res: Response) => {
+  refresh = async (req: Request, res: Response) => {
     try {
       const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
 
@@ -78,7 +78,7 @@ export class UserController extends BaseController {
 
       const decoded = AuthMiddleware.verifyToken(refreshToken);
 
-  const user = await this.services.user.findById(decoded.userId);
+      const user = await this.services.user.findById(decoded.userId);
       if (!user) {
         return res.status(404).json({
           error: "USER_NOT_FOUND",
@@ -127,7 +127,7 @@ export class UserController extends BaseController {
         });
       }
 
-  const user = await this.services.user.registerLocal({
+      const user = await this.services.user.registerLocal({
         email,
         password,
         name,
@@ -180,7 +180,7 @@ export class UserController extends BaseController {
           message: "이메일과 비밀번호는 필수입니다.",
         });
       }
-  const user = await this.services.user.loginLocal(email, password);
+      const user = await this.services.user.loginLocal(email, password);
       const tokens = this.generateTokenResponse(user, res);
 
       res.status(200).json({
@@ -209,7 +209,7 @@ export class UserController extends BaseController {
   getMe = async (req: Request, res: Response) => {
     try {
       const userId = req.user!.userId;
-  const user = await this.services.user.findById(userId);
+      const user = await this.services.user.findById(userId);
 
       if (!user) {
         return res.status(404).json({
@@ -244,7 +244,7 @@ export class UserController extends BaseController {
       const userId = req.user!.userId;
       const { name, profileImageUrl } = req.body;
 
-  const user = await this.services.user.updateProfile(userId, {
+      const user = await this.services.user.updateProfile(userId, {
         name,
         profileImageUrl,
       });

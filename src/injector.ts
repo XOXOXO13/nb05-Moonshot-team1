@@ -55,7 +55,7 @@ export class DependencyInjector {
     const taskService = new TaskService(repositories);
     const projectService = new ProjectService(unitOfWork);
     const userService = new UserService(unitOfWork.userRepository, hashManager);
-    const services = new Services(taskService, projectService);
+    const services = new Services(taskService, projectService, userService);
 
     const authMiddleware = new AuthMiddleware(utils);
     const middlewares = [authMiddleware];

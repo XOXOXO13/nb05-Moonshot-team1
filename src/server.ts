@@ -8,7 +8,10 @@ export class Server {
   private _controllers;
   private _port: number;
 
-  constructor(controllers: any, port: number = parseInt(process.env.PORT || "4000", 10)) {
+  constructor(
+    controllers: any,
+    port: number = parseInt(process.env.PORT || "4000", 10),
+  ) {
     this._app = express();
     this._controllers = controllers;
     this._port = port;
