@@ -1,4 +1,4 @@
-import { MemberData, MemberEntity } from "./member-entity";
+import { MemberData, MemberEntity } from "../member/member-entity";
 import { PersistTaskEntity } from "../task/persist-task-entity";
 
 export type ProjectData = {
@@ -103,7 +103,7 @@ export class ProjectEntity {
   toUpdateData(): ProjectUpdateData {
     if (!this._isModified) {
       return {};
-    };
+    }
     const updateData: ProjectUpdateData = {};
     updateData.name = this._name;
     updateData.description = this._description;

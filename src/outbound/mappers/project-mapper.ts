@@ -1,7 +1,7 @@
 import {
   MemberData,
   MemberEntity,
-} from "../../domain/entites/project/member-entity";
+} from "../../domain/entites/member/member-entity";
 import {
   NewProjectEntity,
   PersistProjectEntity,

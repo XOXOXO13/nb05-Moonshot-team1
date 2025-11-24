@@ -1,4 +1,4 @@
-import { IProjectRepository } from "../../domain/ports/repositories/project-repository-interface";
+import { IProjectRepository } from "../../domain/ports/repositories/I-project-repository";
 import { BasePrismaClient, BaseRepository } from "./base-repository";
 import {
   NewProjectEntity,
