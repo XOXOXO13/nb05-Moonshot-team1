@@ -5,7 +5,6 @@ import {
   PersistProjectEntity,
   ProjectEntity,
 } from "../entites/project/project-entity";
-// IUnitOfWork 구현후 대체
 
 export class ProjectService implements IProjectService {
   private readonly _unitOfWokr;

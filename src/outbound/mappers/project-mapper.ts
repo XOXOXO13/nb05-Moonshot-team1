@@ -1,4 +1,7 @@
-import { MemberData, MemberVo } from "../../domain/entites/project/member-vo";
+import {
+  MemberData,
+  MemberEntity,
+} from "../../domain/entites/project/member-entity";
 import {
   NewProjectEntity,
   PersistProjectEntity,
@@ -10,16 +13,18 @@ import { PersistProject } from "../repos/project-repository";
 
 export class ProjectMapper {
   static toPersistEntity(project: PersistProject): PersistProjectEntity {
-    let membersVo: MemberVo[] = [];
+    let members: MemberEntity[] = [];
 
     if (project.members && project.members.length > 0) {
-      membersVo = project.members.map((member) => {
+      members = project.members.map((member) => {
         const memberData: MemberData = {
           userId: member.userId,
+          projectId: member.projectId,
           role: member.role,
           status: member.status,
+          joinedAt: member.joinedAt,
         };
-        return MemberVo.createPersist(memberData);
+        return MemberEntity.createPersist(memberData);
       });
     }
 
@@ -31,7 +36,7 @@ export class ProjectMapper {
       createdAt: project.createdAt,
       updatedAt: project.updatedAt,
       version: project.version,
-      members: membersVo,
+      members: members,
     }) as PersistProjectEntity;
   }
 
@@ -40,20 +45,22 @@ export class ProjectMapper {
 
     const prismaData = {
       ...projectData,
-      members: projectData.members
-        ? {
-            create: projectData.members,
-          }
-        : undefined,
     };
-    if (prismaData.description === null) {
-      delete prismaData.description;
-    }
 
     return prismaData;
   }
   static toUpdateData(entity: ProjectEntity): ProjectUpdateData {
     const updateData = entity.toUpdateData();
     return updateData;
+  }
+
+  static getOwnerMemberEntity(entity: NewProjectEntity): MemberEntity {
+    const owner = entity.members?.[0];
+
+    if (!owner) {
+      throw new Error();
+    }
+
+    return owner;
   }
 }
