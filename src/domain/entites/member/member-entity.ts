@@ -4,6 +4,7 @@ export type MemberData = {
   role: MemberRole;
   status: MemberStatus;
   joinedAt: Date;
+  version?: number;
 };
 
 export type MemberRole = "OWNER" | "MEMBER" | "GUEST";
@@ -63,6 +64,11 @@ export class MemberEntity {
     this._status = "ACTIVE";
   }
 
+  updateStatus(newStatus: MemberStatus): void {
+    if (newStatus === this._status) return;
+    this._status = newStatus;
+  }
+
   public cancelInvitation(cancellerRole: MemberRole): void {
     if (cancellerRole !== "OWNER") {
       // OWNER만 초대를 취소 가능
@@ -104,10 +110,12 @@ export class MemberEntity {
     projectId: number;
   }): MemberEntity {
     return new MemberEntity({
-      ...params,
+      userId: params.userId,
+      projectId: params.projectId,
       role: "OWNER",
       status: "ACTIVE",
       joinedAt: new Date(),
+      version: 1,
     });
   }
 
@@ -127,7 +135,7 @@ export class MemberEntity {
       joinedAt: new Date(),
     });
   }
-    static createPersist(params: MemberData): MemberEntity {
+  static createPersist(params: MemberData): MemberEntity {
     // 룰체크 추후 추가
     return new MemberEntity(params);
   }
