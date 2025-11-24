@@ -5,20 +5,16 @@ import { IRepositories } from "../ports/I-repositories";
 import { InvitationEntity } from "../entites/member/invitation-entity";
 import { v4 as uuidv4 } from "uuid";
 import { MemberEntity } from "../entites/member/member-entity";
+import { IInvitationService } from "../../inbound/ports/services/I-invitation-service";
+import { IEmailService } from "../../inbound/ports/services/I-email-service";
 
-interface EmailService {
-  sendInvitation(
-    email: string,
-    token: string,
-    projectName: string
-  ): Promise<void>;
-}
 
-export class InvitationService {
+
+export class InvitationService implements IInvitationService {
   private readonly _unitOfWork;
-  private _emailService: EmailService;
+  private _emailService: IEmailService;
 
-  constructor(unitOfWork: UnitOfWork, emailService: EmailService) {
+  constructor(unitOfWork: UnitOfWork, emailService: IEmailService) {
     this._unitOfWork = unitOfWork;
     this._emailService = emailService;
   }
