@@ -2,7 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import { IUtils } from "../../shared/utils-interface";
 import { TokenGenerateParams } from "../../shared/utils/token-util";
 import jwt from "jsonwebtoken";
-import { BusinessException, BusinessExceptionType } from "../../shared/exceptions/business-exception";
+import {
+  BusinessException,
+  BusinessExceptionType,
+} from "../../shared/exceptions/business-exception";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -28,7 +31,7 @@ export class AuthMiddleware {
     return utils.token.verifyToken({ token });
   };
   protectCrsfAttack = (req: Request, res: Response, next: NextFunction) => {
-    if(!["HEAD", "OPTIONS", "GET"].includes(req.method)) {
+    if (!["HEAD", "OPTIONS", "GET"].includes(req.method)) {
       const crsfTokenHeader = req.headers["x-crsf-token"];
       const crsfTokenCookie = req.signedCookies.csrfToken;
       if (
@@ -44,7 +47,7 @@ export class AuthMiddleware {
     return next();
   };
 
-  validateAccessToken = ( req: Request, res: Response, next: NextFunction ) => {
+  validateAccessToken = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
     if (
       !authHeader ||
@@ -57,43 +60,41 @@ export class AuthMiddleware {
 
     const accessToken = authHeader.split(" ")[1];
     try {
-    const payload = this._utils.token.verifyToken({ token: accessToken }) as {
-      userId: number;
-      email: string;
-    };
+      const payload = this._utils.token.verifyToken({ token: accessToken }) as {
+        userId: number;
+        email: string;
+      };
 
-    req.userId = payload.userId.toString();
-    req.user = {
-      userId: payload.userId,
-      email: payload.email,
-    };
-  } catch (error) {
+      req.userId = payload.userId.toString();
+      req.user = {
+        userId: payload.userId,
+        email: payload.email,
+      };
+    } catch (error) {}
+    return next();
+  };
 
-  }
-  return next();
-};
+  checkSignedInUser = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.userId) {
+      throw new BusinessException({
+        type: BusinessExceptionType.INVALID_AUTH,
+      });
+    }
 
-checkSignedInUser = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.userId) {
-    throw new BusinessException({
-      type: BusinessExceptionType.INVALID_AUTH,
+    return next();
+  };
+  checkNotSignedInUser = (req: Request, res: Response, next: NextFunction) => {
+    if (req.userId) {
+      throw new BusinessException({
+        type: BusinessExceptionType.ALREADY_AUTHENTICATED,
+      });
+    }
+    return next();
+  };
+
+  isUser = (req: Request, res: Response, next: NextFunction) => {
+    this.validateAccessToken(req, res, () => {
+      this.checkSignedInUser(req, res, next);
     });
-  }
-
-  return next();
-};
-checkNotSignedInUser = (req: Request, res: Response, next: NextFunction) => {
-  if (req.userId) {
-    throw new BusinessException({
-      type: BusinessExceptionType.ALREADY_AUTHENTICATED,
-    });
-  }
-  return next();
-};
-
-isUser = (req: Request, res: Response, next: NextFunction) => {
-  this.validateAccessToken(req, res, () => {
-    this.checkSignedInUser(req, res, next);
-  })
-};
+  };
 }
