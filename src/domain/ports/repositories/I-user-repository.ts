@@ -16,6 +16,6 @@ export interface IUserRepository {
 
   findBySocialAccount(
     provider: SocialProvider,
-    providerId: string,
+    providerAccountId: string,
   ): Promise<UserEntity | null>;
 }

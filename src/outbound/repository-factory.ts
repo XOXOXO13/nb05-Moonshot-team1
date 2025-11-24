@@ -1,4 +1,4 @@
-import { IRepositories } from "../domain/ports/repositories-interface";
+import { IRepositories } from "../domain/ports/repositories/I-repositories";
 import { BasePrismaClient } from "./repos/base-repository";
 
 type repositoryGenerator = (

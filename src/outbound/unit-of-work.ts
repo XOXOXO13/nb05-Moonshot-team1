@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { IRepositories } from "../domain/ports/repositories-interface";
+import { IRepositories } from "../domain/ports/repositories/I-repositories";
 import { UserRepository } from "./repos/user-repository";
 import { IUserRepository } from "../domain/ports/repositories/I-user-repository";
 import { RepositoryFactory } from "./repository-factory";
