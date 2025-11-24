@@ -129,7 +129,7 @@ export class InvitationService {
         });
 
         const savedMember = await repos.memberRepository.save(newMember);
-        await repos.memberRepository.delete(token, userId);
+        await repos.invitationRepository.delete(token);
         return savedMember;
       },
       true,
