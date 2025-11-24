@@ -4,7 +4,7 @@ import express, {
   RequestHandler,
   Response,
 } from "express";
-import { IServices } from "../../inbound/ports/services-interface";
+import { IServices } from "../ports/I-services";
 export class BaseController {
   private _basePath;
   private _services;

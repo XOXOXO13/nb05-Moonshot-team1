@@ -1,11 +1,10 @@
-import { IProjectService } from "../../inbound/ports/services/project-service-interface";
+import { IProjectService } from "../../inbound/ports/services/I-project-service";
 import { CreateProjectDto } from "../../inbound/requests/project-req-dto";
 import { UnitOfWork } from "../../outbound/unit-of-work";
 import {
   PersistProjectEntity,
   ProjectEntity,
 } from "../entites/project/project-entity";
-// IUnitOfWork 구현후 대체
 
 export class ProjectService implements IProjectService {
   private readonly _unitOfWokr;
@@ -49,7 +48,7 @@ export class ProjectService implements IProjectService {
 
   // 읽기 전용 => 낙관적 락 불필요
   async getProjectById(
-    projectId: number,
+    projectId: number
   ): Promise<PersistProjectEntity | null> {
     return this._unitOfWokr.repos.projectRepository.findById(projectId);
   }

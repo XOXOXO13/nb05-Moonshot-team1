@@ -9,7 +9,7 @@ import { TaskResDto, TaskResDtos } from "../../inbound/responses/task-res-dto";
 import { TaskMapper } from "../../outbound/mappers/task-mapper";
 import { ModifyTaskEntity } from "../entites/task/task-entity";
 import { ViewTaskEntity } from "../entites/task/view-task-entity";
-import { IRepositories } from "../ports/repositories-interface";
+import { IRepositories } from "../ports/I-repositories";
 
 export class TaskService implements ITaskService {
   private _repo;

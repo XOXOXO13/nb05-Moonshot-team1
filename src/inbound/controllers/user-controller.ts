@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { IUserService } from "../../domain/services/user-service";
-import { IServices } from "../ports/services-interface";
+import { IServices } from "../ports/I-services";
 import { IUtils } from "../../shared/utils-interface";
 import { AuthMiddleware } from "../middlewares/auth-middleware";
 import { BaseController } from "./base-controller";
@@ -9,7 +9,7 @@ export class UserController extends BaseController {
   constructor(
     _services: IServices,
     private utils: IUtils,
-    private authMiddleware: AuthMiddleware,
+    private authMiddleware: AuthMiddleware
   ) {
     super({
       basePath: "/auth",
@@ -36,7 +36,7 @@ export class UserController extends BaseController {
   private setTokenCookies = (
     res: Response,
     accessToken: string,
-    refreshToken: string,
+    refreshToken: string
   ) => {
     const cookieOptions = {
       httpOnly: false,

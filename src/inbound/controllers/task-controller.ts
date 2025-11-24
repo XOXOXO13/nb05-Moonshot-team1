@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { BaseController } from "./base-controller";
 import { TaskMapper } from "../../outbound/mappers/task-mapper";
-import { IServices } from "../../inbound/ports/services-interface";
+import { IServices } from "../ports/I-services";
 import {
   createTaskReqSchema,
   updateTaskReqSchema,
