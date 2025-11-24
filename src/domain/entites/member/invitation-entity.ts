@@ -131,13 +131,14 @@ export class InvitationEntity {
     }) as PersistInvitationEntity;
   }
 
-  public toData(): Omit<InvitationData, "role" | "version"> & { version: number } {
+  public toData(): Omit<InvitationData, "version"> & { version: number } {
     return {
       token: this._token,
       projectId: this._projectId,
       inviteeId: this._inviteeId,
       creatorId: this._creatorId,
       expiresAt: this._expiresAt,
+      role: this._role,
       version: this._version
     };
   }

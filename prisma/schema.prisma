@@ -141,5 +141,7 @@ model Invitation {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
+  role MemberRole @default(MEMBER)
+
   @@unique([projectId, inviteeId]) // 중복 초대 방지
 }
