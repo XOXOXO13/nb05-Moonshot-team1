@@ -17,7 +17,7 @@ export class InvitationRepository
   }
   async findByProjectIdAndInviteeId(
     projectId: number,
-    inviteeId: number
+    inviteeId: number,
   ): Promise<InvitationEntity | null> {
     const prismaInvitation = await this._prismaClient.invitation.findUnique({
       where: {
@@ -35,7 +35,7 @@ export class InvitationRepository
   }
 
   async save(
-    invitation: NewInvitationEntity
+    invitation: NewInvitationEntity,
   ): Promise<PersistInvitationEntity> {
     const createData = InvitationMapper.toCreateData(invitation);
 

@@ -78,7 +78,7 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async getProjectTasks(
-    entity: ViewProjectTaskEntity
+    entity: ViewProjectTaskEntity,
   ): Promise<PersistTaskEntity[]> {
     const records = await this._prisma.task.findMany({
       where: {

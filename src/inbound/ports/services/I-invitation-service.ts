@@ -10,7 +10,7 @@ export interface IInvitationService {
     inviteeEmail: string,
     role: MemberRole,
     projectName: string,
-    inviterRole: MemberRole
+    inviterRole: MemberRole,
   ): Promise<PersistInvitationEntity>;
   acceptInvitation(token: string, userId: number): Promise<MemberEntity>;
   deleteInvitation(token: string, creatorId: number): Promise<void>;

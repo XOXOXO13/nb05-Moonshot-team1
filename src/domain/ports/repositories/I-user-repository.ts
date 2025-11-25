@@ -11,11 +11,11 @@ export interface IUserRepository {
   delete(id: number): Promise<void>;
   findByRefreshToken(
     refreshToken: string,
-    lockType?: LockType
+    lockType?: LockType,
   ): Promise<UserEntity | null>;
 
   findBySocialAccount(
     provider: SocialProvider,
-    providerAccountId: string
+    providerAccountId: string,
   ): Promise<UserEntity | null>;
 }

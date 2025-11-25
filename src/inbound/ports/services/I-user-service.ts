@@ -34,7 +34,7 @@ export interface IUserService {
   loginUser(email: string, password: string): Promise<UserEntity>;
   loginSocialUser(
     provider: SocialProvider,
-    providerAccountId: string
+    providerAccountId: string,
   ): Promise<UserEntity | null>;
   getMyProfile(userId: number): Promise<UserEntity>;
   getUserProfile(userId: number): Promise<UserEntity>;
@@ -50,7 +50,7 @@ export interface IUserService {
 
   refreshToken(
     userId: number,
-    refreshToken: string
+    refreshToken: string,
   ): Promise<{
     accessToken: string;
     refreshToken: string;
@@ -63,6 +63,6 @@ export interface IUserService {
 
   updateProfile(
     userId: number,
-    params: { name?: string; profileImageUrl?: string }
+    params: { name?: string; profileImageUrl?: string },
   ): Promise<UserEntity>;
 }

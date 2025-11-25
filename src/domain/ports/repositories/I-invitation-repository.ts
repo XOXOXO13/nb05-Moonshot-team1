@@ -9,7 +9,7 @@ export interface IInvitationRepository {
   findByToken(token: string): Promise<InvitationEntity | null>;
   findByProjectIdAndInviteeId(
     projectId: number,
-    userId: number
+    userId: number,
   ): Promise<InvitationEntity | null>;
   delete(token: string): Promise<void>;
 }

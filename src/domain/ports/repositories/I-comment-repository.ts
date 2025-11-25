@@ -4,11 +4,11 @@ export interface ICommentRepository {
   create(
     taskId: number,
     userId: number,
-    content: string
+    content: string,
   ): Promise<PersistCommentEntity>;
 
   findTaskProjectId(
-    taskId: number
+    taskId: number,
   ): Promise<{ id: number; projectId: number } | null>;
 
   isUserProjectMember(userId: number, projectId: number): Promise<boolean>;
@@ -24,7 +24,7 @@ export interface ICommentRepository {
   listComments(
     taskId: number,
     page?: number,
-    limit?: number
+    limit?: number,
   ): Promise<{ data: PersistCommentEntity[]; total: number }>;
 
   //아이디 확인
@@ -36,7 +36,7 @@ export interface ICommentRepository {
   //수정
   updateContent(
     commentId: string,
-    content: string
+    content: string,
   ): Promise<PersistCommentEntity>;
 
   //삭제
