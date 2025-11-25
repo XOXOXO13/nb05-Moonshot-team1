@@ -24,7 +24,7 @@ export class InvitationMapper {
   };
 
   static toCreateData(
-    entity: NewInvitationEntity
+    entity: NewInvitationEntity,
   ): Omit<InvitationData, "version"> {
     const data = entity.toData();
 

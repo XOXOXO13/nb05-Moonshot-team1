@@ -5,7 +5,7 @@ import { AuthMiddleware } from "./inbound/middlewares/auth-middleware";
 import { UserService } from "./domain/services/user-service";
 import { BcryptHashManager } from "./outbound/managers/bcrypt-hash-manager";
 import { UserRepository } from "./outbound/repos/user-repository";
-import { Services } from "./domain/sevices";
+import { Services } from "./domain/services";
 import { Server } from "./server";
 import { TaskController } from "./inbound/controllers/task-controller";
 import { TaskService } from "./domain/services/task-service";

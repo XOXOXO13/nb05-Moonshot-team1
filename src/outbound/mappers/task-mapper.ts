@@ -69,7 +69,7 @@ export class TaskMapper {
         name: record.assignee.name,
         email: record.assignee.email,
         profileImageUrl: record.assignee.profileImage ?? undefined,
-        version: record.assignee.version
+        version: record.assignee.version,
       }),
       tags: record.tags.map((tag) => {
         return new TagEntity(tag);

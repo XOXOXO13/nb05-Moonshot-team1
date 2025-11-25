@@ -15,14 +15,17 @@ export class InvitationRepository
   constructor(prismaClient: PrismaClient) {
     super(prismaClient);
   }
-  async findByProjectIdAndInviteeId(projectId: number, inviteeId: number): Promise<InvitationEntity | null> {
+  async findByProjectIdAndInviteeId(
+    projectId: number,
+    inviteeId: number,
+  ): Promise<InvitationEntity | null> {
     const prismaInvitation = await this._prismaClient.invitation.findUnique({
-      where:{
-        projectId_inviteeId:{
+      where: {
+        projectId_inviteeId: {
           projectId: projectId,
-          inviteeId: inviteeId
-        }
-      }
+          inviteeId: inviteeId,
+        },
+      },
     });
     if (!prismaInvitation) {
       return null;
@@ -32,7 +35,7 @@ export class InvitationRepository
   }
 
   async save(
-    invitation: NewInvitationEntity
+    invitation: NewInvitationEntity,
   ): Promise<PersistInvitationEntity> {
     const createData = InvitationMapper.toCreateData(invitation);
 
