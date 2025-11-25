@@ -7,7 +7,10 @@ export type PersistCommentEntity = {
   updatedAt: Date;
 };
 
-export type NewCommentEntity = Omit<PersistCommentEntity, "id" | "createdAt" | "updatedAt">;
+export type NewCommentEntity = Omit<
+  PersistCommentEntity,
+  "id" | "createdAt" | "updatedAt"
+>;
 
 export class CommentEntity {
   private readonly _id?: number;
@@ -69,15 +72,27 @@ export class CommentEntity {
   }
 
   updateContent(newContent: string) {
-    if (!newContent || typeof newContent !== "string" || newContent.trim().length === 0) {
+    if (
+      !newContent ||
+      typeof newContent !== "string" ||
+      newContent.trim().length === 0
+    ) {
       throw new Error("잘못된 요청 형식");
     }
     this._content = newContent.trim();
   }
 
-  // 정적 생성자 - 영속화 전 (신규)
-  static createNew(params: { taskId: number; userId: number; content: string }): NewCommentEntity {
-    if (!params.content || typeof params.content !== "string" || params.content.trim().length === 0) {
+  //정적 생성자 - 영속화 전 (신규)
+  static createNew(params: {
+    taskId: number;
+    userId: number;
+    content: string;
+  }): NewCommentEntity {
+    if (
+      !params.content ||
+      typeof params.content !== "string" ||
+      params.content.trim().length === 0
+    ) {
       throw new Error("잘못된 요청 형식");
     }
 

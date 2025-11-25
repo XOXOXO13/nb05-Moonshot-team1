@@ -94,7 +94,6 @@ export class CommentService {
 
     const { data, total } = await this.repo.listComments(taskId, page, limit);
 
-    // author 정보 결합: 각 comment.userId에 대해 공통 조회 사용
     const results = await Promise.all(
       data.map(async (c) => {
         const author = await this.repo.findUserPublicInfo(c.userId);
@@ -139,7 +138,10 @@ export class CommentService {
       throw err;
     }
 
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
@@ -199,7 +201,10 @@ export class CommentService {
       err.status = 400;
       throw err;
     }
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
@@ -256,7 +261,10 @@ export class CommentService {
       err.status = 400;
       throw err;
     }
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;

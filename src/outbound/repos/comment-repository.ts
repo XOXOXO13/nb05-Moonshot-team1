@@ -5,6 +5,7 @@ import {
   CommentEntity,
 } from "../../domain/entites/comment/comment-entity";
 
+//repo
 export class CommentRepository {
   private prisma: PrismaClient;
 
