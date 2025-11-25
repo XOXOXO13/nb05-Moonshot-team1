@@ -1,4 +1,4 @@
-import { MemberEntity } from "../../domain/entites/member/member-entity";
+import { MemberEntity } from "../../domain/entities/member/member-entity";
 import { IMemberRepository } from "../../domain/ports/repositories/I-member-repository";
 import { MemberMapper } from "../mappers/member-mapper";
 import { BasePrismaClient, BaseRepository } from "./base-repository";
@@ -22,7 +22,7 @@ export class MemberRepository
 
   async findByProjectIdAndUserId(
     projectId: number,
-    userId: number,
+    userId: number
   ): Promise<MemberEntity | null> {
     const prismaMember = await this._prismaClient.member.findUnique({
       where: {

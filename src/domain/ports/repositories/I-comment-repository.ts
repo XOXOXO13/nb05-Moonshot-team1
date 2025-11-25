@@ -1,14 +1,14 @@
-import { PersistCommentEntity } from "../../entites/comment/comment-entity";
+import { PersistCommentEntity } from "../../entities/comment/comment-entity";
 
 export interface ICommentRepository {
   create(
     taskId: number,
     userId: number,
-    content: string,
+    content: string
   ): Promise<PersistCommentEntity>;
 
   findTaskProjectId(
-    taskId: number,
+    taskId: number
   ): Promise<{ id: number; projectId: number } | null>;
 
   isUserProjectMember(userId: number, projectId: number): Promise<boolean>;
@@ -20,25 +20,25 @@ export interface ICommentRepository {
     profileImageUrl?: string | null;
   } | null>;
 
-  // 목록 조회(페이지네이션)
+  //목록 조회(페이지네이션)
   listComments(
     taskId: number,
     page?: number,
-    limit?: number,
+    limit?: number
   ): Promise<{ data: PersistCommentEntity[]; total: number }>;
 
-  // 아이디 확인
+  //아이디 확인
   findById(commentId: string): Promise<PersistCommentEntity | null>;
 
-  // 작성자 확인
+  //작성자 확인
   findCommentAuthorId(commentId: string): Promise<number | null>;
 
-  // 수정
+  //수정
   updateContent(
     commentId: string,
-    content: string,
+    content: string
   ): Promise<PersistCommentEntity>;
 
-  // 삭제
+  //삭제
   delete(commentId: string): Promise<void>;
 }

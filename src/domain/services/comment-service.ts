@@ -94,7 +94,6 @@ export class CommentService {
 
     const { data, total } = await this.repo.listComments(taskId, page, limit);
 
-    // author 정보 결합: 각 comment.userId에 대해 공통 조회 사용
     const results = await Promise.all(
       data.map(async (c) => {
         const author = await this.repo.findUserPublicInfo(c.userId);

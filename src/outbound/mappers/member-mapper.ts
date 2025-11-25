@@ -2,7 +2,7 @@ import { Member } from "@prisma/client";
 import {
   MemberData,
   MemberEntity,
-} from "../../domain/entites/member/member-entity";
+} from "../../domain/entities/member/member-entity";
 
 export class MemberMapper {
   static toPersistEntity(data: Member): MemberEntity {

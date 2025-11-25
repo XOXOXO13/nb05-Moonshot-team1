@@ -82,7 +82,7 @@ export class CommentEntity {
     this._content = newContent.trim();
   }
 
-  // 정적 생성자 - 영속화 전 (신규)
+  //정적 생성자 - 영속화 전 (신규)
   static createNew(params: {
     taskId: number;
     userId: number;

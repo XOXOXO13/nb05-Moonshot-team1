@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { CommentService } from "../../domain/services/comment-service";
 
+//컨트롤러
 export class CommentController {
   constructor(private commentService: CommentService) {}
 

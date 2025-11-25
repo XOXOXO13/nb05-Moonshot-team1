@@ -10,14 +10,14 @@ import {
   SignUpOrSignInSocialInput,
   SignUpResponse,
 } from "../../inbound/ports/services/I-auth-service";
-import { UserEntity } from "../entites/user/user-entity";
+import { UserEntity } from "../entities/user/user-entity";
 import { IHashManager } from "../ports/managers/I-hash-manager";
 import { IUserRepository } from "../ports/repositories/I-user-repository";
 
 export class AuthService implements IAuthService {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly hashManager: IHashManager,
+    private readonly hashManager: IHashManager
   ) {}
   async signUp(input: SignUpInput): Promise<SignUpResponse> {
     const existingUser = await this.userRepository.findByEmail(input.email);
@@ -53,7 +53,7 @@ export class AuthService implements IAuthService {
 
     const isPasswordValid = await user.isPasswordMatch(
       input.password,
-      this.hashManager,
+      this.hashManager
     );
     if (!isPasswordValid) {
       throw new Error("Invalid password");
@@ -66,7 +66,7 @@ export class AuthService implements IAuthService {
   }
 
   async signUpOrSignInSocial(
-    input: SignUpOrSignInSocialInput,
+    input: SignUpOrSignInSocialInput
   ): Promise<AuthTokenResponse> {
     return {
       accessToken: "",

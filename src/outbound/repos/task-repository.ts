@@ -3,13 +3,13 @@ import { ITaskRepository } from "../../domain/ports/repositories/I-task-reposito
 import {
   CreateTaskEntity,
   ModifyTaskEntity,
-} from "../../domain/entites/task/task-entity";
-import { PersistTaskEntity } from "../../domain/entites/task/persist-task-entity";
+} from "../../domain/entities/task/task-entity";
+import { PersistTaskEntity } from "../../domain/entities/task/persist-task-entity";
 import { TaskMapper } from "../mappers/task-mapper";
 import {
   ViewProjectTaskEntity,
   ViewTaskEntity,
-} from "../../domain/entites/task/view-task-entity";
+} from "../../domain/entities/task/view-task-entity";
 
 export class TaskRepository implements ITaskRepository {
   private _prisma;
@@ -78,7 +78,7 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async getProjectTasks(
-    entity: ViewProjectTaskEntity,
+    entity: ViewProjectTaskEntity
   ): Promise<PersistTaskEntity[]> {
     const records = await this._prisma.task.findMany({
       where: {

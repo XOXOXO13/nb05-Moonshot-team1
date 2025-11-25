@@ -3,8 +3,8 @@ import {
   InvitationData,
   NewInvitationEntity,
   PersistInvitationEntity,
-} from "../../domain/entites/member/invitation-entity";
-import { InvitationEntity } from "../../domain/entites/member/invitation-entity";
+} from "../../domain/entities/member/invitation-entity";
+import { InvitationEntity } from "../../domain/entities/member/invitation-entity";
 
 export class InvitationMapper {
   static toPersistEntity = (data: Invitation): PersistInvitationEntity => {
@@ -24,7 +24,7 @@ export class InvitationMapper {
   };
 
   static toCreateData(
-    entity: NewInvitationEntity,
+    entity: NewInvitationEntity
   ): Omit<InvitationData, "version"> {
     const data = entity.toData();
 

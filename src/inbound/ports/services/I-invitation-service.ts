@@ -1,6 +1,6 @@
 import { MemberRole } from "@prisma/client";
-import { PersistInvitationEntity } from "../../../domain/entites/member/invitation-entity";
-import { MemberEntity } from "../../../domain/entites/member/member-entity";
+import { PersistInvitationEntity } from "../../../domain/entities/member/invitation-entity";
+import { MemberEntity } from "../../../domain/entities/member/member-entity";
 
 export interface IInvitationService {
   inviteMember(
@@ -10,7 +10,7 @@ export interface IInvitationService {
     inviteeEmail: string,
     role: MemberRole,
     projectName: string,
-    inviterRole: MemberRole,
+    inviterRole: MemberRole
   ): Promise<PersistInvitationEntity>;
   acceptInvitation(token: string, userId: number): Promise<MemberEntity>;
   deleteInvitation(token: string, creatorId: number): Promise<void>;

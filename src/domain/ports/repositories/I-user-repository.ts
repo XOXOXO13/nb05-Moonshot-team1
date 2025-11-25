@@ -1,5 +1,5 @@
-import { UserEntity } from "../../entites/user/user-entity";
-import { SocialProvider } from "../../entites/social-account/social-account-entity";
+import { UserEntity } from "../../entities/user/user-entity";
+import { SocialProvider } from "../../entities/social-account/social-account-entity";
 
 export type LockType = "FOR_UPDATE" | "FOR_SHARE";
 
@@ -11,11 +11,11 @@ export interface IUserRepository {
   delete(id: number): Promise<void>;
   findByRefreshToken(
     refreshToken: string,
-    lockType?: LockType,
+    lockType?: LockType
   ): Promise<UserEntity | null>;
 
   findBySocialAccount(
     provider: SocialProvider,
-    providerAccountId: string,
+    providerAccountId: string
   ): Promise<UserEntity | null>;
 }

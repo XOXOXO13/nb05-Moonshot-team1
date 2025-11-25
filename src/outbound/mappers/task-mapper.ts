@@ -1,11 +1,11 @@
 import { TaskResDto, TaskResDtos } from "../../inbound/responses/task-res-dto";
-import { AttachmentEntity } from "../../domain/entites/attachment/attachment-entity";
-import { TagEntity } from "../../domain/entites/tag/tag-entity";
+import { AttachmentEntity } from "../../domain/entities/attachment/attachment-entity";
+import { TagEntity } from "../../domain/entities/tag/tag-entity";
 
-import { UserEntity } from "../../domain/entites/user/user-entity";
+import { UserEntity } from "../../domain/entities/user/user-entity";
 import { Request } from "express";
 import { z } from "zod";
-import { PersistTaskEntity } from "../../domain/entites/task/persist-task-entity";
+import { PersistTaskEntity } from "../../domain/entities/task/persist-task-entity";
 
 export class TaskMapper {
   static toReqDto<T extends z.ZodTypeAny>(schema: T, req: Request) {
@@ -55,7 +55,7 @@ export class TaskMapper {
       endDate: Date | null;
       createdAt: Date;
       updatedAt: Date;
-    },
+    }
   ) {
     return new PersistTaskEntity({
       id: record.id,
@@ -94,7 +94,7 @@ export class TaskMapper {
       entity.attachments,
       entity.tags,
       entity.createdAt,
-      entity.updatedAt,
+      entity.updatedAt
     );
   }
 

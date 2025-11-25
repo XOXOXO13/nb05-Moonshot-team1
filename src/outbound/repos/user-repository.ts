@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { UserEntity } from "../../domain/entites/user/user-entity";
+import { UserEntity } from "../../domain/entities/user/user-entity";
 import {
   SocialAccountVo,
   SocialProvider,
-} from "../../domain/entites/social-account/social-account-entity";
+} from "../../domain/entities/social-account/social-account-entity";
 import {
   IUserRepository,
   LockType,
@@ -15,7 +15,7 @@ export class UserRepository implements IUserRepository {
 
   async findByEmail(
     email: string,
-    lockType?: LockType,
+    lockType?: LockType
   ): Promise<UserEntity | null> {
     const user = await this.prisma.user.findUnique({
       where: { email },
@@ -49,7 +49,7 @@ export class UserRepository implements IUserRepository {
   async create(userEntity: UserEntity): Promise<UserEntity> {
     const userData = userEntity.toCreateData();
     const socialAccountsData = userEntity.socialAccounts.map((account) =>
-      account.toData(),
+      account.toData()
     );
 
     const user = await this.prisma.user.create({
@@ -114,15 +114,15 @@ export class UserRepository implements IUserRepository {
 
   async findByRefreshToken(
     refreshToken: string,
-    lockType?: LockType,
+    lockType?: LockType
   ): Promise<UserEntity | null> {
     throw new Error(
-      "findByRefreshToken should be implemented in Service layer with proper hash comparison",
+      "findByRefreshToken should be implemented in Service layer with proper hash comparison"
     );
   }
   async findBySocialAccount(
     provider: SocialProvider,
-    providerAccountId: string,
+    providerAccountId: string
   ): Promise<UserEntity | null> {
     const user = await this.prisma.user.findFirst({
       where: {
@@ -153,7 +153,7 @@ export class UserRepository implements IUserRepository {
           providerAccountId: account.providerAccountId,
           userId: account.userId,
           createdAt: account.createdAt,
-        }),
+        })
       ) || [];
     return UserEntity.createPersist({
       id: prismaUser.id,
@@ -171,7 +171,7 @@ export class UserRepository implements IUserRepository {
 
   async addSocialAccountToUser(
     userId: number,
-    socialAccount: SocialAccountVo,
+    socialAccount: SocialAccountVo
   ): Promise<void> {
     const accountData = socialAccount.toData();
 
@@ -185,7 +185,7 @@ export class UserRepository implements IUserRepository {
   }
   async removeSocialAccountFromUser(
     userId: number,
-    provider: SocialProvider,
+    provider: SocialProvider
   ): Promise<void> {
     await this.prisma.socialAccount.deleteMany({
       where: {
@@ -195,7 +195,7 @@ export class UserRepository implements IUserRepository {
     });
   }
   async findByEmailForAuthentication(
-    email: string,
+    email: string
   ): Promise<UserEntity | null> {
     const user = await this.prisma.user.findUnique({
       where: { email },
@@ -218,7 +218,7 @@ export class UserRepository implements IUserRepository {
   }
   async existsBySocialAccount(
     provider: SocialProvider,
-    providerAccountId: string,
+    providerAccountId: string
   ): Promise<boolean> {
     const count = await this.prisma.socialAccount.count({
       where: {
