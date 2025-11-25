@@ -8,8 +8,6 @@ import { MemberEntity } from "../entites/member/member-entity";
 import { IInvitationService } from "../../inbound/ports/services/I-invitation-service";
 import { IEmailService } from "../../inbound/ports/services/I-email-service";
 
-
-
 export class InvitationService implements IInvitationService {
   private readonly _unitOfWork;
   private _emailService: IEmailService;
@@ -26,7 +24,7 @@ export class InvitationService implements IInvitationService {
     inviteeEmail: string,
     role: MemberRole,
     projectName: string,
-    inviterRole: MemberRole
+    inviterRole: MemberRole,
   ): Promise<PersistInvitationEntity> {
     return this._unitOfWork.do(
       async (repos: IRepositories) => {
@@ -41,7 +39,7 @@ export class InvitationService implements IInvitationService {
         const existingMember =
           await repos.memberRepository.findByProjectIdAndUserId(
             projectId,
-            inviteeId
+            inviteeId,
           );
         if (existingMember) {
           // 이미 초대된 멤버 초대 불가
@@ -50,7 +48,7 @@ export class InvitationService implements IInvitationService {
         const existingInvitation =
           await repos.invitationRepository.findByProjectIdAndInviteeId(
             projectId,
-            inviteeId
+            inviteeId,
           );
 
         if (existingInvitation) {
@@ -78,7 +76,7 @@ export class InvitationService implements IInvitationService {
           await this._emailService.sendInvitation(
             inviteeEmail,
             invitationLink,
-            projectName
+            projectName,
           );
         } catch (err) {
           throw new Error();
@@ -87,7 +85,7 @@ export class InvitationService implements IInvitationService {
         return savedInvitation;
       },
       true,
-      "Serializable"
+      "Serializable",
     );
   }
 
@@ -110,7 +108,7 @@ export class InvitationService implements IInvitationService {
         const existingMember =
           await repos.memberRepository.findByProjectIdAndUserId(
             invitationData.projectId,
-            userId
+            userId,
           );
         if (existingMember) {
           await repos.invitationRepository.delete(token);
@@ -129,7 +127,7 @@ export class InvitationService implements IInvitationService {
         return savedMember;
       },
       true,
-      "Serializable"
+      "Serializable",
     );
   }
 
@@ -144,7 +142,7 @@ export class InvitationService implements IInvitationService {
         await repos.invitationRepository.delete(token);
       },
       false,
-      "ReadCommitted"
+      "ReadCommitted",
     );
   }
 }

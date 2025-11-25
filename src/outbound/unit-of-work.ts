@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { IRepositories } from "../domain/ports/I-repositories";
+import { IRepositories } from "../domain/ports/repositories/I-repositories";
 import { UserRepository } from "./repos/user-repository";
 import { IUserRepository } from "../domain/ports/repositories/I-user-repository";
 import { RepositoryFactory } from "./repository-factory";
@@ -32,7 +32,7 @@ export class UnitOfWork {
     isolationLevel:
       | "ReadCommitted"
       | "RepeatableRead"
-      | "Serializable" = "ReadCommitted"
+      | "Serializable" = "ReadCommitted",
   ): Promise<T> {
     const maxRetries = isOptimistic ? 5 : 1;
 
@@ -45,12 +45,12 @@ export class UnitOfWork {
           },
           {
             isolationLevel,
-          }
+          },
         );
       } catch (err) {
         if (this.isRetryableError(err) && isOptimistic && i < maxRetries - 1) {
           console.warn(
-            `트랜잭션 재시도 ${i + 1}/${maxRetries} - ${err instanceof Error ? err.message : "Unknown error"}`
+            `트랜잭션 재시도 ${i + 1}/${maxRetries} - ${err instanceof Error ? err.message : "Unknown error"}`,
           );
           await this.delay(Math.pow(2, i) * 100);
           continue;

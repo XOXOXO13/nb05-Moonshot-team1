@@ -2,6 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { IUtils } from "../../shared/utils-interface";
 import { TokenGenerateParams } from "../../shared/utils/token-util";
 import jwt from "jsonwebtoken";
+import {
+  BusinessException,
+  BusinessExceptionType,
+} from "../../shared/exceptions/business-exception";
+
 declare module "express-serve-static-core" {
   interface Request {
     userId?: string;
@@ -25,56 +30,71 @@ export class AuthMiddleware {
   static verifyToken = (token: string, utils: IUtils) => {
     return utils.token.verifyToken({ token });
   };
+  protectCrsfAttack = (req: Request, res: Response, next: NextFunction) => {
+    if (!["HEAD", "OPTIONS", "GET"].includes(req.method)) {
+      const crsfTokenHeader = req.headers["x-crsf-token"];
+      const crsfTokenCookie = req.signedCookies.csrfToken;
+      if (
+        !crsfTokenHeader ||
+        !crsfTokenCookie ||
+        crsfTokenHeader !== crsfTokenCookie
+      ) {
+        throw new BusinessException({
+          type: BusinessExceptionType.INVALID_AUTH,
+        });
+      }
+    }
+    return next();
+  };
 
-  isUser = (req: Request, res: Response, next: NextFunction) => {
+  validateAccessToken = (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    if (
+      !authHeader ||
+      typeof authHeader !== "string" ||
+      authHeader.split(" ").length !== 2 ||
+      authHeader.split(" ")[0] !== "Bearer"
+    ) {
+      return next();
+    }
+
+    const accessToken = authHeader.split(" ")[1];
     try {
-      const authHeader = req.headers.authorization || req.headers.Authorization;
-
-      if (!authHeader || typeof authHeader !== "string") {
-        return res.status(401).json({
-          error: "UNAUTHORIZED",
-          message: "인증 토큰이 필요합니다.",
-        });
-      }
-
-      const tokenParts = authHeader.split(" ");
-      if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
-        return res.status(401).json({
-          error: "INVALID_TOKEN_FORMAT",
-          message:
-            "토큰 형식이 올바르지 않습니다. 'Bearer {token}' 형식을 사용하세요.",
-        });
-      }
-
-      const accessToken = tokenParts[1];
-      const payload = this._utils.token.verifyToken({ token: accessToken });
+      const payload = this._utils.token.verifyToken({ token: accessToken }) as {
+        userId: number;
+        email: string;
+      };
 
       req.userId = payload.userId.toString();
       req.user = {
         userId: payload.userId,
         email: payload.email,
       };
+    } catch (error) {}
+    return next();
+  };
 
-      return next();
-    } catch (error: any) {
-      if (error.name === "TokenExpiredError") {
-        return res.status(401).json({
-          error: "TOKEN_EXPIRED",
-          message: "토큰이 만료되었습니다.",
-        });
-      }
-
-      if (error.name === "JsonWebTokenError") {
-        return res.status(401).json({
-          error: "INVALID_TOKEN",
-          message: "유효하지 않은 토큰입니다.",
-        });
-      }
-
-      return res.status(500).json({
-        error: "INTERNAL_SERVER_ERROR",
-        message: "토큰 검증 중 오류가 발생했습니다.",
+  checkSignedInUser = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.userId) {
+      throw new BusinessException({
+        type: BusinessExceptionType.INVALID_AUTH,
       });
     }
+
+    return next();
+  };
+  checkNotSignedInUser = (req: Request, res: Response, next: NextFunction) => {
+    if (req.userId) {
+      throw new BusinessException({
+        type: BusinessExceptionType.ALREADY_AUTHENTICATED,
+      });
+    }
+    return next();
+  };
+
+  isUser = (req: Request, res: Response, next: NextFunction) => {
+    this.validateAccessToken(req, res, () => {
+      this.checkSignedInUser(req, res, next);
+    });
   };
 }

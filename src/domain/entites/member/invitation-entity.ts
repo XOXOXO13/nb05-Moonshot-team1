@@ -121,9 +121,9 @@ export class InvitationEntity {
   }
 
   static createPersist(
-    params: InvitationData & { createdAt: Date; updatedAt: Date }
+    params: InvitationData & { createdAt: Date; updatedAt: Date },
   ): PersistInvitationEntity {
-    const role : MemberRole = params.role || "MEMBER";
+    const role: MemberRole = params.role || "MEMBER";
 
     return new InvitationEntity({
       ...params,
@@ -139,17 +139,17 @@ export class InvitationEntity {
       creatorId: this._creatorId,
       expiresAt: this._expiresAt,
       role: this._role,
-      version: this._version
+      version: this._version,
     };
   }
 
-  public toUpdateData(): InvitationUpdateData{
-    if(!this._isModified){
+  public toUpdateData(): InvitationUpdateData {
+    if (!this._isModified) {
       return {};
     }
-    const updateData : InvitationUpdateData = {
+    const updateData: InvitationUpdateData = {
       version: this._version,
-    }
+    };
     return updateData;
   }
 }

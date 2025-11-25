@@ -22,7 +22,7 @@ export class MemberRepository
 
   async findByProjectIdAndUserId(
     projectId: number,
-    userId: number
+    userId: number,
   ): Promise<MemberEntity | null> {
     const prismaMember = await this._prismaClient.member.findUnique({
       where: {
@@ -39,11 +39,11 @@ export class MemberRepository
   }
 
   async delete(projectId: number, userId: number): Promise<void> {
-    const result =  await this._prismaClient.member.deleteMany({
-      where:{
+    const result = await this._prismaClient.member.deleteMany({
+      where: {
         projectId: projectId,
         userId: userId,
-      }
+      },
     });
   }
 }

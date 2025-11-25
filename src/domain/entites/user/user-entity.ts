@@ -1,6 +1,6 @@
 import { IHashManager } from "../../ports/managers/I-hash-manager";
 import {
-  SocialAccountEntity,
+  SocialAccountVo,
   SocialProvider,
 } from "../social-account/social-account-entity";
 
@@ -40,7 +40,7 @@ export class UserEntity {
   private _version: number;
   private readonly _createdAt?: Date;
   private readonly _updatedAt?: Date;
-  private _socialAccounts: SocialAccountEntity[];
+  private _socialAccounts: SocialAccountVo[];
 
   constructor(attrs: {
     id?: number;
@@ -52,7 +52,7 @@ export class UserEntity {
     refreshToken?: string;
     createdAt?: Date;
     updatedAt?: Date;
-    socialAccounts?: SocialAccountEntity[];
+    socialAccounts?: SocialAccountVo[];
   }) {
     this._id = attrs.id;
     this._email = attrs.email;
@@ -145,7 +145,7 @@ export class UserEntity {
   static createNewSocial(params: {
     email: string;
     name: string;
-    socialAccount: SocialAccountEntity;
+    socialAccount: SocialAccountVo;
   }): UserEntity {
     const { email, name, socialAccount } = params;
 
@@ -171,7 +171,7 @@ export class UserEntity {
     refreshToken?: string;
     createdAt: Date;
     updatedAt: Date;
-    socialAccounts?: SocialAccountEntity[];
+    socialAccounts?: SocialAccountVo[];
   }): UserEntity {
     return new UserEntity(params);
   }
@@ -255,11 +255,11 @@ export class UserEntity {
       this._version++;
     }
   }
-  get socialAccounts(): SocialAccountEntity[] {
+  get socialAccounts(): SocialAccountVo[] {
     return this._socialAccounts;
   }
 
-  addSocialAccount(socialAccount: SocialAccountEntity): void {
+  addSocialAccount(socialAccount: SocialAccountVo): void {
     const existingAccount = this._socialAccounts.find(
       (account) => account.provider === socialAccount.provider,
     );
@@ -285,9 +285,7 @@ export class UserEntity {
     this._isModified = true;
   }
 
-  getSocialAccountByProvider(
-    provider: SocialProvider,
-  ): SocialAccountEntity | null {
+  getSocialAccountByProvider(provider: SocialProvider): SocialAccountVo | null {
     return (
       this._socialAccounts.find((account) => account.provider === provider) ||
       null

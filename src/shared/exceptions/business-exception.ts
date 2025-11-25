@@ -1,5 +1,8 @@
 export enum BusinessExceptionType {
   UNKNOWN_SERVER_ERROR,
+  INVALID_AUTH,
+  ALREADY_AUTHENTICATED,
+  EMAIL_DUPLICATE,
 }
 
 const BusinessExceptionTable: Record<
@@ -9,6 +12,18 @@ const BusinessExceptionTable: Record<
   [BusinessExceptionType.UNKNOWN_SERVER_ERROR]: {
     statusCode: 500,
     message: "알 수 없는 서버 에러가 발생하였습니다.",
+  },
+  [BusinessExceptionType.INVALID_AUTH]: {
+    statusCode: 401,
+    message: "인증이 필요합니다.",
+  },
+  [BusinessExceptionType.ALREADY_AUTHENTICATED]: {
+    statusCode: 400,
+    message: "이미 로그인된 사용자입니다.",
+  },
+  [BusinessExceptionType.EMAIL_DUPLICATE]: {
+    statusCode: 409,
+    message: "중복된 이메일입니다.",
   },
 };
 

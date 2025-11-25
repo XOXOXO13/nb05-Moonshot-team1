@@ -1,141 +1,65 @@
-import { Router, Request, Response } from "express";
-import { IUserService } from "../../domain/services/user-service";
-import { IServices } from "../ports/I-services";
-import { IUtils } from "../../shared/utils-interface";
-import { AuthMiddleware } from "../middlewares/auth-middleware";
+import { PrismaClient } from "@prisma/client";
 import { BaseController } from "./base-controller";
+import { IServices } from "../ports/services-interface";
+import { AuthMiddleware } from "../middlewares/auth-middleware";
+import { Response } from "express";
 
-export class UserController extends BaseController {
+export class UsersController extends BaseController {
+  private readonly _prisma: PrismaClient;
+
   constructor(
-    _services: IServices,
-    private utils: IUtils,
-    private authMiddleware: AuthMiddleware
+    services: IServices,
+    private _authMiddleware: AuthMiddleware,
+    prisma?: PrismaClient,
   ) {
     super({
-      basePath: "/auth",
-      services: _services,
+      basePath: "/users",
+      services,
     });
-    this.initializeRoutes();
+    this._prisma = prisma || new PrismaClient();
+    this.registerUserRoutes();
   }
 
-  private initializeRoutes() {
-    // 사용자 인증 관련
-    this.router.post("/register", this.registerUser.bind(this));
-    this.router.post("/login", this.login.bind(this));
-    this.router.post("/refresh", this.refresh.bind(this));
-    this.router.get("/google", this.googleAuth.bind(this));
-    this.router.get("/google/callback", this.googleCallback.bind(this));
+  private registerUserRoutes() {
+    this.router.get(
+      "/me",
+      this.catch(this._authMiddleware.validateAccessToken),
+      this.catch(this.getMe),
+    );
 
-    // === 사용자 정보 관리 (나중에 구현할 예정) ===
-    // this.router.get('/users/me', this.AuthMiddleware.isUser, this.getMe.bind(this));
-    // this.router.patch('/users/me', this.AuthMiddleware.isUser, this.updateMe.bind(this));
-    // this.router.get('/users/me/projects', this.AuthMiddleware.isUser, this.getUserProjects.bind(this));
-    // this.router.get('/users/me/tasks', this.AuthMiddleware.isUser, this.getUserTasks.bind(this));
+    this.router.patch(
+      "/me",
+      this.catch(this._authMiddleware.validateAccessToken),
+      this.catch(this.updateMe),
+    );
+    this.router.get(
+      "/me/projects",
+      this.catch(this._authMiddleware.validateAccessToken),
+      this.catch(this.getUserProjects),
+    );
+    this.router.get(
+      "/me/tasks",
+      this.catch(this._authMiddleware.validateAccessToken),
+      this.catch(this.getUserTasks),
+    );
   }
 
-  private setTokenCookies = (
-    res: Response,
-    accessToken: string,
-    refreshToken: string
-  ) => {
-    const cookieOptions = {
-      httpOnly: false,
-      secure: false,
-      sameSite: "none" as const,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/",
-    };
-
-    res.cookie("authToken", accessToken, cookieOptions);
-    res.cookie("accessToken", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, cookieOptions);
-  };
-
-  private generateTokenResponse = (user: any, res: Response) => {
-    const accessToken = this.utils.token.generateAccessToken({
-      userId: user.id,
-      email: user.email,
-    });
-    const refreshToken = this.utils.token.generateRefreshToken({
-      userId: user.id,
-      email: user.email,
-    });
-    this.setTokenCookies(res, accessToken, refreshToken);
-
-    return { accessToken, refreshToken };
-  };
-
-  refresh = async (req: Request, res: Response) => {
+  getMe = async (req: any, res: Response) => {
     try {
-      const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
-
-      if (!refreshToken) {
+      const userId = req.user?.userId;
+      if (!userId) {
         return res.status(401).json({
-          error: "REFRESH_TOKEN_REQUIRED",
-          message: "Refresh token이 필요합니다.",
+          message: "잘못된 요청입니다.",
         });
       }
+      const user = await this.services.user.findById(userId);
 
-      const decoded = AuthMiddleware.verifyToken(refreshToken, this.utils);
-
-      const user = await this.services.user.findById(decoded.userId);
       if (!user) {
         return res.status(404).json({
-          error: "USER_NOT_FOUND",
-          message: "사용자를 찾을 수 없습니다.",
+          message: "잘못된 요청입니다",
         });
       }
-
-      const tokens = this.generateTokenResponse(user, res);
-
-      res.status(200).json({
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-      });
-    } catch (error: any) {
-      console.error("Refresh error:", error);
-      res.status(401).json({
-        error: "INVALID_REFRESH_TOKEN",
-        message: "Refresh token이 유효하지 않습니다.",
-      });
-    }
-  };
-
-  // 임시 구현 - Google OAuth
-  googleAuth = async (req: Request, res: Response) => {
-    res.status(501).json({
-      error: "NOT_IMPLEMENTED",
-      message: "Google OAuth가 아직 구현되지 않았습니다.",
-    });
-  };
-
-  googleCallback = async (req: Request, res: Response) => {
-    res.status(501).json({
-      error: "NOT_IMPLEMENTED",
-      message: "Google OAuth 콜백이 아직 구현되지 않았습니다.",
-    });
-  };
-
-  registerUser = async (req: Request, res: Response) => {
-    try {
-      const { email, password, name, profileImageUrl } = req.body;
-
-      if (!email || !password || !name) {
-        return res.status(400).json({
-          error: "EMAIL_PASSWORD_NAME_REQUIRED",
-          message: "이메일, 비밀번호, 이름은 필수입니다.",
-        });
-      }
-
-      const user = await this.services.user.registerLocal({
-        email,
-        password,
-        name,
-        profileImageUrl,
-      });
-
-      this.generateTokenResponse(user, res);
-      res.status(201).json({
+      return res.status(200).json({
         id: user.id,
         email: user.email,
         name: user.name,
@@ -144,134 +68,193 @@ export class UserController extends BaseController {
         updatedAt: user.updatedAt,
       });
     } catch (error: any) {
-      console.error("Register error:", error);
-
-      if (error.message.includes("이미 사용 중인 이메일")) {
-        return res.status(409).json({
-          error: "EMAIL_ALREADY_EXISTS",
-          message: error.message,
-        });
-      }
-
-      if (
-        error.message.includes("비밀번호는") ||
-        error.message.includes("이름은") ||
-        error.message.includes("올바른 이메일")
-      ) {
-        return res.status(400).json({
-          error: "VALIDATION_ERROR",
-          message: error.message,
-        });
-      }
-
-      res.status(500).json({
-        error: "INTERNAL_SERVER_ERROR",
-        message: "서버 내부 오류가 발생했습니다.",
-      });
-    }
-  };
-
-  login = async (req: Request, res: Response) => {
-    try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        return res.status(400).json({
-          error: "EMAIL_PASSWORD_REQUIRED",
-          message: "이메일과 비밀번호는 필수입니다.",
-        });
-      }
-      const user = await this.services.user.loginLocal(email, password);
-      const tokens = this.generateTokenResponse(user, res);
-
-      res.status(200).json({
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-      });
-    } catch (error: any) {
-      console.error("Login Error", error);
-
-      if (
-        error.message.includes("사용자를 찾을 수 없습니다.") ||
-        error.message.includes("비밀번호가 일치하지 않습니다.")
-      ) {
-        return res.status(401).json({
-          error: "INVALID_CREDENTIALS",
-          message: "이메일 또는 비밀번호가 올바르지 않습니다.",
-        });
-      }
-      res.status(500).json({
-        error: "INTERNAL_SERVER_ERROR",
-        message: "서버 내부 오류가 발생했습니다.",
-      });
-    }
-  };
-
-  getMe = async (req: Request, res: Response) => {
-    try {
-      const userId = req.user!.userId;
-      const user = await this.services.user.findById(userId);
-
-      if (!user) {
-        return res.status(404).json({
-          error: "USER_NOT_FOUND",
-          message: "사용자를 찾을 수 없습니다.",
-        });
-      }
-
-      res.status(200).json({
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          profileImageUrl: user.profileImageUrl,
-          socialAccounts: user.socialAccounts.map((account: any) => ({
-            provider: account.provider,
-            createdAt: account.createdAt,
-          })),
-        },
-      });
-    } catch (error: any) {
       console.error("GetMe error:", error);
-      res.status(500).json({
-        error: "INTERNAL_SERVER_ERROR",
-        message: "서버 내부 오류가 발생했습니다.",
+
+      return res.status(400).json({
+        message: "잘못된 요청입니다",
       });
     }
   };
-
-  updateMe = async (req: Request, res: Response) => {
+  updateMe = async (req: any, res: Response) => {
     try {
-      const userId = req.user!.userId;
+      const userId = req.user?.userId;
+
+      if (!userId) {
+        return res.status(401).json({
+          message: "잘못된 요청입니다",
+        });
+      }
+
       const { name, profileImageUrl } = req.body;
 
+      if (name !== undefined && !name) {
+        return res.status(400).json({
+          message: "잘못된 요청입니다",
+        });
+      }
       const user = await this.services.user.updateProfile(userId, {
         name,
         profileImageUrl,
       });
-
-      res.status(200).json({
+      return res.status(200).json({
         message: "사용자 정보가 업데이트되었습니다.",
         user: {
           id: user.id,
           email: user.email,
           name: user.name,
-          profileImageUrl: user.profileImageUrl,
+          profileImage: user.profileImageUrl || null,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         },
       });
     } catch (error: any) {
       console.error("UpdateMe error:", error);
 
-      if (error.message.includes("사용자를 찾을 수 없습니다")) {
+      if (error.message?.includes("not found")) {
         return res.status(404).json({
-          error: "USER_NOT_FOUND",
-          message: error.message,
+          message: "잘못된 요청입니다",
         });
       }
 
-      res.status(500).json({
-        error: "INTERNAL_SERVER_ERROR",
-        message: "서버 내부 오류가 발생했습니다.",
+      return res.status(400).json({
+        message: "잘못된 요청입니다",
       });
     }
   };
+  getUserProjects = async (req: any, res: Response) => {
+    try {
+      const userId = req.user?.userId;
+
+      if (!userId) {
+        return res.status(401).json({
+          message: "잘못된 요청입니다",
+        });
+      }
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const order_by = (req.query.order_by as string) || "created_at";
+      const order = (req.query.order as string) || "desc";
+      if (page < 1 || limit < 1 || limit > 100) {
+        return res.status(400).json({
+          message: "유효하지 않은 페이지 또는 limit입니다",
+        });
+      }
+
+      if (!["created_at", "name"].includes(order_by)) {
+        return res.status(400).json({
+          message: "유효하지 않은 order_by입니다",
+        });
+      }
+
+      if (!["asc", "desc"].includes(order)) {
+        return res.status(400).json({
+          message: "유효하지 않은 order입니다",
+        });
+      }
+      const prisma = this._prisma;
+
+      try {
+        const projects = await prisma.project.findMany({
+          where: {
+            OR: [
+              { userId: userId },
+              {
+                members: {
+                  some: {
+                    userId: userId,
+                  },
+                },
+              },
+            ],
+          },
+          include: {
+            members: true,
+            tasks: true,
+          },
+          orderBy: {
+            [order_by === "created_at" ? "createdAt" : "name"]: order,
+          },
+          skip: (page - 1) * limit,
+          take: limit,
+        });
+        const total = await prisma.project.count({
+          where: {
+            OR: [
+              { userId: userId },
+              {
+                members: {
+                  some: {
+                    userId: userId,
+                  },
+                },
+              },
+            ],
+          },
+        });
+        const data = projects.map((project) => {
+          const todoCount =
+            project.tasks?.filter((t) => t.status === "TODO").length || 0;
+          const inProgressCount =
+            project.tasks?.filter((t) => t.status === "IN_PROGRESS").length ||
+            0;
+          const doneCount =
+            project.tasks?.filter((t) => t.status === "DONE").length || 0;
+
+          return {
+            id: project.id,
+            name: project.name,
+            description: project.description || null,
+            memberCount: project.members?.length || 0,
+            todoCount,
+            inProgressCount,
+            doneCount,
+            createdAt: project.createdAt,
+            updatedAt: project.updatedAt,
+          };
+        });
+        return res.status(200).json({
+          data,
+          total,
+        });
+      } catch (error: any) {
+        console.error("GetUserProjects error:", error);
+
+        return res.status(400).json({
+          message: "잘못된 요청입니다",
+        });
+      }
+    } catch (error: any) {
+      console.error("GetUserProjects error:", error);
+
+      return res.status(400).json({
+        message: "잘못된 요청입니다",
+      });
+    }
+  };
+  getUserTasks = async (req: any, res: Response) => {
+    try {
+      return res.status(501).json({
+        message: "아직 구현되지 않은 기능입니다.",
+      });
+    } catch (error: any) {
+      console.error("GetUserTasks error:", error);
+
+      return res.status(400).json({
+        message: "잘못된 요청입니다",
+      });
+    }
+  };
+
+  /**
+   * 내 할일 조회
+   * GET /user/me/tasks
+   *
+   * 헤더:
+   * Authorization: Bearer <accessToken>
+   *
+   * 응답 (200 OK):
+   * [...할일 목록]
+   *
+   * 상태: 나중에 구현...
+   */
 }

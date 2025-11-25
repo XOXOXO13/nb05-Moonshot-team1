@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { UserEntity } from "../../domain/entites/user/user-entity";
 import {
-  SocialAccountEntity,
+  SocialAccountVo,
   SocialProvider,
 } from "../../domain/entites/social-account/social-account-entity";
 import {
@@ -49,7 +49,7 @@ export class UserRepository implements IUserRepository {
   async create(userEntity: UserEntity): Promise<UserEntity> {
     const userData = userEntity.toCreateData();
     const socialAccountsData = userEntity.socialAccounts.map((account) =>
-      account.toCreateData(),
+      account.toData(),
     );
 
     const user = await this.prisma.user.create({
@@ -65,7 +65,7 @@ export class UserRepository implements IUserRepository {
             ? {
                 create: socialAccountsData.map((account) => ({
                   provider: account.provider,
-                  providerId: account.providerId,
+                  providerAccountId: account.providerAccountId,
                 })),
               }
             : undefined,
@@ -122,14 +122,14 @@ export class UserRepository implements IUserRepository {
   }
   async findBySocialAccount(
     provider: SocialProvider,
-    providerId: string,
+    providerAccountId: string,
   ): Promise<UserEntity | null> {
     const user = await this.prisma.user.findFirst({
       where: {
         socialAccounts: {
           some: {
             provider: provider,
-            providerId: providerId,
+            providerAccountId: providerAccountId,
           },
         },
       },
@@ -147,10 +147,10 @@ export class UserRepository implements IUserRepository {
   private toDomainEntity(prismaUser: any): UserEntity {
     const socialAccounts =
       prismaUser.socialAccounts?.map((account: any) =>
-        SocialAccountEntity.createPersist({
+        SocialAccountVo.createPersist({
           id: account.id,
           provider: account.provider as SocialProvider,
-          providerId: account.providerId,
+          providerAccountId: account.providerAccountId,
           userId: account.userId,
           createdAt: account.createdAt,
         }),
@@ -171,14 +171,14 @@ export class UserRepository implements IUserRepository {
 
   async addSocialAccountToUser(
     userId: number,
-    socialAccount: SocialAccountEntity,
+    socialAccount: SocialAccountVo,
   ): Promise<void> {
-    const accountData = socialAccount.toCreateData();
+    const accountData = socialAccount.toData();
 
     await this.prisma.socialAccount.create({
       data: {
         provider: accountData.provider,
-        providerId: accountData.providerId,
+        providerAccountId: accountData.providerAccountId,
         userId: userId,
       },
     });
@@ -218,12 +218,12 @@ export class UserRepository implements IUserRepository {
   }
   async existsBySocialAccount(
     provider: SocialProvider,
-    providerId: string,
+    providerAccountId: string,
   ): Promise<boolean> {
     const count = await this.prisma.socialAccount.count({
       where: {
         provider: provider,
-        providerId: providerId,
+        providerAccountId: providerAccountId,
       },
     });
     return count > 0;
