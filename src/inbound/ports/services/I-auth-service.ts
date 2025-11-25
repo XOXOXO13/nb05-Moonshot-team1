@@ -2,13 +2,13 @@ export interface SignUpInput {
   email: string;
   password: string;
   name: string;
-  profileImageUrl?: string;
+  profileImage?: string;
 }
 export interface SignUpResponse {
   id: number;
   email: string;
   name: string;
-  profileImageUrl?: string;
+  profileImage?: string;
   createdAt: Date;
   updatedAt: Date;
 }

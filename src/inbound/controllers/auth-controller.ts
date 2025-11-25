@@ -54,7 +54,7 @@ export class AuthController extends BaseController {
   }
   register = async (req: any, res: Response) => {
     try {
-      const { email, password, name, profileImageUrl } = req.body;
+      const { email, password, name, profileImage } = req.body;
       if (!email || !password || !name) {
         return res.status(400).json({
           error: "Missing required fields: email, password, name",
@@ -75,7 +75,7 @@ export class AuthController extends BaseController {
         email,
         password,
         name,
-        profileImageUrl,
+        profileImage,
       };
 
       const user = await this.services.auth.signUp(input);

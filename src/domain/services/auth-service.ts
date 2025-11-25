@@ -29,7 +29,7 @@ export class AuthService implements IAuthService {
       email: input.email,
       password: input.password,
       name: input.name,
-      profileImageUrl: input.profileImageUrl,
+      profileImageUrl: input.profileImage,
       hashManager: this.hashManager,
     });
 
@@ -39,7 +39,7 @@ export class AuthService implements IAuthService {
       id: savedUser.id!,
       email: savedUser.email,
       name: savedUser.name,
-      profileImageUrl: savedUser.profileImageUrl || undefined,
+      profileImage: savedUser.profileImageUrl || undefined,
       createdAt: savedUser.createdAt!,
       updatedAt: savedUser.updatedAt!,
     };
