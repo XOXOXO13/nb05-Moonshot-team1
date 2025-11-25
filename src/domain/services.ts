@@ -1,6 +1,6 @@
 import { IServices } from "../inbound/ports/I-services";
 import { ITaskService } from "../inbound/ports/services/I-task-service";
-import { IProjectService } from "../inbound/ports/services/project-service-interface";
+import { IProjectService } from "../inbound/ports/services/I-project-service";
 import { IUserService } from "../inbound/ports/services/I-user-service";
 import { IAuthService } from "../inbound/ports/services/I-auth-service";
 
