@@ -13,15 +13,12 @@ export interface ICommentRepository {
 
   isUserProjectMember(userId: number, projectId: number): Promise<boolean>;
 
-  findUserPublicInfo(userId: number): Promise<
-    | {
-        id: number;
-        name: string;
-        email: string;
-        profileImageUrl?: string | null;
-      }
-    | null
-  >;
+  findUserPublicInfo(userId: number): Promise<{
+    id: number;
+    name: string;
+    email: string;
+    profileImageUrl?: string | null;
+  } | null>;
 
   // 목록 조회(페이지네이션)
   listComments(
@@ -37,7 +34,10 @@ export interface ICommentRepository {
   findCommentAuthorId(commentId: string): Promise<number | null>;
 
   // 수정
-  updateContent(commentId: string, content: string): Promise<PersistCommentEntity>;
+  updateContent(
+    commentId: string,
+    content: string,
+  ): Promise<PersistCommentEntity>;
 
   // 삭제
   delete(commentId: string): Promise<void>;

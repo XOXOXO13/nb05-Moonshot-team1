@@ -139,7 +139,10 @@ export class CommentService {
       throw err;
     }
 
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
@@ -199,7 +202,10 @@ export class CommentService {
       err.status = 400;
       throw err;
     }
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
@@ -256,7 +262,10 @@ export class CommentService {
       err.status = 400;
       throw err;
     }
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
