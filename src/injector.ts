@@ -41,7 +41,7 @@ export class DependencyInjector {
 
     const repoFactory = new RepositoryFactory({
       projectRepository: (prismaClient) => new ProjectRepository(prismaClient),
-      taskRepository: (prismaClient) => new TaskRepository(prismaClient),
+      taskRepository: (prismaClient) => new TaskRepository(prisma),
       userRepository: (prismaClient) => new UserRepository(prismaClient),
     });
 
