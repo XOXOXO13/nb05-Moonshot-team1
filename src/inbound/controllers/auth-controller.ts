@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { AuthMiddleware } from "../middlewares/auth-middleware";
-import { IServices } from "../ports/services-interface";
+import { IServices } from "../ports/I-services";
 import { BaseController } from "./base-controller";
 import { Utils } from "../../shared/utils-interface";
 import {
