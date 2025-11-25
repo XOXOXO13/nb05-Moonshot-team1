@@ -19,6 +19,13 @@ import { RepositoryFactory } from "./outbound/repository-factory";
 import { UnitOfWork } from "./outbound/unit-of-work";
 import { ProjectController } from "./inbound/controllers/project-controller";
 import { AuthService } from "./domain/services/auth-service";
+import { InvitationRepository } from "./outbound/repos/invitation-repository";
+import { MemberRepository } from "./outbound/repos/member-repository";
+import { InvitationService } from "./domain/services/invitation-service";
+import { EmailService } from "./domain/services/email-service";
+import { MemberService } from "./domain/services/member-service";
+import { InvitationrController } from "./inbound/controllers/invitation-controller";
+import { smtpConfig } from "./shared/utils/smtp-util";
 
 export class DependencyInjector {
   private _server: Server;
@@ -36,6 +43,7 @@ export class DependencyInjector {
     const tokenUtil = new TokenUtil(configUtil);
     const utils = new Utils(configUtil, tokenUtil);
     const prisma = new PrismaClient();
+    const smtp = smtpConfig;
 
     const hashManager = new BcryptHashManager();
 
@@ -43,20 +51,28 @@ export class DependencyInjector {
       projectRepository: (prismaClient) => new ProjectRepository(prismaClient),
       taskRepository: (prismaClient) => new TaskRepository(prisma),
       userRepository: (prismaClient) => new UserRepository(prismaClient),
+      invitationRepository: (prismaClient) =>
+        new InvitationRepository(prismaClient),
+      memberRepository: (prismaClient) => new MemberRepository(prismaClient),
     });
 
     const unitOfWork: UnitOfWork = new UnitOfWork(prisma, repoFactory);
     const repositories = unitOfWork.repos;
 
+    const emailService = new EmailService(smtp, "no-reply@moonshot.com");
     const taskService = new TaskService(repositories);
     const projectService = new ProjectService(unitOfWork);
     const userService = new UserService(unitOfWork.userRepository, hashManager);
     const authService = new AuthService(unitOfWork.userRepository, hashManager);
+    const invitationService = new InvitationService(unitOfWork, emailService);
+    const memberService = new MemberService(unitOfWork);
     const services = new Services(
       taskService,
       projectService,
       userService,
       authService,
+      invitationService,
+      memberService
     );
 
     const authMiddleware = new AuthMiddleware(utils);
@@ -66,11 +82,16 @@ export class DependencyInjector {
     const projectController = new ProjectController(services, authMiddleware);
     const authController = new AuthController(services, authMiddleware, utils);
     const usersController = new UsersController(services, authMiddleware);
+    const invitationController = new InvitationrController(
+      services,
+      authMiddleware
+    );
     const controllers = [
       taskController,
       projectController,
       authController,
       usersController,
+      invitationController,
     ];
 
     const port = parseInt(process.env.PORT || "4000", 10);
