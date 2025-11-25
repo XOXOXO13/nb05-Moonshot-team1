@@ -251,31 +251,27 @@ export class AuthController extends BaseController {
 
   signInGoogle = async (req: any, res: Response) => {
     try {
-
       const googleSignInUrl = new URL(
         "https://accounts.google.com/o/oauth2/v2/auth",
       );
 
-       googleSignInUrl.searchParams.set(
+      googleSignInUrl.searchParams.set(
         "client_id",
-        process.env.GOOGLE_OAUTH_CLIENT_ID || ""
+        process.env.GOOGLE_OAUTH_CLIENT_ID || "",
       );
- 
+
       googleSignInUrl.searchParams.set("response_type", "code");
       googleSignInUrl.searchParams.set("scope", "email profile openid");
 
-
       console.log(
         googleSignInUrl.toString() +
-          `&redirect_uri=${process.env.GOOGLE_OAUTH_REDIRECT_URI}`
+          `&redirect_uri=${process.env.GOOGLE_OAUTH_REDIRECT_URI}`,
       );
       return res.redirect(
         googleSignInUrl.toString() +
-          `&redirect_uri=${process.env.GOOGLE_OAUTH_REDIRECT_URI}`
+          `&redirect_uri=${process.env.GOOGLE_OAUTH_REDIRECT_URI}`,
       );
-
     } catch (error: any) {
-
       return res.status(500).json({
         error: "Failed to initiate Google OAuth",
       });
@@ -299,7 +295,6 @@ export class AuthController extends BaseController {
       const { accessToken, refreshToken, csrfToken } =
         await this.services.auth.signUpOrSignInSocial(input);
 
-
       res.clearCookie("connect.sid");
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
@@ -322,5 +317,4 @@ export class AuthController extends BaseController {
       });
     }
   };
- 
 }
