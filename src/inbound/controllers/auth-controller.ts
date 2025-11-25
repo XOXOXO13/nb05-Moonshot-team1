@@ -263,10 +263,6 @@ export class AuthController extends BaseController {
       googleSignInUrl.searchParams.set("response_type", "code");
       googleSignInUrl.searchParams.set("scope", "email profile openid");
 
-      console.log(
-        googleSignInUrl.toString() +
-          `&redirect_uri=${process.env.GOOGLE_OAUTH_REDIRECT_URI}`,
-      );
       return res.redirect(
         googleSignInUrl.toString() +
           `&redirect_uri=${process.env.GOOGLE_OAUTH_REDIRECT_URI}`,
