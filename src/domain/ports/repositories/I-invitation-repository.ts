@@ -2,7 +2,7 @@ import {
   InvitationEntity,
   NewInvitationEntity,
   PersistInvitationEntity,
-} from "../../entites/member/invitation-entity";
+} from "../../entities/member/invitation-entity";
 
 export interface IInvitationRepository {
   save(invitation: NewInvitationEntity): Promise<PersistInvitationEntity>;

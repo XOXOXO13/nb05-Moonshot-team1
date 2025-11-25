@@ -163,7 +163,6 @@ export class AuthController extends BaseController {
         refreshToken,
       });
     } catch (error: any) {
-      // 잘못된 자격증명
       if (
         error.message?.includes("Invalid") ||
         error.message?.includes("not found") ||
@@ -173,7 +172,6 @@ export class AuthController extends BaseController {
           error: "Invalid email or password",
         });
       }
-      // 기타 에러 처리
       return res.status(500).json({
         error: "Internal server error",
       });
@@ -253,9 +251,6 @@ export class AuthController extends BaseController {
 
   signInGoogle = async (req: any, res: Response) => {
     try {
-      req.session.states ??= {};
-      req.session.states.google = this.generateRandomToken();
-
       const googleSignInUrl = new URL(
         "https://accounts.google.com/o/oauth2/v2/auth",
       );
@@ -264,15 +259,14 @@ export class AuthController extends BaseController {
         "client_id",
         process.env.GOOGLE_OAUTH_CLIENT_ID || "",
       );
-      googleSignInUrl.searchParams.set(
-        "redirect_uri",
-        process.env.GOOGLE_OAUTH_REDIRECT_URL || "",
-      );
+
       googleSignInUrl.searchParams.set("response_type", "code");
       googleSignInUrl.searchParams.set("scope", "email profile openid");
-      googleSignInUrl.searchParams.set("state", req.session.states.google);
 
-      return res.redirect(googleSignInUrl.toString());
+      return res.redirect(
+        googleSignInUrl.toString() +
+          `&redirect_uri=${process.env.GOOGLE_OAUTH_REDIRECT_URI}`,
+      );
     } catch (error: any) {
       return res.status(500).json({
         error: "Failed to initiate Google OAuth",
@@ -281,18 +275,12 @@ export class AuthController extends BaseController {
   };
   signInGoogleCallback = async (req: any, res: Response) => {
     try {
-      const { code, state } = req.query;
+      const { code } = req.query;
 
-      if (!code || !state) {
+      if (!code) {
         return res.status(400).json({
-          error: "Missing code or state",
+          error: "Missing code ",
         });
-      }
-
-      if (!req.session?.states?.google || state !== req.session.states.google) {
-        return res.redirect(
-          process.env.GOOGLE_SIGN_IN_SESSION_EXPIRED_URL || "/auth/failed",
-        );
       }
 
       const input: SignUpOrSignInSocialInput = {
@@ -303,14 +291,6 @@ export class AuthController extends BaseController {
       const { accessToken, refreshToken, csrfToken } =
         await this.services.auth.signUpOrSignInSocial(input);
 
-      await new Promise<void>((resolve, reject) => {
-        req.session.destroy((err: Error | null) => {
-          if (err) {
-            reject(err);
-          }
-          resolve();
-        });
-      });
       res.clearCookie("connect.sid");
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
@@ -333,11 +313,4 @@ export class AuthController extends BaseController {
       });
     }
   };
-
-  private generateRandomToken(): string {
-    return (
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15)
-    );
-  }
 }

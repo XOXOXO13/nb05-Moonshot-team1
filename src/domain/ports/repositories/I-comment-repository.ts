@@ -1,4 +1,4 @@
-import { PersistCommentEntity } from "../../entites/comment/comment-entity";
+import { PersistCommentEntity } from "../../entities/comment/comment-entity";
 
 export interface ICommentRepository {
   create(

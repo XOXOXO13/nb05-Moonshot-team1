@@ -1,9 +1,9 @@
-import { PersistTaskEntity } from "../../entites/task/persist-task-entity";
-import { ModifyTaskEntity } from "../../entites/task/task-entity";
+import { PersistTaskEntity } from "../../entities/task/persist-task-entity";
+import { ModifyTaskEntity } from "../../entities/task/task-entity";
 import {
   ViewProjectTaskEntity,
   ViewTaskEntity,
-} from "../../entites/task/view-task-entity";
+} from "../../entities/task/view-task-entity";
 
 export interface ITaskRepository {
   create(entity: ModifyTaskEntity): Promise<PersistTaskEntity>;

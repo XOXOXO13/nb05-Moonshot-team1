@@ -1,5 +1,5 @@
-import { UserEntity } from "../../entites/user/user-entity";
-import { SocialProvider } from "../../entites/social-account/social-account-entity";
+import { UserEntity } from "../../entities/user/user-entity";
+import { SocialProvider } from "../../entities/social-account/social-account-entity";
 
 export type LockType = "FOR_UPDATE" | "FOR_SHARE";
 

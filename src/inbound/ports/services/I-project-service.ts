@@ -1,4 +1,4 @@
-import { PersistProjectEntity } from "../../../domain/entites/project/project-entity";
+import { PersistProjectEntity } from "../../../domain/entities/project/project-entity";
 import {
   CreateProjectDto,
   UpdateProjectDto,

@@ -10,7 +10,7 @@ import {
   SignUpOrSignInSocialInput,
   SignUpResponse,
 } from "../../inbound/ports/services/I-auth-service";
-import { UserEntity } from "../entites/user/user-entity";
+import { UserEntity } from "../entities/user/user-entity";
 import { IHashManager } from "../ports/managers/I-hash-manager";
 import { IUserRepository } from "../ports/repositories/I-user-repository";
 

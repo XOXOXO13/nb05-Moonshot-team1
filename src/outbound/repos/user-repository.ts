@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { UserEntity } from "../../domain/entites/user/user-entity";
+import { UserEntity } from "../../domain/entities/user/user-entity";
 import {
   SocialAccountVo,
   SocialProvider,
-} from "../../domain/entites/social-account/social-account-entity";
+} from "../../domain/entities/social-account/social-account-entity";
 import {
   IUserRepository,
   LockType,

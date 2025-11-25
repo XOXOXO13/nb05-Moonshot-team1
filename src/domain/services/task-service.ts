@@ -7,8 +7,8 @@ import {
 } from "../../inbound/requests/task-req-dto";
 import { TaskResDto, TaskResDtos } from "../../inbound/responses/task-res-dto";
 import { TaskMapper } from "../../outbound/mappers/task-mapper";
-import { ModifyTaskEntity } from "../entites/task/task-entity";
-import { ViewTaskEntity } from "../entites/task/view-task-entity";
+import { ModifyTaskEntity } from "../entities/task/task-entity";
+import { ViewTaskEntity } from "../entities/task/view-task-entity";
 import { IRepositories } from "../ports/repositories/I-repositories";
 
 export class TaskService implements ITaskService {

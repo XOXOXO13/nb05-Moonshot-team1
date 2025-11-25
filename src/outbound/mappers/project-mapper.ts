@@ -1,14 +1,14 @@
 import {
   MemberData,
   MemberEntity,
-} from "../../domain/entites/member/member-entity";
+} from "../../domain/entities/member/member-entity";
 import {
   NewProjectEntity,
   PersistProjectEntity,
   ProjectData,
   ProjectEntity,
   ProjectUpdateData,
-} from "../../domain/entites/project/project-entity";
+} from "../../domain/entities/project/project-entity";
 import { PersistProject } from "../repos/project-repository";
 
 export class ProjectMapper {
