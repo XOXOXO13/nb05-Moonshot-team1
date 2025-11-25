@@ -13,7 +13,7 @@ declare module "express-serve-static-core" {
 }
 
 export class AuthMiddleware {
-  constructor(private _utils: IUtils) {}
+  constructor(private _utils: IUtils) { }
 
   static generateToken = (
     params: TokenGenerateParams,
@@ -29,7 +29,6 @@ export class AuthMiddleware {
   isUser = (req: Request, res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers.authorization || req.headers.Authorization;
-
       if (!authHeader || typeof authHeader !== "string") {
         return res.status(401).json({
           error: "UNAUTHORIZED",
@@ -45,10 +44,9 @@ export class AuthMiddleware {
             "토큰 형식이 올바르지 않습니다. 'Bearer {token}' 형식을 사용하세요.",
         });
       }
-
+      
       const accessToken = tokenParts[1];
       const payload = this._utils.token.verifyToken({ token: accessToken });
-
       req.userId = payload.userId.toString();
       req.user = {
         userId: payload.userId,

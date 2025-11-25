@@ -1,14 +1,14 @@
-import { PersistTaskEntity } from "../../entites/task/persist-task-entity";
-import { TaskEntity } from "../../entites/task/task-entity";
-import {
-  ViewProjectTaskEntity,
-  TaskQuery,
-} from "../../entites/task/view-task-entity";
+import { NewTagEntity } from "../../entites/tag/tag-entity";
+import { NewAttachmentEntity } from "../../entites/task/attachment-entity";
+import { NewTaskEntity, PersistTaskEntity, TaskEntity } from "../../entites/task/task-entity";
 
 export interface ITaskRepository {
-  create(entity: TaskEntity): Promise<PersistTaskEntity>;
-  getProjectTasks(entity: ViewProjectTaskEntity): Promise<PersistTaskEntity[]>;
-  getTaskInfo(entity: TaskQuery): Promise<PersistTaskEntity>;
-  update(entity: TaskEntity): Promise<PersistTaskEntity>;
-  delete(entity: TaskQuery): Promise<void>;
+  create(entity: NewTaskEntity): Promise<PersistTaskEntity>;
+  // getProjectTasks(params: {
+  //   page?: number, limit?: number, status?: string, assignee?: number,
+  //   keyword?: string, order?: string, order_by?: string, projectId: number
+  // }): Promise<PersistTaskEntity[]>;
+  // getTaskInfo(entity: TaskQuery): Promise<PersistTaskEntity>;
+  // update(entity: TaskEntity): Promise<PersistTaskEntity>;
+  // delete(entity: TaskQuery): Promise<void>;
 }

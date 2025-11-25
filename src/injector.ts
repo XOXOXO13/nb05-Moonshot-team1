@@ -17,6 +17,8 @@ import { Utils } from "./shared/utils-interface";
 import { RepositoryFactory } from "./outbound/repository-factory";
 import { UnitOfWork } from "./outbound/unit-of-work";
 import { ProjectController } from "./inbound/controllers/project-controller";
+import { TagRepository } from "./outbound/repos/tag-repository";
+
 
 export class DependencyInjector {
   private _server: Server;
@@ -40,6 +42,7 @@ export class DependencyInjector {
     const repoFactory = new RepositoryFactory({
       projectRepository: (prismaClient) => new ProjectRepository(prismaClient),
       taskRepository: (prismaClient) => new TaskRepository(prismaClient),
+      tagRepository: (prismaClient) => new TagRepository(prismaClient),
       userRepository: (prismaClient) => new UserRepository(prismaClient),
     });
 
@@ -57,7 +60,7 @@ export class DependencyInjector {
     const unitOfWork: UnitOfWork = new UnitOfWork(prisma, repoFactory);
     const repositories = unitOfWork.repos;
 
-    const taskService = new TaskService(repositories);
+    const taskService = new TaskService(unitOfWork);
     const projectService = new ProjectService(unitOfWork);
     const userService = new UserService(unitOfWork.userRepository, hashManager);
     const services = new Services(taskService, projectService, userService);
@@ -65,7 +68,7 @@ export class DependencyInjector {
     const authMiddleware = new AuthMiddleware(utils);
     const middlewares = [authMiddleware];
 
-    const taskController = new TaskController(services);
+    const taskController = new TaskController(services, authMiddleware);
     const projectController = new ProjectController(services, authMiddleware);
     const userController = new UserController(services, utils, authMiddleware);
     const controllers = [taskController, projectController, userController];
