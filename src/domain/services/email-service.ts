@@ -14,9 +14,9 @@ export class EmailService implements IEmailService {
   private async verifyConnection() {
     try {
       await this.transporter.verify();
-      console.log("성공");
+      console.log("이메일 서비스 연결 성공");
     } catch (error) {
-      console.error("실패", error);
+      console.error("이메일 서비스 연결 실패", error);
     }
   }
   async sendInvitation(

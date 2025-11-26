@@ -86,7 +86,7 @@ export class DependencyInjector {
       services,
       authMiddleware
     );
-    const controllers = [
+    const controllers : any = [
       taskController,
       projectController,
       authController,
