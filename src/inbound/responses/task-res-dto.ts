@@ -1,6 +1,6 @@
-import { UserEntity } from "../../domain/entites/user/user-entity";
-import { TagEntity } from "../../domain/entites/tag/tag-entity";
-import { AttachmentEntity } from "../../domain/entites/attachment/attachment-entity";
+import { UserEntity } from "../../domain/entities/user/user-entity";
+import { TagEntity } from "../../domain/entities/tag/tag-entity";
+import { AttachmentEntity } from "../../domain/entities/attachment/attachment-entity";
 
 export class TaskResDto {
   private readonly id: number;

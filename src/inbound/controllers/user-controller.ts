@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { BaseController } from "./base-controller";
+<<<<<<< HEAD
+=======
+import { IServices } from "../ports/I-services";
+>>>>>>> 768a6d96040882e40358e2a89021e0d1b203a2e8
 import { AuthMiddleware } from "../middlewares/auth-middleware";
 import { Response } from "express";
 import { IServices } from "../ports/I-services";

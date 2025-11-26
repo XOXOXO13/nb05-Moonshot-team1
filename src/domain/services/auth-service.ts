@@ -10,7 +10,7 @@ import {
   SignUpOrSignInSocialInput,
   SignUpResponse,
 } from "../../inbound/ports/services/I-auth-service";
-import { UserEntity } from "../entites/user/user-entity";
+import { UserEntity } from "../entities/user/user-entity";
 import { IHashManager } from "../ports/managers/I-hash-manager";
 import { IUserRepository } from "../ports/repositories/I-user-repository";
 
@@ -29,7 +29,7 @@ export class AuthService implements IAuthService {
       email: input.email,
       password: input.password,
       name: input.name,
-      profileImageUrl: input.profileImageUrl,
+      profileImageUrl: input.profileImage,
       hashManager: this.hashManager,
     });
 
@@ -39,7 +39,7 @@ export class AuthService implements IAuthService {
       id: savedUser.id!,
       email: savedUser.email,
       name: savedUser.name,
-      profileImageUrl: savedUser.profileImageUrl || undefined,
+      profileImage: savedUser.profileImageUrl || undefined,
       createdAt: savedUser.createdAt!,
       updatedAt: savedUser.updatedAt!,
     };

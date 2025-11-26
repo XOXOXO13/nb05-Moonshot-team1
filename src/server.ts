@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
@@ -56,6 +56,10 @@ export class Server {
   }
 
   run() {
+    this._app.use((req: Request, res: Response, next: NextFunction) => {
+      console.log(req.headers);
+      next();
+    });
     this.registerMiddlewares();
     this.registerControllers();
     this.listen();

@@ -1,6 +1,5 @@
 import { MemberRole } from "@prisma/client";
-import { MemberEntity } from "../../domain/entites/member/member-entity";
-import { UserEntity } from "../../domain/entites/user/user-entity";
+import { MemberEntity } from "../../domain/entities/member/member-entity";
 import { IMemberRepository } from "../../domain/ports/repositories/I-member-repository";
 import { MemberMapper } from "../mappers/member-mapper";
 import { BasePrismaClient, BaseRepository } from "./base-repository";

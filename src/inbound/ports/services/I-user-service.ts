@@ -1,5 +1,5 @@
-import { UserEntity } from "../../../domain/entites/user/user-entity";
-import { SocialProvider } from "../../../domain/entites/social-account/social-account-entity";
+import { UserEntity } from "../../../domain/entities/user/user-entity";
+import { SocialProvider } from "../../../domain/entities/social-account/social-account-entity";
 
 export interface RegisterUserInput {
   email: string;

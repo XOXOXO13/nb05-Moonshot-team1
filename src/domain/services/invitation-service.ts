@@ -1,10 +1,10 @@
 import { MemberRole } from "@prisma/client";
 import { UnitOfWork } from "../../outbound/unit-of-work";
-import { PersistInvitationEntity } from "../entites/member/invitation-entity";
+import { PersistInvitationEntity } from "../entities/member/invitation-entity";
 import { IRepositories } from "../ports/repositories/I-repositories";
-import { InvitationEntity } from "../entites/member/invitation-entity";
+import { InvitationEntity } from "../entities/member/invitation-entity";
 import { v4 as uuidv4 } from "uuid";
-import { MemberEntity } from "../entites/member/member-entity";
+import { MemberEntity } from "../entities/member/member-entity";
 import { IInvitationService } from "../../inbound/ports/services/I-invitation-service";
 import { IEmailService } from "../../inbound/ports/services/I-email-service";
 

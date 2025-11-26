@@ -4,7 +4,7 @@ import {
   InvitationEntity,
   NewInvitationEntity,
   PersistInvitationEntity,
-} from "../../domain/entites/member/invitation-entity";
+} from "../../domain/entities/member/invitation-entity";
 import { InvitationMapper } from "../mappers/invitation-mapper";
 import { IInvitationRepository } from "../../domain/ports/repositories/I-invitation-repository";
 
