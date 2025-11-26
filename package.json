@@ -2,11 +2,11 @@
   "name": "nb05-moonshot-team1",
   "version": "1.0.0",
   "description": "https://www.notion.so/NB-5-1-2a7b1a5286b181269ee6e44cdc6663c9?source=copy_link",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "format": "prettier --write .",
     "prepare": "husky",
-    "dev": "npx prisma gnerate && nodemon --exec ts-node src/index.ts",
+    "dev": "npx prisma generate && nodemon --exec ts-node src/index.ts",
     "build": "npx tsc"
   },
   "repository": {
