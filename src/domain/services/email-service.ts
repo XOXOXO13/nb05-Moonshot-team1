@@ -14,15 +14,15 @@ export class EmailService implements IEmailService {
   private async verifyConnection() {
     try {
       await this.transporter.verify();
-      console.log("성공");
+      console.log("이메일 서비스 연결 성공");
     } catch (error) {
-      console.error("실패", error);
+      console.error("이메일 서비스 연결 실패", error);
     }
   }
   async sendInvitation(
     email: string,
     invitationLink: string,
-    projectName: string,
+    projectName: string
   ): Promise<void> {
     const mailOptions = {
       from: this.fromEmail,
@@ -35,5 +35,13 @@ export class EmailService implements IEmailService {
         </div> `,
       text: `[${projectName}] 프로젝트에 초대되었습니다. 초대를 수락하려면 다음 링크를 클릭하세요: ${invitationLink}`,
     };
+
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log(`초대 이메일 전송 완료 : ${email} -> ${info.messageId}`);
+    } catch (error) {
+      console.error(`초대 이메일 전송 실패 : ${email} -> `, error);
+      throw new Error();
+    }
   }
 }

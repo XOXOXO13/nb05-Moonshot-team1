@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { BaseRepository } from "./base-repository";
+import { BasePrismaClient, BaseRepository } from "./base-repository";
 import {
   InvitationEntity,
   NewInvitationEntity,
@@ -12,7 +12,7 @@ export class InvitationRepository
   extends BaseRepository
   implements IInvitationRepository
 {
-  constructor(prismaClient: PrismaClient) {
+  constructor(prismaClient: BasePrismaClient) {
     super(prismaClient);
   }
   async findByProjectIdAndInviteeId(

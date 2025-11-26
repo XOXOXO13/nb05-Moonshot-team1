@@ -1,3 +1,4 @@
+import { MemberRole } from "@prisma/client";
 import { MemberEntity } from "../../domain/entities/member/member-entity";
 import { IMemberRepository } from "../../domain/ports/repositories/I-member-repository";
 import { MemberMapper } from "../mappers/member-mapper";
@@ -11,6 +12,27 @@ export class MemberRepository
     super(prismaClient);
   }
 
+  async getProjectMembers(
+    projectId: number,
+    userId: number
+  ): Promise<number[] | null> {
+    const members = await this._prismaClient.member.findMany({
+      where: {
+        projectId: projectId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+    const userIds = members.map((member) => member.userId);
+    const isUserIncluded = userIds.includes(userId);
+    if (isUserIncluded) {
+      return userIds;
+    }
+
+    return null;
+  }
+
   async save(member: MemberEntity): Promise<MemberEntity> {
     const createData = MemberMapper.toCreateData(member);
     const prismaMember = await this._prismaClient.member.create({
@@ -22,7 +44,7 @@ export class MemberRepository
 
   async findByProjectIdAndUserId(
     projectId: number,
-    userId: number,
+    userId: number
   ): Promise<MemberEntity | null> {
     const prismaMember = await this._prismaClient.member.findUnique({
       where: {
@@ -45,5 +67,23 @@ export class MemberRepository
         userId: userId,
       },
     });
+  }
+
+  async getRoleById(projectId: number, userId: number): Promise<MemberRole | null>{
+    const member = await this._prismaClient.member.findUnique({
+      where: {
+        userId_projectId: {
+          userId: userId,
+          projectId: projectId,
+        },
+      },
+      select:{
+        role: true,
+      }
+    });
+    if(!member){
+      return null;
+    }
+    return member.role;
   }
 }
