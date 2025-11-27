@@ -27,6 +27,7 @@ import { MemberService } from "./domain/services/member-service";
 import { InvitationrController } from "./inbound/controllers/invitation-controller";
 import { smtpConfig } from "./shared/utils/smtp-util";
 import { TagRepository } from "./outbound/repos/tag-repository";
+import { FileController } from "./inbound/controllers/file-controller";
 
 export class DependencyInjector {
   private _server: Server;
@@ -74,21 +75,23 @@ export class DependencyInjector {
       userService,
       authService,
       invitationService,
-      memberService
+      memberService,
     );
 
     const authMiddleware = new AuthMiddleware(utils);
     const middlewares = [authMiddleware];
 
+    const fileController = new FileController(services);
     const taskController = new TaskController(services, authMiddleware);
     const projectController = new ProjectController(services, authMiddleware);
     const authController = new AuthController(services, authMiddleware, utils);
     const usersController = new UsersController(services, authMiddleware);
     const invitationController = new InvitationrController(
       services,
-      authMiddleware
+      authMiddleware,
     );
-    const controllers : any = [
+    const controllers: any = [
+      fileController,
       taskController,
       projectController,
       authController,

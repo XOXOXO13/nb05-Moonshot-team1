@@ -40,7 +40,7 @@ export class ProjectController extends BaseController {
     this.router.delete(
       "/:projectId",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.deleteProject)
+      this.catch(this.deleteProject),
     );
 
     // [멤버 관리]
@@ -48,19 +48,19 @@ export class ProjectController extends BaseController {
     this.router.get(
       "/:projectId/users",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.getProjectMembers)
+      this.catch(this.getProjectMembers),
     );
     // 프로젝트에서 유저 제외하기
     this.router.delete(
       "/:projectId/users/:userId",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.deleteMember)
+      this.catch(this.deleteMember),
     );
     // 프로젝트에 멤버 초대
     this.router.post(
       "/:projectId/invitations",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.inviteMember)
+      this.catch(this.inviteMember),
     );
   }
 
@@ -99,7 +99,7 @@ export class ProjectController extends BaseController {
     const userId: number = Number(req.userId);
     const members = await this.services.member.getProjectMembers(
       projectId,
-      userId
+      userId,
     );
     return res.json(members);
   };
@@ -112,7 +112,7 @@ export class ProjectController extends BaseController {
     await this.services.member.deleteMember(
       projectId,
       deletedUserId,
-      deleterId
+      deleterId,
     );
     return res.status(204).json();
   };
@@ -140,7 +140,7 @@ export class ProjectController extends BaseController {
       dto.inviteeEmail,
       dto.role,
       dto.projectName,
-      dto.inviterRole
+      dto.inviterRole,
     );
     return res.status(201).json(invitation);
   };

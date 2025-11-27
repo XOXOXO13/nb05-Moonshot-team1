@@ -166,7 +166,7 @@ export class TaskEntity {
     return this._attachments;
   }
 
-  get tasktags() {
+  get taskTags() {
     return this._taskTags;
   }
 

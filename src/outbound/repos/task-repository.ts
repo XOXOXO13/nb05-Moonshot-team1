@@ -117,7 +117,7 @@ export class TaskRepository implements ITaskRepository {
       where: { taskId: entity.id },
     });
     await this._prisma.taskTags.createMany({
-      data: entity.tasktags.map((tasktag) => ({
+      data: entity.taskTags.map((tasktag) => ({
         taskId: entity.id,
         tagId: tasktag.tagId,
       })),

@@ -11,23 +11,23 @@ export class MemberService implements IMemberService {
   // 낙관적락 불필요
   async getProjectMembers(
     projectId: number,
-    userId: number
+    userId: number,
   ): Promise<number[] | null> {
     return await this._unitOfWokr.repos.memberRepository.getProjectMembers(
       projectId,
-      userId
+      userId,
     );
   }
 
   async deleteMember(
     projectId: number,
     deletedUserId: number,
-    deleterId: number
+    deleterId: number,
   ): Promise<void> {
     return await this._unitOfWokr.do(async (repos) => {
       const deleter = await repos.memberRepository.getRoleById(
         projectId,
-        deleterId
+        deleterId,
       );
 
       if (deleter !== "OWNER") {
