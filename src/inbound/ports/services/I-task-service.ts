@@ -1,16 +1,16 @@
 // import { PersistTaskEntity } from "../../../2_domain/entites/task/task-entity";
 import {
-  CreateTaskReqDto,
-  ProjectTaskReqDto,
-  TaskInfoReqDto,
-  UpdateTaskReqDto,
+  CreateTaskDto,
+  ProjectTaskDto,
+  TaskDto,
+  UpdateTaskDto,
 } from "../../requests/task-req-dto";
 import { TaskResDto, TaskResDtos } from "../../responses/task-res-dto";
 
 export interface ITaskService {
-  createTask(reqDto: CreateTaskReqDto): Promise<TaskResDto>;
-  getProjectTasks(reqDto: ProjectTaskReqDto): Promise<TaskResDtos>;
-  getTaskInfo(reqDto: TaskInfoReqDto): Promise<TaskResDto>;
-  editTaskInfo(reqDto: UpdateTaskReqDto): Promise<TaskResDto>;
-  deleteTaskInfo(reqDto: TaskInfoReqDto): Promise<void>;
+  createTask(reqDto: CreateTaskDto): Promise<TaskResDto>;
+  getProjectTasks(reqDto: ProjectTaskDto): Promise<TaskResDtos>;
+  getTaskInfo(reqDto: TaskDto): Promise<TaskResDto>;
+  editTaskInfo(reqDto: UpdateTaskDto): Promise<TaskResDto>;
+  deleteTaskInfo(reqDto: TaskDto): Promise<void>;
 }

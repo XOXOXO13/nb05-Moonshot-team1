@@ -57,7 +57,6 @@ export class Server {
 
   run() {
     this._app.use((req: Request, res: Response, next: NextFunction) => {
-      console.log(req.headers);
       next();
     });
     this.registerMiddlewares();

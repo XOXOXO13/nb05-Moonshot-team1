@@ -1,21 +1,23 @@
-import { UserEntity } from "../../domain/entities/user/user-entity";
-import { TagEntity } from "../../domain/entities/tag/tag-entity";
-import { AttachmentEntity } from "../../domain/entities/attachment/attachment-entity";
+import { PersistAttachmentEntity } from "../../domain/entities/task/attachment-entity";
+import { TaskTagVo } from "../../domain/entities/task/task-tag-vo";
+import { UserVo } from "../../domain/entities/task/user-vo";
+import { AttachmentDto } from "./attachment-dto";
+import { UserDto } from "./user-dto";
 
 export class TaskResDto {
   private readonly id: number;
   private readonly projectId: number;
   private readonly title: string;
-  private readonly startYear: number | undefined;
-  private readonly startMonth: number | undefined;
-  private readonly startDay: number | undefined;
-  private readonly endYear: number | undefined;
-  private readonly endMonth: number | undefined;
-  private readonly endDay: number | undefined;
+  private readonly startYear: number;
+  private readonly startMonth: number;
+  private readonly startDay: number;
+  private readonly endYear: number;
+  private readonly endMonth: number;
+  private readonly endDay: number;
   private readonly status: string;
-  private readonly assignee: UserEntity | null;
-  private readonly attachments: AttachmentEntity[] | undefined;
-  private readonly tags: TagEntity[] | undefined;
+  private readonly assignee: UserDto;
+  private readonly attachments: AttachmentDto[];
+  private readonly tags: TaskTagVo[];
   private readonly createdAt: Date;
   private readonly updatedAt: Date;
 
@@ -23,34 +25,41 @@ export class TaskResDto {
     id: number,
     projectId: number,
     title: string,
-    startDate: Date | null,
-    endDate: Date | null,
+    startDate: Date,
+    endDate: Date,
     status: string,
-    assignee: UserEntity | null,
-    attachments: AttachmentEntity[] | undefined,
-    tags: TagEntity[] | undefined,
+    assignee: UserVo,
+    attachments: PersistAttachmentEntity[],
+    tags: TaskTagVo[],
     createdAt: Date,
     updatedAt: Date,
   ) {
     this.id = id;
     this.projectId = projectId;
     this.title = title;
-    if (startDate) {
-      this.startYear = startDate.getFullYear();
-      this.startMonth = startDate.getMonth() + 1;
-      this.startDay = startDate.getDate();
-    }
 
-    if (endDate) {
-      this.endYear = endDate.getFullYear();
-      this.endMonth = endDate.getMonth() + 1;
-      this.endDay = endDate.getDate();
-    }
+    this.startYear = startDate.getFullYear();
+    this.startMonth = startDate.getMonth() + 1;
+    this.startDay = startDate.getDate();
+
+    this.endYear = endDate.getFullYear();
+    this.endMonth = endDate.getMonth() + 1;
+    this.endDay = endDate.getDate();
 
     this.status = status;
-    this.assignee = assignee;
+    this.assignee = new UserDto({
+      id: assignee.id,
+      name: assignee.name,
+      email: assignee.email,
+      profileImage: assignee.profileImage,
+    });
     this.tags = tags;
-    this.attachments = attachments;
+    this.attachments = attachments.map((attachment) => {
+      return new AttachmentDto({
+        id: attachment.id,
+        attachmentUrl: attachment.attachmentUrl,
+      });
+    });
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }

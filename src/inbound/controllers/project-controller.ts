@@ -8,7 +8,7 @@ import { Request, Response } from "express";
 export class ProjectController extends BaseController {
   constructor(
     _services: IServices,
-    private _authMiddlewares: AuthMiddleware
+    private _authMiddlewares: AuthMiddleware,
   ) {
     super({ basePath: "/projects", services: _services });
     this.register();
@@ -20,20 +20,22 @@ export class ProjectController extends BaseController {
     this.router.post(
       "/",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.createProject)
+      this.catch(this.createProject),
     );
     // 프로젝트 조회
     this.router.get(
       "/:projectId",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.getProject)
+      this.catch(this.getProject),
     );
+
     // 프로젝트 수정
     this.router.patch(
       "/:projectId",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.updateProject)
+      this.catch(this.updateProject),
     );
+
     // 프로젝트 삭제
     this.router.delete(
       "/:projectId",

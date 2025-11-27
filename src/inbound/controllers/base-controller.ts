@@ -6,6 +6,8 @@ import express, {
 } from "express";
 import { IServices } from "../ports/I-services";
 import { Utils } from "../../shared/utils-interface";
+import z from "zod"
+
 export class BaseController {
   private _basePath;
   private _services;
@@ -38,6 +40,20 @@ export class BaseController {
   get services(): IServices {
     return this._services;
   }
+
+  validate<T extends z.ZodType>(schema: T, data: unknown) {
+    const parsedData = schema.safeParse(data);
+    if (!parsedData.success) {
+      // throw new BusinessException({
+      //   type: BusinessExceptionType.INVALIDE_EMAIL,
+      //   message: parsedData.error.issues[0].message,
+      // });
+      throw new Error("잘못된 요청 형식입니다.");
+    }
+
+    return parsedData.data;
+  }
+
 
   get utils(): Utils | undefined {
     return this._utils;

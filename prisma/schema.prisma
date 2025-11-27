@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
 model SocialAccount {
   provider   String
   providerAccountId String
@@ -81,8 +83,8 @@ model Task {
   id        Int    @id @default(autoincrement())
   projectId Int
   title     String
-  startDate DateTime?
-  endDate   DateTime?
+  startDate DateTime
+  endDate   DateTime
   status    String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -91,8 +93,26 @@ model Task {
   assignee   User     @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
   project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   comments   Comment[]
-  tags       Tag[]
   attachments      Attachment[]
+  taskTags   TaskTags[]  
+}
+
+model TaskTags {
+  taskId Int
+  tagId  Int
+
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, tagId])
+	@@map("TaskTags")
+}
+
+
+model Tag {
+  id     Int   @id @default(autoincrement())
+  name   String  @unique
+  taskTags   TaskTags[] 
 }
 
 model Comment {
@@ -107,14 +127,7 @@ model Comment {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Tag {
-  id     Int   @id @default(autoincrement())
-  name   String
-  taskId Int
-  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
-  @@unique([taskId, name])
-}
 
 model Attachment {
   id      Int   @id @default(autoincrement())

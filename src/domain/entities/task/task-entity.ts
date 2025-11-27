@@ -1,102 +1,133 @@
-import { User } from "@prisma/client";
-import { TaskResDto } from "../../../inbound/responses/task-res-dto";
-import { TagEntity } from "../tag/tag-entity";
-import { UserEntity } from "../user/user-entity";
-import { AttachmentEntity } from "../attachment/attachment-entity";
-import { stat } from "fs";
-import {
-  CreateTaskReqDto,
-  UpdateTaskReqDto,
-} from "../../../inbound/requests/task-req-dto";
+import { AttachmentEntity } from "./attachment-entity";
+import { TaskTagVo } from "./task-tag-vo";
+import { UserVo } from "./user-vo";
 
-export interface CreateTaskEntity extends ModifyTaskEntity {
-  projectId: number;
+export type NewTaskEntity = Omit<
+  TaskEntity,
+  "id" | "createdAt" | "updatedAt" | "assignee"
+>;
+
+export interface PersistTaskEntity extends TaskEntity {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  assignee: UserVo;
 }
 
-export interface UpdateTaskEntity extends ModifyTaskEntity {
-  taskId: number;
-}
-
-export class ModifyTaskEntity {
-  private readonly _taskId?: number;
-  private readonly _projectId?: number;
-  private readonly _title: string;
-  private readonly _startDate: Date | null;
-  private readonly _endDate: Date | null;
-  private readonly _status: string;
-  private readonly _attachments: string[];
-  private readonly _assigneeId: number | null;
-  private readonly _tags: string[];
+export class TaskEntity {
+  private readonly _id?: number;
+  private readonly _projectId: number;
+  private _title: string;
+  private _startDate: Date;
+  private _endDate: Date;
+  private _status: string;
+  private _attachments: AttachmentEntity[];
+  private _taskTags: TaskTagVo[];
+  private _assigneeId: number;
+  private readonly _assignee?: UserVo;
+  private readonly _createdAt?: Date;
+  private readonly _updatedAt?: Date;
 
   constructor(params: {
-    taskId?: number;
-    projectId?: number;
+    id?: number;
+    projectId: number;
     title: string;
-    startYear: number;
-    startMonth: number;
-    startDay: number;
-    endYear: number;
-    endMonth: number;
-    endDay: number;
+    startDate: Date;
+    endDate: Date;
     status: string;
-    attachments: string[];
-    assigneeId: number | null;
-    tags: string[];
+    attachments: AttachmentEntity[];
+    taskTags: TaskTagVo[];
+    assignee?: UserVo;
+    assigneeId: number;
+    createdAt?: Date;
+    updatedAt?: Date;
   }) {
-    this._taskId = params.taskId;
+    this._id = params.id;
     this._projectId = params.projectId;
     this._title = params.title;
-
-    this._startDate = new Date(
-      Date.UTC(params.startYear, params.startMonth - 1, params.startDay),
-    );
-
-    this._endDate = new Date(
-      Date.UTC(params.endYear, params.endMonth - 1, params.endDay),
-    );
-
+    this._startDate = params.startDate;
+    this._endDate = params.endDate;
     this._status = params.status;
     this._attachments = params.attachments;
+    this._taskTags = params.taskTags;
+    this._assignee = params.assignee;
     this._assigneeId = params.assigneeId;
-    this._tags = params.tags;
+    this._createdAt = params.createdAt;
+    this._updatedAt = params.updatedAt;
   }
 
-  static toCreateTaskEntity(dto: CreateTaskReqDto) {
-    return new ModifyTaskEntity({
-      projectId: dto.params.projectId,
-      title: dto.body.title,
-      startYear: dto.body.startYear,
-      startMonth: dto.body.startMonth,
-      startDay: dto.body.startDay,
-      endYear: dto.body.endYear,
-      endMonth: dto.body.endMonth,
-      endDay: dto.body.endDay,
-      status: dto.body.status,
-      attachments: dto.body.attachments,
-      assigneeId: dto.body.assigneeId,
-      tags: dto.body.tags,
-    }) as CreateTaskEntity;
+  static createNew(params: {
+    projectId: number;
+    title: string;
+    startDate: Date;
+    endDate: Date;
+    status: string;
+    attachments: AttachmentEntity[];
+    taskTags: TaskTagVo[];
+    assigneeId: number;
+  }) {
+    return new TaskEntity({
+      projectId: params.projectId,
+      title: params.title,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      status: params.status,
+      attachments: params.attachments,
+      taskTags: params.taskTags,
+      assigneeId: params.assigneeId,
+    }) as NewTaskEntity;
   }
 
-  static toUpdateTaskEntity(dto: UpdateTaskReqDto) {
-    return new ModifyTaskEntity({
-      taskId: dto.params.taskId,
-      title: dto.body.title,
-      startYear: dto.body.startYear,
-      startMonth: dto.body.startMonth,
-      startDay: dto.body.startDay,
-      endYear: dto.body.endYear,
-      endMonth: dto.body.endMonth,
-      endDay: dto.body.endDay,
-      status: dto.body.status,
-      attachments: dto.body.attachments,
-      assigneeId: dto.body.assigneeId,
-      tags: dto.body.tags,
-    }) as CreateTaskEntity;
+  static createPersist(params: {
+    id: number;
+    projectId: number;
+    title: string;
+    startDate: Date;
+    endDate: Date;
+    status: string;
+    assignee: UserVo;
+    assigneeId: number;
+    attachments: AttachmentEntity[];
+    taskTags: TaskTagVo[];
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
+    return new TaskEntity({
+      id: params.id,
+      projectId: params.projectId,
+      title: params.title,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      status: params.status,
+      attachments: params.attachments,
+      taskTags: params.taskTags,
+      assignee: params.assignee,
+      assigneeId: params.assigneeId,
+      createdAt: params.createdAt,
+      updatedAt: params.updatedAt,
+    }) as PersistTaskEntity;
   }
 
-  get taskId() {
-    return this._taskId;
+  update(params: {
+    title: string;
+    startDate: Date;
+    endDate: Date;
+    status: string;
+    attachments: AttachmentEntity[];
+    taskTags: TaskTagVo[];
+    assigneeId: number;
+  }) {
+    this._title = params.title;
+    this._startDate = params.startDate;
+    this._endDate = params.endDate;
+    this._status = params.status;
+    this._attachments = params.attachments;
+    this._taskTags = params.taskTags;
+    this._assigneeId = params.assigneeId;
+  }
+
+  get id() {
+    return this._id;
   }
 
   get projectId() {
@@ -119,15 +150,27 @@ export class ModifyTaskEntity {
     return this._status;
   }
 
-  get attachments() {
-    return this._attachments;
-  }
-
   get assigneeId() {
     return this._assigneeId;
   }
 
-  get tags() {
-    return this._tags;
+  get createdAt() {
+    return this._createdAt;
+  }
+
+  get updatedAt() {
+    return this._updatedAt;
+  }
+
+  get attachments() {
+    return this._attachments;
+  }
+
+  get tasktags() {
+    return this._taskTags;
+  }
+
+  get assignee() {
+    return this._assignee;
   }
 }

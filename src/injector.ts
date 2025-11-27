@@ -26,6 +26,7 @@ import { EmailService } from "./domain/services/email-service";
 import { MemberService } from "./domain/services/member-service";
 import { InvitationrController } from "./inbound/controllers/invitation-controller";
 import { smtpConfig } from "./shared/utils/smtp-util";
+import { TagRepository } from "./outbound/repos/tag-repository";
 
 export class DependencyInjector {
   private _server: Server;
@@ -49,7 +50,8 @@ export class DependencyInjector {
 
     const repoFactory = new RepositoryFactory({
       projectRepository: (prismaClient) => new ProjectRepository(prismaClient),
-      taskRepository: (prismaClient) => new TaskRepository(prisma),
+      taskRepository: (prismaClient) => new TaskRepository(prismaClient),
+      tagRepository: (prismaClient) => new TagRepository(prismaClient),
       userRepository: (prismaClient) => new UserRepository(prismaClient),
       invitationRepository: (prismaClient) =>
         new InvitationRepository(prismaClient),
@@ -60,7 +62,7 @@ export class DependencyInjector {
     const repositories = unitOfWork.repos;
 
     const emailService = new EmailService(smtp, "no-reply@moonshot.com");
-    const taskService = new TaskService(repositories);
+    const taskService = new TaskService(unitOfWork);
     const projectService = new ProjectService(unitOfWork);
     const userService = new UserService(unitOfWork.userRepository, hashManager);
     const authService = new AuthService(unitOfWork.userRepository, hashManager);
@@ -78,7 +80,7 @@ export class DependencyInjector {
     const authMiddleware = new AuthMiddleware(utils);
     const middlewares = [authMiddleware];
 
-    const taskController = new TaskController(services);
+    const taskController = new TaskController(services, authMiddleware);
     const projectController = new ProjectController(services, authMiddleware);
     const authController = new AuthController(services, authMiddleware, utils);
     const usersController = new UsersController(services, authMiddleware);
