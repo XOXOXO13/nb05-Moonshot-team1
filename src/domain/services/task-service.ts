@@ -5,13 +5,13 @@ import {
   TaskDto,
   UpdateTaskDto,
 } from "../../inbound/requests/task-req-dto";
-import { TaskEntity } from "../entites/task/task-entity";
+import { TaskEntity } from "../entities/task/task-entity";
 import { UnitOfWork } from "../../outbound/unit-of-work";
 import { TagMapper } from "../../outbound/mappers/tag-mapper";
 import { AttachmentMapper } from "../../outbound/mappers/attachment-mapper";
 import { TaskMapper } from "../../outbound/mappers/task-mapper";
 import { TaskResDto, TaskResDtos } from "../../inbound/responses/task-res-dto";
-import { TaskTagVo } from "../entites/task/task-tag-vo";
+import { TaskTagVo } from "../entities/task/task-tag-vo";
 
 export class TaskService implements ITaskService {
   private readonly _unitOfWork;
@@ -39,13 +39,13 @@ export class TaskService implements ITaskService {
     const startDate = new Date(startYear, startMonth - 1, startDay);
     const endDate = new Date(endYear, endMonth - 1, endDay);
 
-    // @ transaction
-    const taskResDto = this._unitOfWork.do(async (repos) => {
+    // 할 일 생성 (transaction)
+    const task = await this._unitOfWork.do(async (repos) => {
       // 태그 생성하기
       const tagEntites = TagMapper.toCreateEntities(tags);
       const createdTags = await repos.tagRepository.findOrCreate(tagEntites);
 
-      // 할 일 생성하기
+      // 할 일에 태그와 첨부파일 추가
       const attachmentEntities = AttachmentMapper.toCreateEntities(attachments);
       const taskEntity = TaskEntity.createNew({
         projectId,
@@ -53,19 +53,20 @@ export class TaskService implements ITaskService {
         startDate,
         endDate,
         status,
-        attachments: attachmentEntities,
+        attachments: attachmentEntities, // 첨부파일 추가
         taskTags: createdTags.map((tag) => {
+          // 태그 추가
           return TaskTagVo.createNew(tag);
         }),
         assigneeId: userId,
       });
 
-      // 할 일 조회하기
+      // 할 일 생성
       const task = await repos.taskRepository.create(taskEntity);
-      return TaskMapper.toResDto(task);
+      return task;
     });
 
-    return taskResDto;
+    return TaskMapper.toResDto(task);
   }
 
   async getProjectTasks(dto: ProjectTaskDto): Promise<TaskResDtos> {
@@ -108,15 +109,16 @@ export class TaskService implements ITaskService {
     const endDate = new Date(endYear, endMonth - 1, endDay);
 
     // @ transaction
-    const taskResDto = this._unitOfWork.do(async (repos) => {
-      // 태그 생성하기
-      const tagEntites = TagMapper.toCreateEntities(tags);
-      const createdTags = await repos.tagRepository.findOrCreate(tagEntites);
-
-      // 할 일 수정하기
-      const attachmentEntities = AttachmentMapper.toCreateEntities(attachments);
+    const task = await this._unitOfWork.do(async (repos) => {
+      // 현재 할 일 조회
       const currentTask = await repos.taskRepository.getTaskInfo(dto.taskId);
 
+      // 새로운 태그와 첨부파일 생성
+      const tagEntites = TagMapper.toCreateEntities(tags);
+      const createdTags = await repos.tagRepository.findOrCreate(tagEntites);
+      const attachmentEntities = AttachmentMapper.toCreateEntities(attachments);
+
+      // 할 일 수정
       currentTask.update({
         title,
         startDate,
@@ -128,16 +130,15 @@ export class TaskService implements ITaskService {
         }),
         assigneeId,
       });
-
-      // 할 일 조회하기
       const task = await repos.taskRepository.update(currentTask);
-      return TaskMapper.toResDto(task);
+      return task;
     });
 
-    return taskResDto;
+    return TaskMapper.toResDto(task);
   }
 
   async deleteTaskInfo(dto: TaskDto): Promise<void> {
+    // 할 일 삭제하기
     await this._unitOfWork.do(async (repos) => {
       await repos.taskRepository.delete(dto.taskId);
     });

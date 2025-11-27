@@ -3,12 +3,8 @@ import { BasePrismaClient } from "./base-repository";
 import {
   NewTaskEntity,
   PersistTaskEntity,
-  TaskEntity,
-} from "../../domain/entites/task/task-entity";
-import { AttachmentEntity } from "../../domain/entites/task/attachment-entity";
+} from "../../domain/entities/task/task-entity";
 import { TaskMapper } from "../mappers/task-mapper";
-import { UserVo } from "../../domain/entites/task/user-vo";
-import { TaskTagVo } from "../../domain/entites/task/task-tag-vo";
 
 const orderByParser = {
   created_at: "createdAt",
@@ -32,11 +28,11 @@ export class TaskRepository implements ITaskRepository {
       data: {
         ...createTaskData,
         attachments: {
-          create: attachmentData,
+          create: attachmentData, // 첨부 파일 추가
         },
         taskTags: {
           create: taskTagsData.map((t) => ({
-            tag: { connect: { id: t.tagId } }, // 이미 존재하는 tag일 경우
+            tag: { connect: { id: t.tagId } }, // 할 일에 태그 추가
           })),
         },
       },
@@ -116,14 +112,10 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async update(entity: PersistTaskEntity): Promise<PersistTaskEntity> {
-    // [Transaction으로 Inconsistent Read 방지]
-    // [태그와 첨부파일 생성할때 deadlock 발생 안함 (for루프 => createMany 수정함)]
-
-    // 태그 삭제한 후 다시 생성하기
+    // 기존 태그 삭제한 후 새로운 태그 추가
     await this._prisma.taskTags.deleteMany({
       where: { taskId: entity.id },
     });
-
     await this._prisma.taskTags.createMany({
       data: entity.tasktags.map((tasktag) => ({
         taskId: entity.id,
@@ -131,11 +123,10 @@ export class TaskRepository implements ITaskRepository {
       })),
     });
 
-    // 첨부파일 삭제한 후 추가하기
+    // 기존 첨부파일 삭제한 후 새로운 파일 추가
     await this._prisma.attachment.deleteMany({
       where: { taskId: entity.id },
     });
-
     await this._prisma.attachment.createMany({
       data: entity.attachments.map((attachment) => ({
         taskId: entity.id,
