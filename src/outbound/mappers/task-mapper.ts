@@ -14,6 +14,7 @@ import { TaskTagVo } from "../../domain/entities/task/task-tag-vo";
 export type CreateTaskData = {
   projectId: number;
   title: string;
+  description: string;
   startDate: Date;
   endDate: Date;
   status: string;
@@ -60,6 +61,7 @@ export class TaskMapper {
       id: number;
       projectId: number;
       title: string;
+      description: string;
       startDate: Date;
       endDate: Date;
       status: string;
@@ -73,6 +75,7 @@ export class TaskMapper {
       id,
       projectId,
       title,
+      description,
       startDate,
       endDate,
       status,
@@ -88,6 +91,7 @@ export class TaskMapper {
       id,
       projectId,
       title,
+      description,
       startDate,
       endDate,
       status,
@@ -116,6 +120,7 @@ export class TaskMapper {
     const createTaskData: CreateTaskData = {
       projectId: entity.projectId,
       title: entity.title,
+      description: entity.description,
       startDate: entity.startDate,
       endDate: entity.endDate,
       status: entity.status,
@@ -141,6 +146,7 @@ export class TaskMapper {
       task.id,
       task.projectId,
       task.title,
+      task.description,
       task.startDate,
       task.endDate,
       task.status,

@@ -22,6 +22,7 @@ export class TaskService implements ITaskService {
   async createTask(dto: CreateTaskDto): Promise<TaskResDto> {
     const {
       title,
+      description,
       startYear,
       startMonth,
       startDay,
@@ -50,6 +51,7 @@ export class TaskService implements ITaskService {
       const taskEntity = TaskEntity.createNew({
         projectId,
         title,
+        description,
         startDate,
         endDate,
         status,
@@ -92,6 +94,7 @@ export class TaskService implements ITaskService {
   async editTaskInfo(dto: UpdateTaskDto): Promise<TaskResDto> {
     const {
       title,
+      description,
       startYear,
       startMonth,
       startDay,
@@ -101,7 +104,6 @@ export class TaskService implements ITaskService {
       status,
       tags,
       attachments,
-      assigneeId,
     } = dto;
 
     // 날짜 파싱
@@ -121,6 +123,7 @@ export class TaskService implements ITaskService {
       // 할 일 수정
       currentTask.update({
         title,
+        description,
         startDate,
         endDate,
         status,
@@ -128,8 +131,8 @@ export class TaskService implements ITaskService {
         taskTags: createdTags.map((tag) => {
           return TaskTagVo.createNew(tag);
         }),
-        assigneeId,
       });
+
       const task = await repos.taskRepository.update(currentTask);
       return task;
     });

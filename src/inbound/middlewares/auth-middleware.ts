@@ -47,7 +47,11 @@ export class AuthMiddleware {
     return next();
   };
 
-  validateAccessToken = (req: Request, res: Response, next: NextFunction) => {
+  validateAccessToken = (
+    req: Request,
+    res: Response,
+    next: NextFunction | (() => void),
+  ) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
     if (
       !authHeader ||

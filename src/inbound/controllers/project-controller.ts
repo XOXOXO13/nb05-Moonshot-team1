@@ -71,7 +71,11 @@ export class ProjectController extends BaseController {
   };
 
   createProject = async (req: Request, res: Response) => {
-    const project = await this.services.project.createProject(req.body);
+    const userId = req.user?.userId;
+    const project = await this.services.project.createProject({
+      ...req.body,
+      userId,
+    });
     return res.json(project);
   };
 
