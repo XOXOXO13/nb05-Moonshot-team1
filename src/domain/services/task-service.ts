@@ -42,8 +42,8 @@ export class TaskService implements ITaskService {
     // 할 일 생성 (transaction)
     const task = await this._unitOfWork.do(async (repos) => {
       // 태그 생성하기
-      const tagEntites = TagMapper.toCreateEntities(tags);
-      const createdTags = await repos.tagRepository.findOrCreate(tagEntites);
+      const tagEntities = TagMapper.toCreateEntities(tags);
+      const createdTags = await repos.tagRepository.findOrCreate(tagEntities);
 
       // 할 일에 태그와 첨부파일 추가
       const attachmentEntities = AttachmentMapper.toCreateEntities(attachments);
@@ -114,8 +114,8 @@ export class TaskService implements ITaskService {
       const currentTask = await repos.taskRepository.getTaskInfo(dto.taskId);
 
       // 새로운 태그와 첨부파일 생성
-      const tagEntites = TagMapper.toCreateEntities(tags);
-      const createdTags = await repos.tagRepository.findOrCreate(tagEntites);
+      const tagEntities = TagMapper.toCreateEntities(tags);
+      const createdTags = await repos.tagRepository.findOrCreate(tagEntities);
       const attachmentEntities = AttachmentMapper.toCreateEntities(attachments);
 
       // 할 일 수정

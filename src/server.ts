@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import multer from "multer";
 
 export class Server {
   private _app: express.Application;
@@ -38,6 +39,7 @@ export class Server {
     this._app.use(cookieParser());
     this._app.use(express.json({ limit: "10mb" }));
     this._app.use(express.urlencoded({ extended: true }));
+    this._app.use("/files", express.static("public/files"));
 
     this._app.use(morgan("dev"));
     this._app.use(express.json());

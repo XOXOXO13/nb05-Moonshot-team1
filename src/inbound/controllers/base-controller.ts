@@ -6,7 +6,7 @@ import express, {
 } from "express";
 import { IServices } from "../ports/I-services";
 import { Utils } from "../../shared/utils-interface";
-import z from "zod"
+import z from "zod";
 
 export class BaseController {
   private _basePath;
@@ -53,7 +53,6 @@ export class BaseController {
 
     return parsedData.data;
   }
-
 
   get utils(): Utils | undefined {
     return this._utils;

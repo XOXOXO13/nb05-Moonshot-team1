@@ -128,7 +128,7 @@ export class TaskMapper {
       },
     );
 
-    const taskTagsData: TaskTagsData[] = entity.tasktags.map((tasktag) => {
+    const taskTagsData: TaskTagsData[] = entity.taskTags.map((tasktag) => {
       return {
         tagId: tasktag.tagId,
       };
@@ -146,7 +146,7 @@ export class TaskMapper {
       task.status,
       task.assignee,
       task.attachments as PersistAttachmentEntity[],
-      task.tasktags,
+      task.taskTags,
       task.createdAt,
       task.updatedAt,
     );

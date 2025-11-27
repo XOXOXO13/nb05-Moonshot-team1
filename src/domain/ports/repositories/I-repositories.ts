@@ -8,7 +8,7 @@ import { IUserRepository } from "./I-user-repository";
 export interface IRepositories {
   projectRepository: IProjectRepository;
   taskRepository: ITaskRepository;
-  tagRepository : ITagRepository;
+  tagRepository: ITagRepository;
   userRepository: IUserRepository;
   invitationRepository: IInvitationRepository;
   memberRepository: IMemberRepository;

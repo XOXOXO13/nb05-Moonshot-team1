@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 export class InvitationrController extends BaseController {
   constructor(
     _services: IServices,
-    private _authMiddlewares: AuthMiddleware
+    private _authMiddlewares: AuthMiddleware,
   ) {
     super({ basePath: "/invitations", services: _services });
     this.register();
@@ -17,13 +17,13 @@ export class InvitationrController extends BaseController {
     this.router.post(
       "/:invitationId/accept",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.acceptInvitation)
+      this.catch(this.acceptInvitation),
     );
     // 멤버 초대 삭제
     this.router.delete(
       "/:invitationId",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.deleteInvitation)
+      this.catch(this.deleteInvitation),
     );
   }
 
@@ -33,7 +33,7 @@ export class InvitationrController extends BaseController {
 
     const newMember = await this.services.invitation.acceptInvitation(
       token,
-      userId
+      userId,
     );
     return res.status(200).json();
   };

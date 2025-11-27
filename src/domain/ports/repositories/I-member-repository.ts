@@ -8,6 +8,9 @@ export interface IMemberRepository {
     userId: number,
   ): Promise<MemberEntity | null>;
   delete(projectId: number, userId: number): Promise<void>;
-  getProjectMembers(projectId: number, userId: number): Promise<number[] | null>;
+  getProjectMembers(
+    projectId: number,
+    userId: number,
+  ): Promise<number[] | null>;
   getRoleById(projectId: number, userId: number): Promise<MemberRole | null>;
 }

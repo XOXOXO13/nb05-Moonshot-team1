@@ -1,5 +1,7 @@
-import { NewTaskEntity, PersistTaskEntity } from "../../entities/task/task-entity";
-
+import {
+  NewTaskEntity,
+  PersistTaskEntity,
+} from "../../entities/task/task-entity";
 
 export interface ITaskRepository {
   create(entity: NewTaskEntity): Promise<PersistTaskEntity>;

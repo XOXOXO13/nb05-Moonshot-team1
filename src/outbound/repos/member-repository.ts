@@ -14,7 +14,7 @@ export class MemberRepository
 
   async getProjectMembers(
     projectId: number,
-    userId: number
+    userId: number,
   ): Promise<number[] | null> {
     const members = await this._prismaClient.member.findMany({
       where: {
@@ -44,7 +44,7 @@ export class MemberRepository
 
   async findByProjectIdAndUserId(
     projectId: number,
-    userId: number
+    userId: number,
   ): Promise<MemberEntity | null> {
     const prismaMember = await this._prismaClient.member.findUnique({
       where: {
@@ -69,7 +69,10 @@ export class MemberRepository
     });
   }
 
-  async getRoleById(projectId: number, userId: number): Promise<MemberRole | null>{
+  async getRoleById(
+    projectId: number,
+    userId: number,
+  ): Promise<MemberRole | null> {
     const member = await this._prismaClient.member.findUnique({
       where: {
         userId_projectId: {
@@ -77,11 +80,11 @@ export class MemberRepository
           projectId: projectId,
         },
       },
-      select:{
+      select: {
         role: true,
-      }
+      },
     });
-    if(!member){
+    if (!member) {
       return null;
     }
     return member.role;
