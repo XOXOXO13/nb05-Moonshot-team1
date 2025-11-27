@@ -18,6 +18,7 @@ export class TaskEntity {
   private readonly _id?: number;
   private readonly _projectId: number;
   private _title: string;
+  private _description: string;
   private _startDate: Date;
   private _endDate: Date;
   private _status: string;
@@ -32,6 +33,7 @@ export class TaskEntity {
     id?: number;
     projectId: number;
     title: string;
+    description: string;
     startDate: Date;
     endDate: Date;
     status: string;
@@ -45,6 +47,7 @@ export class TaskEntity {
     this._id = params.id;
     this._projectId = params.projectId;
     this._title = params.title;
+    this._description = params.description;
     this._startDate = params.startDate;
     this._endDate = params.endDate;
     this._status = params.status;
@@ -59,6 +62,7 @@ export class TaskEntity {
   static createNew(params: {
     projectId: number;
     title: string;
+    description: string;
     startDate: Date;
     endDate: Date;
     status: string;
@@ -69,6 +73,7 @@ export class TaskEntity {
     return new TaskEntity({
       projectId: params.projectId,
       title: params.title,
+      description: params.description,
       startDate: params.startDate,
       endDate: params.endDate,
       status: params.status,
@@ -82,6 +87,7 @@ export class TaskEntity {
     id: number;
     projectId: number;
     title: string;
+    description: string;
     startDate: Date;
     endDate: Date;
     status: string;
@@ -96,6 +102,7 @@ export class TaskEntity {
       id: params.id,
       projectId: params.projectId,
       title: params.title,
+      description: params.description,
       startDate: params.startDate,
       endDate: params.endDate,
       status: params.status,
@@ -110,20 +117,20 @@ export class TaskEntity {
 
   update(params: {
     title: string;
+    description: string;
     startDate: Date;
     endDate: Date;
     status: string;
     attachments: AttachmentEntity[];
     taskTags: TaskTagVo[];
-    assigneeId: number;
   }) {
     this._title = params.title;
+    this._description = params.description;
     this._startDate = params.startDate;
     this._endDate = params.endDate;
     this._status = params.status;
     this._attachments = params.attachments;
     this._taskTags = params.taskTags;
-    this._assigneeId = params.assigneeId;
   }
 
   get id() {
@@ -136,6 +143,10 @@ export class TaskEntity {
 
   get title() {
     return this._title;
+  }
+
+  get description() {
+    return this._description;
   }
 
   get startDate() {

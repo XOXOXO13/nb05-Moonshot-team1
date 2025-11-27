@@ -43,10 +43,10 @@ export class FileController extends BaseController {
         // memoryStorage → buffer 사용
         await fs.writeFile(uploadPath, file.buffer);
 
-        urls.push(`public/files/${filename}`);
+        urls.push(`http://localhost:4000/public/files/${filename}`);
       }
     }
-    // res.status(200).json({ urls });
-    res.status(200).json();
+    res.status(200).json(urls);
+    // res.status(200).json();
   };
 }

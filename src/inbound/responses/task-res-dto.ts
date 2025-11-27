@@ -8,6 +8,7 @@ export class TaskResDto {
   private readonly id: number;
   private readonly projectId: number;
   private readonly title: string;
+  private readonly description: string;
   private readonly startYear: number;
   private readonly startMonth: number;
   private readonly startDay: number;
@@ -16,7 +17,7 @@ export class TaskResDto {
   private readonly endDay: number;
   private readonly status: string;
   private readonly assignee: UserDto;
-  private readonly attachments: AttachmentDto[];
+  private readonly attachments: string[];
   private readonly tags: TaskTagVo[];
   private readonly createdAt: Date;
   private readonly updatedAt: Date;
@@ -25,6 +26,7 @@ export class TaskResDto {
     id: number,
     projectId: number,
     title: string,
+    description: string,
     startDate: Date,
     endDate: Date,
     status: string,
@@ -37,6 +39,7 @@ export class TaskResDto {
     this.id = id;
     this.projectId = projectId;
     this.title = title;
+    this.description = description;
 
     this.startYear = startDate.getFullYear();
     this.startMonth = startDate.getMonth() + 1;
@@ -55,10 +58,7 @@ export class TaskResDto {
     });
     this.tags = tags;
     this.attachments = attachments.map((attachment) => {
-      return new AttachmentDto({
-        id: attachment.id,
-        attachmentUrl: attachment.attachmentUrl,
-      });
+      return attachment.attachmentUrl;
     });
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;

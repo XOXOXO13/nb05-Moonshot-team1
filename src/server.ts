@@ -39,7 +39,7 @@ export class Server {
     this._app.use(cookieParser());
     this._app.use(express.json({ limit: "10mb" }));
     this._app.use(express.urlencoded({ extended: true }));
-    this._app.use("/files", express.static("public/files"));
+    this._app.use("/public", express.static("public"));
 
     this._app.use(morgan("dev"));
     this._app.use(express.json());

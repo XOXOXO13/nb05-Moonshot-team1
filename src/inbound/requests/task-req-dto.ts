@@ -14,13 +14,14 @@ import { z } from "zod";
 // 할 일 생성
 export const createTaskBodySchema = z.object({
   title: z.string(),
+  description: z.string(),
   startYear: z.number().gte(2000).lte(2100), // 2000 ~ 2100년
   startMonth: z.number().gte(1).lte(12), // 1월 ~ 12월
   startDay: z.number().gte(1).lte(31), // 1일 ~ 31일
   endYear: z.number().gte(2000).lte(2100),
   endMonth: z.number().gte(1).lte(12),
   endDay: z.number().gte(1).lte(31),
-  status: z.enum(["todo", "in_progress", "done"]),
+  status: z.enum(["todo", "in_progress", "done"]).default("todo"),
   tags: z.array(z.string()),
   attachments: z.array(z.string()),
 });
@@ -36,7 +37,7 @@ export type CreateTaskDto = z.infer<typeof createTaskBodySchema> &
 
 // 할 일 조회 (프로젝트)
 export const projectTaskQuerySchema = z.object({
-  page: z.coerce.number().gt(1).default(1).optional(),
+  page: z.coerce.number().gt(0).default(1).optional(),
   limit: z.coerce.number().gt(1).default(10).optional(),
   status: z.enum(["todo", "in_progress", "done"]).optional(),
   assignee: z.coerce.number().optional(),
@@ -59,7 +60,7 @@ export type ProjectTaskDto = z.infer<typeof projectTaskQuerySchema> &
 
 // 할 일 조회 (개별 할 일 상세조회)
 export const taskInfoParamsSchema = z.object({
-  taskId: z.coerce.number().gt(1),
+  taskId: z.coerce.number(),
 });
 
 export type TaskDto = z.infer<typeof taskInfoParamsSchema> & {
@@ -69,14 +70,14 @@ export type TaskDto = z.infer<typeof taskInfoParamsSchema> & {
 // 할 일 수정
 export const updateTaskBodySchema = z.object({
   title: z.string(),
+  description: z.string(),
   startYear: z.number().gte(2000).lte(2100),
   startMonth: z.number().gte(1).lte(12),
   startDay: z.number().gte(1).lte(31),
   endYear: z.number().gte(2000).lte(2100),
   endMonth: z.number().gte(1).lte(12),
   endDay: z.number().gte(1).lte(31),
-  status: z.enum(["todo", "in_progress", "done"]),
-  assigneeId: z.number(),
+  status: z.enum(["todo", "in_progress", "done"]).default("todo"),
   tags: z.array(z.string()),
   attachments: z.array(z.string()),
 });

@@ -113,9 +113,13 @@ export class TaskRepository implements ITaskRepository {
 
   async update(entity: PersistTaskEntity): Promise<PersistTaskEntity> {
     // 기존 태그 삭제한 후 새로운 태그 추가
-    await this._prisma.taskTags.deleteMany({
+
+    const result = await this._prisma.taskTags.deleteMany({
       where: { taskId: entity.id },
     });
+
+    console.log(result);
+
     await this._prisma.taskTags.createMany({
       data: entity.taskTags.map((tasktag) => ({
         taskId: entity.id,
@@ -142,6 +146,7 @@ export class TaskRepository implements ITaskRepository {
       data: {
         projectId: entity.projectId,
         title: entity.title,
+        description: entity.description,
         startDate: entity.startDate,
         endDate: entity.endDate,
         status: entity.status,
