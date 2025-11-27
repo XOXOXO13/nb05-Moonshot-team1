@@ -1,80 +1,168 @@
 import { TaskResDto, TaskResDtos } from "../../inbound/responses/task-res-dto";
-import { AttachmentEntity, PersistAttachmentEntity } from "../../domain/entites/task/attachment-entity";
+import {
+  AttachmentEntity,
+  PersistAttachmentEntity,
+} from "../../domain/entites/task/attachment-entity";
 import { TagEntity } from "../../domain/entites/tag/tag-entity";
 
 import { UserEntity } from "../../domain/entites/user/user-entity";
 import { Request } from "express";
 import { z } from "zod";
-import { NewTaskEntity, PersistTaskEntity } from "../../domain/entites/task/task-entity";
+import {
+  NewTaskEntity,
+  PersistTaskEntity,
+  TaskEntity,
+} from "../../domain/entites/task/task-entity";
 import { TaskTags } from "@prisma/client";
+import { UserVo } from "../../domain/entites/task/user-vo";
+import { TaskTagVo } from "../../domain/entites/task/task-tag-vo";
 
 export type CreateTaskData = {
-    projectId: number;
-    title: string;
-    startDate: Date;
-    endDate: Date;
-    status: string;
-    assigneeId: number;
-}
+  projectId: number;
+  title: string;
+  startDate: Date;
+  endDate: Date;
+  status: string;
+  assigneeId: number;
+};
 
 export type AttachmentData = {
-    attachmentUrl: string
-}
-
+  attachmentUrl: string;
+};
 
 export type TaskTagsData = {
-    tagId: number;
-}
-
+  tagId: number;
+};
 
 export class TaskMapper {
-    static toCreateData(entity: NewTaskEntity) {
-        const createTaskData: CreateTaskData = {
-            projectId: entity.projectId,
-            title: entity.title,
-            startDate: entity.startDate,
-            endDate: entity.endDate,
-            status: entity.status,
-            assigneeId: entity.assigneeId
-        }
+  static toPersistEntity(
+    record: {
+      assignee: {
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        email: string;
+        password: string | null;
+        refreshToken: string | null;
+        version: number;
+        profileImage: string | null;
+      };
+      attachments: {
+        id: number;
+        attachmentUrl: string;
+        taskId: number;
+      }[];
+      taskTags: ({
+        tag: {
+          id: number;
+          name: string;
+        };
+      } & {
+        tagId: number;
+        taskId: number;
+      })[];
+    } & {
+      id: number;
+      projectId: number;
+      title: string;
+      startDate: Date;
+      endDate: Date;
+      status: string;
+      assigneeId: number;
+      createdAt: Date;
+      updatedAt: Date;
+    },
+  ) {
+    // 파싱 및 task entity 반환
+    const {
+      id,
+      projectId,
+      title,
+      startDate,
+      endDate,
+      status,
+      assignee,
+      assigneeId,
+      createdAt,
+      updatedAt,
+      attachments,
+      taskTags,
+    } = record;
 
-        const attachmentData: AttachmentData[] =
-            entity.attachments.map((attachment) => {
-                return { attachmentUrl: attachment.attachmentUrl }
-            })
+    const persistTaskProps = {
+      id,
+      projectId,
+      title,
+      startDate,
+      endDate,
+      status,
+      assigneeId,
+      createdAt,
+      updatedAt,
+      assignee: new UserVo({
+        id: assignee.id,
+        name: assignee.name,
+        email: assignee.email,
+        profileImage: assignee.profileImage,
+      }),
+      attachments: attachments.map((a) =>
+        AttachmentEntity.createPersist({
+          id: a.id,
+          attachmentUrl: a.attachmentUrl,
+        }),
+      ),
+      taskTags: taskTags.map((t) => new TaskTagVo(t.tag.id, t.tag.name)),
+    };
+    // implementation goes here
+    return TaskEntity.createPersist(persistTaskProps);
+  }
 
-        const taskTagsData: TaskTagsData[] =
-            entity.tasktags.map((tasktag) => {
-                return {
-                    tagId: tasktag.tagId
-                }
-            })
-        return { createTaskData, attachmentData, taskTagsData };
-    }
+  static toCreateData(entity: NewTaskEntity) {
+    const createTaskData: CreateTaskData = {
+      projectId: entity.projectId,
+      title: entity.title,
+      startDate: entity.startDate,
+      endDate: entity.endDate,
+      status: entity.status,
+      assigneeId: entity.assigneeId,
+    };
 
+    const attachmentData: AttachmentData[] = entity.attachments.map(
+      (attachment) => {
+        return { attachmentUrl: attachment.attachmentUrl };
+      },
+    );
 
+    const taskTagsData: TaskTagsData[] = entity.tasktags.map((tasktag) => {
+      return {
+        tagId: tasktag.tagId,
+      };
+    });
+    return { createTaskData, attachmentData, taskTagsData };
+  }
 
-    static toResDto(task: PersistTaskEntity, user: UserEntity) {
-        return new TaskResDto(
-            task.id,
-            task.projectId,
-            task.title,
-            task.startDate,
-            task.endDate,
-            task.status,
-            user,
-            task.attachments as PersistAttachmentEntity[],
-            task.tasktags,
-            task.createdAt,
-            task.updatedAt,
-        );
-        //   }
-    }
-    //   static toResDtos(entities: PersistTaskEntity[]): TaskResDtos {
-    //     const taskResDto = entities.map((entity) => {
-    //       return TaskMapper.toResDto(entity);
-    //     });
-    //     const taskResDtos = new TaskResDtos(taskResDto);
-    //     return taskResDtos;
+  static toResDto(task: PersistTaskEntity) {
+    return new TaskResDto(
+      task.id,
+      task.projectId,
+      task.title,
+      task.startDate,
+      task.endDate,
+      task.status,
+      task.assignee,
+      task.attachments as PersistAttachmentEntity[],
+      task.tasktags,
+      task.createdAt,
+      task.updatedAt,
+    );
     //   }
+  }
+  static toResDtos(entities: PersistTaskEntity[]): TaskResDtos {
+    const taskResDto = entities.map((entity) => {
+      return TaskMapper.toResDto(entity);
+    });
+    const taskResDtos = new TaskResDtos(taskResDto);
+    return taskResDtos;
+  }
 }

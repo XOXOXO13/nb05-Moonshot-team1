@@ -1,29 +1,31 @@
 import { TagEntity } from "../tag/tag-entity";
 import { AttachmentEntity } from "./attachment-entity";
-import { TaskTagVo } from "./task-tag-entity";
+import { TaskTagVo } from "./task-tag-vo";
+import { UserVo } from "./user-vo";
 
 export type NewTaskEntity = Omit<
   TaskEntity,
-  "id" | "createdAt" | "updatedAt"
+  "id" | "createdAt" | "updatedAt" | "assignee"
 >;
-
 
 export interface PersistTaskEntity extends TaskEntity {
   id: number;
   createdAt: Date;
   updatedAt: Date;
+  assignee: UserVo;
 }
 
 export class TaskEntity {
   private readonly _id?: number;
   private readonly _projectId: number;
-  private readonly _title: string;
-  private readonly _startDate: Date;
-  private readonly _endDate: Date;
-  private readonly _status: string;
-  private readonly _attachments: AttachmentEntity[];
-  private readonly _taskTags: TaskTagVo[];
-  private readonly _assigneeId: number;
+  private _title: string;
+  private _startDate: Date;
+  private _endDate: Date;
+  private _status: string;
+  private _attachments: AttachmentEntity[];
+  private _taskTags: TaskTagVo[];
+  private _assigneeId: number;
+  private readonly _assignee?: UserVo;
   private readonly _createdAt?: Date;
   private readonly _updatedAt?: Date;
 
@@ -35,7 +37,8 @@ export class TaskEntity {
     endDate: Date;
     status: string;
     attachments: AttachmentEntity[];
-    taskTags: TaskTagVo[]
+    taskTags: TaskTagVo[];
+    assignee?: UserVo;
     assigneeId: number;
     createdAt?: Date;
     updatedAt?: Date;
@@ -48,6 +51,7 @@ export class TaskEntity {
     this._status = params.status;
     this._attachments = params.attachments;
     this._taskTags = params.taskTags;
+    this._assignee = params.assignee;
     this._assigneeId = params.assigneeId;
     this._createdAt = params.createdAt;
     this._updatedAt = params.updatedAt;
@@ -71,7 +75,7 @@ export class TaskEntity {
       status: params.status,
       attachments: params.attachments,
       taskTags: params.taskTags,
-      assigneeId: params.assigneeId
+      assigneeId: params.assigneeId,
     }) as NewTaskEntity;
   }
 
@@ -82,6 +86,7 @@ export class TaskEntity {
     startDate: Date;
     endDate: Date;
     status: string;
+    assignee: UserVo;
     assigneeId: number;
     attachments: AttachmentEntity[];
     taskTags: TaskTagVo[];
@@ -97,10 +102,29 @@ export class TaskEntity {
       status: params.status,
       attachments: params.attachments,
       taskTags: params.taskTags,
+      assignee: params.assignee,
       assigneeId: params.assigneeId,
       createdAt: params.createdAt,
-      updatedAt: params.updatedAt
-    }) as PersistTaskEntity
+      updatedAt: params.updatedAt,
+    }) as PersistTaskEntity;
+  }
+
+  update(params: {
+    title: string;
+    startDate: Date;
+    endDate: Date;
+    status: string;
+    attachments: AttachmentEntity[];
+    taskTags: TaskTagVo[];
+    assigneeId: number;
+  }) {
+    this._title = params.title;
+    this._startDate = params.startDate;
+    this._endDate = params.endDate;
+    this._status = params.status;
+    this._attachments = params.attachments;
+    this._taskTags = params.taskTags;
+    this._assigneeId = params.assigneeId;
   }
 
   get id() {
@@ -127,11 +151,9 @@ export class TaskEntity {
     return this._status;
   }
 
-
   get assigneeId() {
     return this._assigneeId;
   }
-
 
   get createdAt() {
     return this._createdAt;
@@ -147,5 +169,9 @@ export class TaskEntity {
 
   get tasktags() {
     return this._taskTags;
+  }
+
+  get assignee() {
+    return this._assignee;
   }
 }
