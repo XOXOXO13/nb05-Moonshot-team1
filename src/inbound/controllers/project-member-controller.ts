@@ -1,4 +1,4 @@
-import { IServices } from "../ports/services-interface";
+import { IServices } from "../ports/I-services";
 import { BaseController } from "./base-controller";
 
 export class ProjectMemeberController extends BaseController {

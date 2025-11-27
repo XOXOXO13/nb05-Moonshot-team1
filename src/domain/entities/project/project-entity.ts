@@ -1,11 +1,10 @@
+import { MemberData, MemberEntity } from "../member/member-entity";
 import { PersistTaskEntity } from "../task/task-entity";
-import { MemberData, MemberVo } from "./member-vo";
 
 export type ProjectData = {
   name: string;
   description?: string | null;
   userId: number;
-  members?: MemberData[];
   version: number;
 };
 
@@ -16,10 +15,7 @@ export type ProjectUpdateData = {
 };
 
 // 영속화 전
-export type NewProjectEntity = Omit<
-  ProjectEntity,
-  "id" | "createdAt" | "updatedAt"
->;
+export type NewProjectEntity = ProjectEntity;
 
 // 영속화 후
 export interface PersistProjectEntity extends ProjectEntity {
@@ -29,13 +25,13 @@ export interface PersistProjectEntity extends ProjectEntity {
 }
 
 export class ProjectEntity {
-  private readonly _id?: number;
+  private _id?: number;
   private _name: string;
   private _description?: string | null;
   private readonly _userId: number;
-  private readonly _createdAt?: Date;
-  private readonly _updatedAt?: Date;
-  private _members?: MemberVo[];
+  private _createdAt?: Date;
+  private _updatedAt?: Date;
+  private _members: MemberEntity[];
   private _tasks?: PersistTaskEntity[];
 
   // 낙관적 락을 위한 버전
@@ -49,7 +45,7 @@ export class ProjectEntity {
     userId: number;
     createdAt?: Date;
     updatedAt?: Date;
-    members: MemberVo[];
+    members: MemberEntity[];
     tasks?: PersistTaskEntity[];
     version: number;
   }) {
@@ -100,7 +96,6 @@ export class ProjectEntity {
       name: this._name,
       description: this._description,
       userId: this._userId,
-      members: this._members?.map((m) => m.toData()),
       version: this._version,
     };
   }
@@ -122,10 +117,10 @@ export class ProjectEntity {
     userId: number;
   }): NewProjectEntity {
     const { name, description, userId } = params;
-    const creator = MemberVo.createNew({
+    const tempProjectId = 0;
+    const creator = MemberEntity.createOwner({
       userId: userId,
-      role: "OWNER",
-      status: "ACTIVE",
+      projectId: tempProjectId,
     });
 
     const entity = new ProjectEntity({
@@ -145,11 +140,11 @@ export class ProjectEntity {
     userId: number;
     createdAt?: Date;
     updatedAt?: Date;
-    members: MemberVo[];
+    members: MemberEntity[];
     tasks?: PersistTaskEntity[];
     version: number;
   }) {
-    return new ProjectEntity(parmas);
+    return new ProjectEntity(parmas) as PersistProjectEntity;
   }
 
   updateName(newName: string): void {
@@ -166,7 +161,13 @@ export class ProjectEntity {
 
   incrementVersion(): void {
     if (this._isModified) {
+      this._updatedAt = new Date();
       this._version++;
     }
+  }
+  public assignId(id: number): void {
+    this._id = id;
+    this._createdAt = new Date();
+    this._updatedAt = this._createdAt;
   }
 }

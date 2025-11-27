@@ -1,10 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { UserController } from "./inbound/controllers/user-controller";
+import { AuthController } from "./inbound/controllers/auth-controller";
+import { UsersController } from "./inbound/controllers/user-controller";
 import { AuthMiddleware } from "./inbound/middlewares/auth-middleware";
 import { UserService } from "./domain/services/user-service";
 import { BcryptHashManager } from "./outbound/managers/bcrypt-hash-manager";
 import { UserRepository } from "./outbound/repos/user-repository";
-import { Services } from "./domain/sevices";
+import { Services } from "./domain/services";
 import { Server } from "./server";
 import { TaskController } from "./inbound/controllers/task-controller";
 import { TaskService } from "./domain/services/task-service";
@@ -17,6 +18,14 @@ import { Utils } from "./shared/utils-interface";
 import { RepositoryFactory } from "./outbound/repository-factory";
 import { UnitOfWork } from "./outbound/unit-of-work";
 import { ProjectController } from "./inbound/controllers/project-controller";
+import { AuthService } from "./domain/services/auth-service";
+import { InvitationRepository } from "./outbound/repos/invitation-repository";
+import { MemberRepository } from "./outbound/repos/member-repository";
+import { InvitationService } from "./domain/services/invitation-service";
+import { EmailService } from "./domain/services/email-service";
+import { MemberService } from "./domain/services/member-service";
+import { InvitationrController } from "./inbound/controllers/invitation-controller";
+import { smtpConfig } from "./shared/utils/smtp-util";
 import { TagRepository } from "./outbound/repos/tag-repository";
 
 export class DependencyInjector {
@@ -35,6 +44,7 @@ export class DependencyInjector {
     const tokenUtil = new TokenUtil(configUtil);
     const utils = new Utils(configUtil, tokenUtil);
     const prisma = new PrismaClient();
+    const smtp = smtpConfig;
 
     const hashManager = new BcryptHashManager();
 
@@ -43,34 +53,48 @@ export class DependencyInjector {
       taskRepository: (prismaClient) => new TaskRepository(prismaClient),
       tagRepository: (prismaClient) => new TagRepository(prismaClient),
       userRepository: (prismaClient) => new UserRepository(prismaClient),
+      invitationRepository: (prismaClient) =>
+        new InvitationRepository(prismaClient),
+      memberRepository: (prismaClient) => new MemberRepository(prismaClient),
     });
-
-    // 주석 처리 이유 :  Prisma 인스턴스 중복 생성, UnitOfWork 사용 불일치,저장소 접근 일관성 부족, 타입 호환성 문제사유로 주석처리했습니다.
-    // const prismaClient = new PrismaClient();
-    // const unitOfWork: UnitOfWork = new UnitOfWork(prismaClient, repoFactory);
-
-    // const taskRepository = new TaskRepository(prisma);
-    // const projectRepository = new ProjectRepository(prisma);
-    // const repositories = {
-    //   taskRepository: taskRepository,
-    //   projectRepository: projectRepository,
-    // };
 
     const unitOfWork: UnitOfWork = new UnitOfWork(prisma, repoFactory);
     const repositories = unitOfWork.repos;
 
+    const emailService = new EmailService(smtp, "no-reply@moonshot.com");
     const taskService = new TaskService(unitOfWork);
     const projectService = new ProjectService(unitOfWork);
     const userService = new UserService(unitOfWork.userRepository, hashManager);
-    const services = new Services(taskService, projectService, userService);
+    const authService = new AuthService(unitOfWork.userRepository, hashManager);
+    const invitationService = new InvitationService(unitOfWork, emailService);
+    const memberService = new MemberService(unitOfWork);
+    const services = new Services(
+      taskService,
+      projectService,
+      userService,
+      authService,
+      invitationService,
+      memberService
+    );
 
     const authMiddleware = new AuthMiddleware(utils);
     const middlewares = [authMiddleware];
 
     const taskController = new TaskController(services, authMiddleware);
     const projectController = new ProjectController(services, authMiddleware);
-    const userController = new UserController(services, utils, authMiddleware);
-    const controllers = [taskController, projectController, userController];
+    const authController = new AuthController(services, authMiddleware, utils);
+    const usersController = new UsersController(services, authMiddleware);
+    const invitationController = new InvitationrController(
+      services,
+      authMiddleware
+    );
+    const controllers : any = [
+      taskController,
+      projectController,
+      authController,
+      usersController,
+      invitationController,
+    ];
 
     const port = parseInt(process.env.PORT || "4000", 10);
     return new Server(controllers, port);

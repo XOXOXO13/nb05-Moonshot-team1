@@ -10,15 +10,14 @@ datasource db {
 
 
 model SocialAccount {
-  id         String   @id @default(uuid())
   provider   String
-  providerId String
+  providerAccountId String
   createdAt  DateTime @default(now())
   userId     Int
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, provider])
-  @@unique([provider, providerId])
+  @@unique([provider, providerAccountId])
 }
 
 model User {
@@ -153,6 +152,8 @@ model Invitation {
 
   expiresAt DateTime
   createdAt DateTime @default(now())
+
+  role MemberRole @default(MEMBER)
 
   @@unique([projectId, inviteeId]) // 중복 초대 방지
 }

@@ -1,10 +1,5 @@
-import { NewTagEntity } from "../../entites/tag/tag-entity";
-import { NewAttachmentEntity } from "../../entites/task/attachment-entity";
-import {
-  NewTaskEntity,
-  PersistTaskEntity,
-  TaskEntity,
-} from "../../entites/task/task-entity";
+import { NewTaskEntity, PersistTaskEntity } from "../../entities/task/task-entity";
+
 
 export interface ITaskRepository {
   create(entity: NewTaskEntity): Promise<PersistTaskEntity>;

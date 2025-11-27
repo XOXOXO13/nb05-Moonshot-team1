@@ -1,55 +1,11 @@
 import { UserEntity } from "../entities/user/user-entity";
 import {
-  SocialAccountEntity,
+  SocialAccountVo,
   SocialProvider,
 } from "../entities/social-account/social-account-entity";
 import { IUserRepository } from "../ports/repositories/I-user-repository";
 import { IHashManager } from "../ports/managers/I-hash-manager";
-
-export interface IUserService {
-  registerLocal(params: {
-    email: string;
-    password: string;
-    name: string;
-    profileImageUrl?: string;
-  }): Promise<UserEntity>;
-
-  registerSocial(params: {
-    email: string;
-    name: string;
-    provider: SocialProvider;
-    providerId: string;
-  }): Promise<UserEntity>;
-
-  loginLocal(email: string, password: string): Promise<UserEntity>;
-  loginSocial(
-    provider: SocialProvider,
-    providerId: string,
-  ): Promise<UserEntity | null>;
-
-  findById(id: number): Promise<UserEntity | null>;
-  findByEmail(email: string): Promise<UserEntity | null>;
-  updateProfile(
-    userId: number,
-    params: { name?: string; profileImageUrl?: string },
-  ): Promise<UserEntity>;
-  updatePassword(
-    userId: number,
-    currentPassword: string,
-    newPassword: string,
-  ): Promise<void>;
-
-  updateRefreshToken(userId: number, refreshToken: string): Promise<void>;
-  validateRefreshToken(userId: number, refreshToken: string): Promise<boolean>;
-  deleteRefreshToken(userId: number): Promise<void>;
-
-  linkSocialAccount(
-    userId: number,
-    provider: SocialProvider,
-    providerId: string,
-  ): Promise<void>;
-  unlinkSocialAccount(userId: number, provider: SocialProvider): Promise<void>;
-}
+import { IUserService } from "../../inbound/ports/services/I-user-service";
 
 export class UserService implements IUserService {
   constructor(
@@ -78,29 +34,29 @@ export class UserService implements IUserService {
     email: string;
     name: string;
     provider: SocialProvider;
-    providerId: string;
+    providerAccountId: string;
   }): Promise<UserEntity> {
     const existingUser = await this.userRepository.findBySocialAccount(
       params.provider,
-      params.providerId,
+      params.providerAccountId,
     );
     if (existingUser) {
       throw new Error("이미 연결된 소셜 계정입니다.");
     }
     const userByEmail = await this.userRepository.findByEmail(params.email);
     if (userByEmail) {
-      const socialAccount = SocialAccountEntity.createNew({
+      const socialAccount = SocialAccountVo.createNew({
         provider: params.provider,
-        providerId: params.providerId,
+        providerAccountId: params.providerAccountId,
         userId: userByEmail.id!,
       });
 
       userByEmail.addSocialAccount(socialAccount);
       return await this.userRepository.update(userByEmail);
     }
-    const socialAccount = SocialAccountEntity.createNew({
+    const socialAccount = SocialAccountVo.createNew({
       provider: params.provider,
-      providerId: params.providerId,
+      providerAccountId: params.providerAccountId,
       userId: 0,
     });
     const newUser = UserEntity.createNewSocial({
@@ -130,9 +86,12 @@ export class UserService implements IUserService {
   }
   async loginSocial(
     provider: SocialProvider,
-    providerId: string,
+    providerAccountId: string,
   ): Promise<UserEntity | null> {
-    return await this.userRepository.findBySocialAccount(provider, providerId);
+    return await this.userRepository.findBySocialAccount(
+      provider,
+      providerAccountId,
+    );
   }
 
   async findById(id: number): Promise<UserEntity | null> {
@@ -213,38 +172,6 @@ export class UserService implements IUserService {
     await this.userRepository.update(user);
   }
 
-  async linkSocialAccount(
-    userId: number,
-    provider: SocialProvider,
-    providerId: string,
-  ): Promise<void> {
-    const existingUser = await this.userRepository.findBySocialAccount(
-      provider,
-      providerId,
-    );
-    if (existingUser && existingUser.id !== userId) {
-      throw new Error("다른 사용자에게 이미 연결된 소셜 계정입니다.");
-    }
-
-    const user = await this.userRepository.findById(userId);
-    if (!user) {
-      throw new Error("사용자를 찾을 수 없습니다.");
-    }
-
-    if (user.hasSocialAccount(provider)) {
-      throw new Error("이미 해당 소셜 계정이 연결되어 있습니다.");
-    }
-
-    const socialAccount = SocialAccountEntity.createNew({
-      provider,
-      providerId,
-      userId,
-    });
-
-    user.addSocialAccount(socialAccount);
-    await this.userRepository.update(user);
-  }
-
   async unlinkSocialAccount(
     userId: number,
     provider: SocialProvider,
@@ -265,5 +192,132 @@ export class UserService implements IUserService {
 
     user.removeSocialAccount(provider);
     await this.userRepository.update(user);
+  }
+
+  async registerUser(input: {
+    email: string;
+    password: string;
+    name: string;
+    profileImageUrl?: string;
+  }): Promise<UserEntity> {
+    return this.registerLocal(input);
+  }
+
+  async registerSocialUser(input: {
+    email: string;
+    name: string;
+    provider: SocialProvider;
+    providerAccountId: string;
+  }): Promise<UserEntity> {
+    return this.registerSocial(input);
+  }
+
+  async loginUser(email: string, password: string): Promise<UserEntity> {
+    return this.loginLocal(email, password);
+  }
+
+  async loginSocialUser(
+    provider: SocialProvider,
+    providerAccountId: string,
+  ): Promise<UserEntity | null> {
+    return this.loginSocial(provider, providerAccountId);
+  }
+
+  async getMyProfile(userId: number): Promise<UserEntity> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new Error("사용자를 찾을 수 없습니다.");
+    }
+    return user;
+  }
+
+  async getUserProfile(userId: number): Promise<UserEntity> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new Error("사용자를 찾을 수 없습니다.");
+    }
+    return user;
+  }
+
+  async updateMyProfile(input: {
+    userId: number;
+    name?: string;
+    profileImageUrl?: string;
+  }): Promise<UserEntity> {
+    return this.updateProfile(input.userId, {
+      name: input.name,
+      profileImageUrl: input.profileImageUrl,
+    });
+  }
+
+  async changePassword(input: {
+    userId: number;
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<void> {
+    return this.updatePassword(
+      input.userId,
+      input.currentPassword,
+      input.newPassword,
+    );
+  }
+
+  async deleteMyAccount(userId: number): Promise<void> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new Error("사용자를 찾을 수 없습니다.");
+    }
+    await this.userRepository.delete(userId);
+  }
+
+  async linkSocialAccount(input: {
+    userId: number;
+    provider: SocialProvider;
+    providerAccountId: string;
+  }): Promise<void> {
+    const existingUser = await this.userRepository.findBySocialAccount(
+      input.provider,
+      input.providerAccountId,
+    );
+    if (existingUser && existingUser.id !== input.userId) {
+      throw new Error("다른 사용자에게 이미 연결된 소셜 계정입니다.");
+    }
+
+    const user = await this.userRepository.findById(input.userId);
+    if (!user) {
+      throw new Error("사용자를 찾을 수 없습니다.");
+    }
+
+    if (user.hasSocialAccount(input.provider)) {
+      throw new Error("이미 해당 소셜 계정이 연결되어 있습니다.");
+    }
+
+    const socialAccount = SocialAccountVo.createNew({
+      provider: input.provider,
+      providerAccountId: input.providerAccountId,
+      userId: input.userId,
+    });
+
+    user.addSocialAccount(socialAccount);
+    await this.userRepository.update(user);
+  }
+
+  async refreshToken(
+    userId: number,
+    refreshToken: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const isValid = await this.validateRefreshToken(userId, refreshToken);
+    if (!isValid) {
+      throw new Error("유효하지 않은 리프레시 토큰입니다.");
+    }
+
+    return {
+      accessToken: "",
+      refreshToken: "",
+    };
+  }
+
+  async logout(userId: number): Promise<void> {
+    await this.deleteRefreshToken(userId);
   }
 }

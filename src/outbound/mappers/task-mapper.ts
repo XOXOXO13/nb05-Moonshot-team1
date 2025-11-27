@@ -3,17 +3,11 @@ import {
   AttachmentEntity,
   PersistAttachmentEntity,
 } from "../../domain/entities/task/attachment-entity";
-import { TagEntity } from "../../domain/entities/tag/tag-entity";
-
-import { UserEntity } from "../../domain/entities/user/user-entity";
-import { Request } from "express";
-import { z } from "zod";
 import {
   NewTaskEntity,
   PersistTaskEntity,
   TaskEntity,
 } from "../../domain/entities/task/task-entity";
-import { TaskTags } from "@prisma/client";
 import { UserVo } from "../../domain/entities/task/user-vo";
 import { TaskTagVo } from "../../domain/entities/task/task-tag-vo";
 

@@ -4,22 +4,28 @@ import express, {
   RequestHandler,
   Response,
 } from "express";
-import { IServices } from "../../inbound/ports/services-interface";
-import z from "zod";
+import { IServices } from "../ports/I-services";
+import { Utils } from "../../shared/utils-interface";
+import z from "zod"
+
 export class BaseController {
   private _basePath;
   private _services;
+  private _utils;
   private _router;
 
   constructor({
     basePath,
     services,
+    utils,
   }: {
     basePath: string;
     services: IServices;
+    utils?: Utils;
   }) {
     this._basePath = basePath;
     this._services = services;
+    this._utils = utils;
     this._router = express.Router();
   }
 
@@ -48,6 +54,10 @@ export class BaseController {
     return parsedData.data;
   }
 
+
+  get utils(): Utils | undefined {
+    return this._utils;
+  }
   catch(handler: RequestHandler) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {

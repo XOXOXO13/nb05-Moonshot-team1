@@ -1,11 +1,10 @@
-import { IProjectService } from "../../inbound/ports/services/project-service-interface";
+import { IProjectService } from "../../inbound/ports/services/I-project-service";
 import { CreateProjectDto } from "../../inbound/requests/project-req-dto";
 import { UnitOfWork } from "../../outbound/unit-of-work";
 import {
   PersistProjectEntity,
   ProjectEntity,
 } from "../entities/project/project-entity";
-// IUnitOfWork 구현후 대체
 
 export class ProjectService implements IProjectService {
   private readonly _unitOfWokr;

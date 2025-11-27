@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { BaseController } from "./base-controller";
-import { IServices } from "../../inbound/ports/services-interface";
 
 import { AuthMiddleware } from "../middlewares/auth-middleware";
 import {
@@ -13,6 +12,7 @@ import {
   updateTaskBodySchema,
   updateTaskParamsSchema,
 } from "../requests/task-req-dto";
+import { IServices } from "../ports/I-services";
 
 export class TaskController extends BaseController {
   private readonly _authMiddlewares;
