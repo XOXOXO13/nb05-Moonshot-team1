@@ -5,7 +5,7 @@ import express, {
   Response,
 } from "express";
 import { IServices } from "../../inbound/ports/services-interface";
-import z from "zod"
+import z from "zod";
 export class BaseController {
   private _basePath;
   private _services;
@@ -34,7 +34,6 @@ export class BaseController {
   get services(): IServices {
     return this._services;
   }
-
 
   validate<T extends z.ZodType>(schema: T, data: unknown) {
     const parsedData = schema.safeParse(data);

@@ -1,9 +1,13 @@
 import { UserEntity } from "../../domain/entites/user/user-entity";
 import { TagEntity } from "../../domain/entites/tag/tag-entity";
-import { AttachmentEntity, PersistAttachmentEntity } from "../../domain/entites/task/attachment-entity";
-import { TaskTagVo } from "../../domain/entites/task/task-tag-entity";
+import {
+  AttachmentEntity,
+  PersistAttachmentEntity,
+} from "../../domain/entites/task/attachment-entity";
 import { AttachmentDto } from "./attachment-dto";
 import { UserDto } from "./user-dto";
+import { UserVo } from "../../domain/entites/task/user-vo";
+import { TaskTagVo } from "../../domain/entites/task/task-tag-vo";
 
 export class TaskResDto {
   private readonly id: number;
@@ -29,7 +33,7 @@ export class TaskResDto {
     startDate: Date,
     endDate: Date,
     status: string,
-    assignee: UserEntity,
+    assignee: UserVo,
     attachments: PersistAttachmentEntity[],
     tags: TaskTagVo[],
     createdAt: Date,
@@ -43,25 +47,23 @@ export class TaskResDto {
     this.startMonth = startDate.getMonth() + 1;
     this.startDay = startDate.getDate();
 
-
     this.endYear = endDate.getFullYear();
     this.endMonth = endDate.getMonth() + 1;
     this.endDay = endDate.getDate();
-
 
     this.status = status;
     this.assignee = new UserDto({
       id: assignee.id,
       name: assignee.name,
       email: assignee.email,
-      profileImage: assignee.profileImageUrl
+      profileImage: assignee.profileImage,
     });
     this.tags = tags;
     this.attachments = attachments.map((attachment) => {
       return new AttachmentDto({
         id: attachment.id,
-        attachmentUrl: attachment.attachmentUrl
-      })
+        attachmentUrl: attachment.attachmentUrl,
+      });
     });
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
