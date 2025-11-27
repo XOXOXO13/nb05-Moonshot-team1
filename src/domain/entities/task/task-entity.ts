@@ -1,4 +1,3 @@
-import { TagEntity } from "../tag/tag-entity";
 import { AttachmentEntity } from "./attachment-entity";
 import { TaskTagVo } from "./task-tag-vo";
 import { UserVo } from "./user-vo";

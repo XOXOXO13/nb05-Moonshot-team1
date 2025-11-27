@@ -13,7 +13,7 @@ declare module "express-serve-static-core" {
 }
 
 export class AuthMiddleware {
-  constructor(private _utils: IUtils) { }
+  constructor(private _utils: IUtils) {}
 
   static generateToken = (
     params: TokenGenerateParams,
@@ -44,7 +44,7 @@ export class AuthMiddleware {
             "토큰 형식이 올바르지 않습니다. 'Bearer {token}' 형식을 사용하세요.",
         });
       }
-      
+
       const accessToken = tokenParts[1];
       const payload = this._utils.token.verifyToken({ token: accessToken });
       req.userId = payload.userId.toString();

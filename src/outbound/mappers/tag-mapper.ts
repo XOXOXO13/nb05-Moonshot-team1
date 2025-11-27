@@ -2,7 +2,7 @@ import {
   NewTagEntity,
   PersistTagEntity,
   TagEntity,
-} from "../../domain/entites/tag/tag-entity";
+} from "../../domain/entities/tag/tag-entity";
 
 export type CreateTagData = {
   name: string;

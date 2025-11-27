@@ -1,13 +1,13 @@
-import { UserEntity } from "../../domain/entites/user/user-entity";
-import { TagEntity } from "../../domain/entites/tag/tag-entity";
+import { UserEntity } from "../../domain/entities/user/user-entity";
+import { TagEntity } from "../../domain/entities/tag/tag-entity";
 import {
   AttachmentEntity,
   PersistAttachmentEntity,
-} from "../../domain/entites/task/attachment-entity";
+} from "../../domain/entities/task/attachment-entity";
 import { AttachmentDto } from "./attachment-dto";
 import { UserDto } from "./user-dto";
-import { UserVo } from "../../domain/entites/task/user-vo";
-import { TaskTagVo } from "../../domain/entites/task/task-tag-vo";
+import { UserVo } from "../../domain/entities/task/user-vo";
+import { TaskTagVo } from "../../domain/entities/task/task-tag-vo";
 
 export class TaskResDto {
   private readonly id: number;

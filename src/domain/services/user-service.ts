@@ -1,8 +1,8 @@
-import { UserEntity } from "../entites/user/user-entity";
+import { UserEntity } from "../entities/user/user-entity";
 import {
   SocialAccountEntity,
   SocialProvider,
-} from "../entites/social-account/social-account-entity";
+} from "../entities/social-account/social-account-entity";
 import { IUserRepository } from "../ports/repositories/I-user-repository";
 import { IHashManager } from "../ports/managers/I-hash-manager";
 

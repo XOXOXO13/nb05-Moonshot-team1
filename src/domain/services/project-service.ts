@@ -4,7 +4,7 @@ import { UnitOfWork } from "../../outbound/unit-of-work";
 import {
   PersistProjectEntity,
   ProjectEntity,
-} from "../entites/project/project-entity";
+} from "../entities/project/project-entity";
 // IUnitOfWork 구현후 대체
 
 export class ProjectService implements IProjectService {

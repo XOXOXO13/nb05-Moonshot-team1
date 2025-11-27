@@ -2,7 +2,7 @@ import {
   NewTagEntity,
   PersistTagEntity,
   TagEntity,
-} from "../../domain/entites/tag/tag-entity";
+} from "../../domain/entities/tag/tag-entity";
 import { ITagRepository } from "../../domain/ports/repositories/I-tag-repository";
 import { TagMapper } from "../mappers/tag-mapper";
 import { BasePrismaClient } from "./base-repository";

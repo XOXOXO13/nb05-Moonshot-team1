@@ -2,20 +2,20 @@ import { TaskResDto, TaskResDtos } from "../../inbound/responses/task-res-dto";
 import {
   AttachmentEntity,
   PersistAttachmentEntity,
-} from "../../domain/entites/task/attachment-entity";
-import { TagEntity } from "../../domain/entites/tag/tag-entity";
+} from "../../domain/entities/task/attachment-entity";
+import { TagEntity } from "../../domain/entities/tag/tag-entity";
 
-import { UserEntity } from "../../domain/entites/user/user-entity";
+import { UserEntity } from "../../domain/entities/user/user-entity";
 import { Request } from "express";
 import { z } from "zod";
 import {
   NewTaskEntity,
   PersistTaskEntity,
   TaskEntity,
-} from "../../domain/entites/task/task-entity";
+} from "../../domain/entities/task/task-entity";
 import { TaskTags } from "@prisma/client";
-import { UserVo } from "../../domain/entites/task/user-vo";
-import { TaskTagVo } from "../../domain/entites/task/task-tag-vo";
+import { UserVo } from "../../domain/entities/task/user-vo";
+import { TaskTagVo } from "../../domain/entities/task/task-tag-vo";
 
 export type CreateTaskData = {
   projectId: number;
