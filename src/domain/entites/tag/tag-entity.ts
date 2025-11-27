@@ -1,4 +1,4 @@
-export type NewTagEntity = Omit<TagEntity, "id">
+export type NewTagEntity = Omit<TagEntity, "id">;
 export interface PersistTagEntity extends TagEntity {
   id: number;
 }
@@ -9,26 +9,16 @@ export class TagEntity {
   private readonly _id?: number;
   private readonly _name: string;
 
-  constructor(params: {
-    id?: number;
-    name: string
-  }) {
+  constructor(params: { id?: number; name: string }) {
     this._id = params.id;
     this._name = params.name;
   }
 
-  static createNew(
-    name: string
-  ) {
-
+  static createNew(name: string) {
     return new TagEntity({ name }) as NewTagEntity;
   }
 
-  static createPersist(record: {
-    id: number,
-    name: string
-  }) {
-
+  static createPersist(record: { id: number; name: string }) {
     return new TagEntity(record) as PersistTagEntity;
   }
 
@@ -40,4 +30,3 @@ export class TagEntity {
     return this._name;
   }
 }
-
