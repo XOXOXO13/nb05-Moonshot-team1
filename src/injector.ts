@@ -19,7 +19,6 @@ import { UnitOfWork } from "./outbound/unit-of-work";
 import { ProjectController } from "./inbound/controllers/project-controller";
 import { TagRepository } from "./outbound/repos/tag-repository";
 
-
 export class DependencyInjector {
   private _server: Server;
 
