@@ -83,6 +83,7 @@ model Task {
   id        Int    @id @default(autoincrement())
   projectId Int
   title     String
+  description  String
   startDate DateTime
   endDate   DateTime
   status    String
