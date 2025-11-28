@@ -3,6 +3,11 @@ import { BaseController } from "./base-controller";
 import { IServices } from "../ports/I-services";
 import { AuthMiddleware } from "../middlewares/auth-middleware";
 import { Response } from "express";
+import {
+  getUserTasksReqSchema,
+  GetUserTasksQueryParams,
+} from "../requests/user-req-dto";
+import { GetUserTasksResDto } from "../responses/user-dto";
 
 export class UsersController extends BaseController {
   private readonly _prisma: PrismaClient;
@@ -233,28 +238,142 @@ export class UsersController extends BaseController {
   };
   getUserTasks = async (req: any, res: Response) => {
     try {
-      return res.status(501).json({
-        message: "아직 구현되지 않은 기능입니다.",
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(401).json({
+          message: "로그인이 필요합니다.",
+        });
+      }
+
+      const queryParams = this.parseUserTasksQuery(req.query);
+      const tasks = await this._prisma.task.findMany({
+        where: this.buildUserTasksWhereClause(userId, queryParams),
+        include: {
+          assignee: true,
+          project: true,
+          attachments: true,
+          taskTags: {
+            include: { tag: true },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
+
+      const data = tasks.map((task) => this.mapTaskToResponse(task));
+
+      return res.status(200).json(data);
     } catch (error: any) {
       console.error("GetUserTasks error:", error);
-
       return res.status(400).json({
         message: "잘못된 요청입니다",
       });
     }
   };
 
-  /**
-   * 내 할일 조회
-   * GET /user/me/tasks
-   *
-   * 헤더:
-   * Authorization: Bearer <accessToken>
-   *
-   * 응답 (200 OK):
-   * [...할일 목록]
-   *
-   * 상태: 나중에 구현...
-   */
+  private parseUserTasksQuery(query: any): GetUserTasksQueryParams {
+    const from = (query.from as string) || null;
+    const to = (query.to as string) || null;
+    const projectId = query.project_id
+      ? parseInt(query.project_id as string)
+      : null;
+    const status = (query.status as string) || null;
+    const assigneeId = query.assignee_id
+      ? parseInt(query.assignee_id as string)
+      : null;
+    const keyword = (query.keyword as string) || null;
+
+    if (from && !/^\d{4}-\d{2}-\d{2}$/.test(from)) {
+      throw new Error("from 날짜 형식이 유효하지 않습니다 (YYYY-MM-DD)");
+    }
+    if (to && !/^\d{4}-\d{2}-\d{2}$/.test(to)) {
+      throw new Error("to 날짜 형식이 유효하지 않습니다 (YYYY-MM-DD)");
+    }
+
+    if (status && !["todo", "in_progress", "done"].includes(status)) {
+      throw new Error("status는 todo, in_progress, done 중 하나여야 합니다");
+    }
+
+    return { from, to, projectId, status, assigneeId, keyword };
+  }
+
+  private buildUserTasksWhereClause(
+    userId: number,
+    queryParams: GetUserTasksQueryParams,
+  ): any {
+    const where: any = {
+      assigneeId: userId,
+    };
+
+    if (queryParams.from || queryParams.to) {
+      where.startDate = {};
+      if (queryParams.from) {
+        where.startDate.gte = new Date(queryParams.from);
+      }
+      if (queryParams.to) {
+        const toDate = new Date(queryParams.to);
+        toDate.setDate(toDate.getDate() + 1);
+        where.startDate.lt = toDate;
+      }
+    }
+
+    if (queryParams.projectId) {
+      where.projectId = queryParams.projectId;
+    }
+
+    if (queryParams.status) {
+      where.status = queryParams.status.toUpperCase();
+    }
+
+    if (queryParams.assigneeId && queryParams.assigneeId !== userId) {
+      where.assigneeId = queryParams.assigneeId;
+    }
+
+    if (queryParams.keyword) {
+      where.title = {
+        contains: queryParams.keyword,
+      };
+    }
+
+    return where;
+  }
+
+  private mapTaskToResponse(task: any): GetUserTasksResDto {
+    const startDate = new Date(task.startDate);
+    const endDate = new Date(task.endDate);
+
+    return {
+      id: task.id,
+      projectId: task.projectId,
+      title: task.title,
+      startYear: startDate.getFullYear(),
+      startMonth: startDate.getMonth() + 1,
+      startDay: startDate.getDate(),
+      endYear: endDate.getFullYear(),
+      endMonth: endDate.getMonth() + 1,
+      endDay: endDate.getDate(),
+      status: task.status.toLowerCase() as "todo" | "in_progress" | "done",
+      assignee: task.assignee
+        ? {
+            id: task.assignee.id,
+            name: task.assignee.name,
+            email: task.assignee.email,
+            profileImage: task.assignee.profileImage || null,
+          }
+        : null,
+      tags:
+        task.taskTags?.map((tt: any) => ({
+          id: tt.tag.id,
+          name: tt.tag.name,
+        })) || [],
+      attachments:
+        task.attachments?.map((att: any) => ({
+          id: att.id,
+          url: att.attachmentUrl,
+        })) || [],
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+    };
+  }
 }

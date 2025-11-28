@@ -23,7 +23,7 @@ export class AuthMiddleware {
 
   static generateToken = (
     params: TokenGenerateParams,
-    utils: IUtils
+    utils: IUtils,
   ): string => {
     return utils.token.generateToken(params);
   };
@@ -51,7 +51,7 @@ export class AuthMiddleware {
   validateAccessToken = (
     req: Request,
     res: Response,
-    next: NextFunction | (() => void)
+    next: NextFunction | (() => void),
   ) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
     if (

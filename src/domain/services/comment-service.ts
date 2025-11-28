@@ -11,7 +11,11 @@ export class CommentService {
   }) {
     const { taskId, userId, content } = params;
 
-    if (!content || typeof content !== "string" || content.trim().length === 0) {
+    if (
+      !content ||
+      typeof content !== "string" ||
+      content.trim().length === 0
+    ) {
       const err: any = new Error("잘못된 요청 형식");
       err.status = 400;
       throw err;
@@ -24,7 +28,10 @@ export class CommentService {
       throw err;
     }
 
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
@@ -56,7 +63,12 @@ export class CommentService {
   }
 
   // 목록 조회
-  async listComments(params: { taskId: number; userId: number; page?: number; limit?: number }) {
+  async listComments(params: {
+    taskId: number;
+    userId: number;
+    page?: number;
+    limit?: number;
+  }) {
     const { taskId, userId, page = 1, limit = 20 } = params;
 
     const task = await this.repo.findTaskProjectId(taskId);
@@ -66,7 +78,10 @@ export class CommentService {
       throw err;
     }
 
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
@@ -123,7 +138,10 @@ export class CommentService {
       err.status = 400;
       throw err;
     }
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
@@ -153,10 +171,18 @@ export class CommentService {
   }
 
   // 수정
-  async updateComment(params: { commentId: string; userId: number; content: string }) {
+  async updateComment(params: {
+    commentId: string;
+    userId: number;
+    content: string;
+  }) {
     const { commentId, userId, content } = params;
 
-    if (!content || typeof content !== "string" || content.trim().length === 0) {
+    if (
+      !content ||
+      typeof content !== "string" ||
+      content.trim().length === 0
+    ) {
       const err: any = new Error("잘못된 요청 형식");
       err.status = 400;
       throw err;
@@ -176,7 +202,10 @@ export class CommentService {
       err.status = 400;
       throw err;
     }
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
@@ -229,7 +258,10 @@ export class CommentService {
       throw err;
     }
 
-    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
+    const isMember = await this.repo.isUserProjectMember(
+      userId,
+      task.projectId,
+    );
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;

@@ -1,4 +1,7 @@
-import { PersistProjectEntity, ReturnProjectEntity } from "../../../domain/entities/project/project-entity";
+import {
+  PersistProjectEntity,
+  ReturnProjectEntity,
+} from "../../../domain/entities/project/project-entity";
 import { ReturnPersistProject } from "../../../outbound/repos/project-repository";
 import {
   CreateProjectDto,

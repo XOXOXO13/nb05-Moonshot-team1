@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 export class InvitationrController extends BaseController {
   constructor(
     _services: IServices,
-    private _authMiddlewares: AuthMiddleware
+    private _authMiddlewares: AuthMiddleware,
   ) {
     super({ basePath: "/invitations", services: _services });
     this.register();
@@ -18,14 +18,14 @@ export class InvitationrController extends BaseController {
       "/:invitationId/accept",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
-      this.catch(this.acceptInvitation)
+      this.catch(this.acceptInvitation),
     );
     // 멤버 초대 삭제
     this.router.delete(
       "/:invitationId",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
-      this.catch(this.deleteInvitation)
+      this.catch(this.deleteInvitation),
     );
   }
 

@@ -12,7 +12,11 @@ export class CommentRepository implements ICommentRepository {
     this.prisma = prisma;
   }
 
-  async create(taskId: number, userId: number, content: string): Promise<PersistCommentEntity> {
+  async create(
+    taskId: number,
+    userId: number,
+    content: string,
+  ): Promise<PersistCommentEntity> {
     const created = await this.prisma.comment.create({
       data: {
         content,
@@ -31,7 +35,9 @@ export class CommentRepository implements ICommentRepository {
     };
   }
 
-  async findTaskProjectId(taskId: number): Promise<{ id: number; projectId: number } | null> {
+  async findTaskProjectId(
+    taskId: number,
+  ): Promise<{ id: number; projectId: number } | null> {
     const task = await this.prisma.task.findUnique({
       where: { id: taskId },
       select: { id: true, projectId: true },
@@ -39,7 +45,10 @@ export class CommentRepository implements ICommentRepository {
     return task ? { id: task.id, projectId: task.projectId } : null;
   }
 
-  async isUserProjectMember(userId: number, projectId: number): Promise<boolean> {
+  async isUserProjectMember(
+    userId: number,
+    projectId: number,
+  ): Promise<boolean> {
     const member = await this.prisma.member.findFirst({
       where: {
         userId,
@@ -69,7 +78,11 @@ export class CommentRepository implements ICommentRepository {
     };
   }
 
-  async findCommentsByTask(taskId: number, page: number = 1, limit: number = 20): Promise<PersistCommentEntity[]> {
+  async findCommentsByTask(
+    taskId: number,
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<PersistCommentEntity[]> {
     const skip = (page - 1) * limit;
     const records = await this.prisma.comment.findMany({
       where: { taskId },
@@ -111,7 +124,10 @@ export class CommentRepository implements ICommentRepository {
     };
   }
 
-  async update(commentId: string, content: string): Promise<PersistCommentEntity> {
+  async update(
+    commentId: string,
+    content: string,
+  ): Promise<PersistCommentEntity> {
     const updated = await this.prisma.comment.update({
       where: { id: commentId },
       data: { content },

@@ -33,7 +33,7 @@ export class TokenUtil implements ITokenUtil {
 
   generateAccessToken(params: Omit<TokenGenerateParams, "expiresIn">): string {
     const expiresIn = this._config.parsed().ACCESS_TOKEN_EXPIRES_IN ?? "15m";
-    return this.generateToken({ ...params, expiresIn});
+    return this.generateToken({ ...params, expiresIn });
   }
   generateRefreshToken(params: Omit<TokenGenerateParams, "expiresIn">): string {
     return this.generateToken({ ...params, expiresIn: "7d" });
@@ -62,7 +62,7 @@ export class TokenUtil implements ITokenUtil {
       return jwt.sign(payload, secret, options);
     } catch (error) {
       throw new Error(
-        `토큰 생성 중 오류가 발생했습니다: ${error instanceof Error ? error.message : "Unknown error"}`
+        `토큰 생성 중 오류가 발생했습니다: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     }
   }
@@ -97,7 +97,7 @@ export class TokenUtil implements ITokenUtil {
       }
 
       throw new Error(
-        `토큰 검증 중 오류가 발생했습니다: ${error instanceof Error ? error.message : "Unknown error"}`
+        `토큰 검증 중 오류가 발생했습니다: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     }
   }
