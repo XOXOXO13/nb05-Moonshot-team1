@@ -48,7 +48,11 @@ export class AuthMiddleware {
     return next();
   };
 
-  validateAccessToken = (req: Request, res: Response, next: NextFunction) => {
+  validateAccessToken = (
+    req: Request,
+    res: Response,
+    next: NextFunction | (() => void)
+  ) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
     if (
       !authHeader ||
@@ -82,7 +86,6 @@ export class AuthMiddleware {
       throw new BusinessException({
         type: BusinessExceptionType.INVALID_AUTH,
       });
-      
     }
     return next();
   };
@@ -93,5 +96,11 @@ export class AuthMiddleware {
       });
     }
     return next();
+  };
+
+  isUser = (req: Request, res: Response, next: NextFunction) => {
+    this.validateAccessToken(req, res, () => {
+      this.checkSignedInUser(req, res, next);
+    });
   };
 }

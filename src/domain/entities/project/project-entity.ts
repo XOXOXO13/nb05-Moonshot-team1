@@ -1,5 +1,5 @@
 import { MemberData, MemberEntity } from "../member/member-entity";
-import { PersistTaskEntity } from "../task/persist-task-entity";
+import { PersistTaskEntity } from "../task/task-entity";
 
 export type ProjectData = {
   name: string;

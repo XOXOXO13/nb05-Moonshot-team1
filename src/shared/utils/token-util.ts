@@ -40,7 +40,7 @@ export class TokenUtil implements ITokenUtil {
   }
 
   generateToken(params: TokenGenerateParams): string {
-    const { userId, email, expiresIn = "1h" } = params;
+    const { userId, email, expiresIn = "10h" } = params;
 
     const secret = this._config.parsed().TOKEN_SECRET;
     if (!secret || secret.length < 10) {

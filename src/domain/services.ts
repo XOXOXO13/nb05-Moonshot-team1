@@ -13,6 +13,6 @@ export class Services implements IServices {
     public readonly user: IUserService,
     public readonly auth: IAuthService,
     public readonly invitation: IInvitationService,
-    public readonly member: IMemberService
+    public readonly member: IMemberService,
   ) {}
 }

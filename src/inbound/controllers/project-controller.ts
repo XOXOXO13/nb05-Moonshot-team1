@@ -10,7 +10,7 @@ import { Request, Response } from "express";
 export class ProjectController extends BaseController {
   constructor(
     _services: IServices,
-    private _authMiddlewares: AuthMiddleware
+    private _authMiddlewares: AuthMiddleware,
   ) {
     super({ basePath: "/projects", services: _services });
     this.register();
@@ -24,6 +24,7 @@ export class ProjectController extends BaseController {
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
       this.catch(this.createProject)
+
     );
     // 프로젝트 조회
     this.router.get(
@@ -31,20 +32,25 @@ export class ProjectController extends BaseController {
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
       this.catch(this.getProject)
+
     );
+
     // 프로젝트 수정
     this.router.patch(
       "/:projectId",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
       this.catch(this.updateProject)
+
     );
+
     // 프로젝트 삭제
     this.router.delete(
       "/:projectId",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
       this.catch(this.deleteProject)
+
     );
 
     // [멤버 관리]
@@ -54,6 +60,7 @@ export class ProjectController extends BaseController {
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
       this.catch(this.getProjectMembers)
+
     );
     // 프로젝트에서 유저 제외하기
     this.router.delete(
@@ -61,6 +68,7 @@ export class ProjectController extends BaseController {
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
       this.catch(this.deleteMember)
+
     );
     // 프로젝트에 멤버 초대
     this.router.post(
@@ -68,6 +76,7 @@ export class ProjectController extends BaseController {
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
       this.catch(this.inviteMember)
+
     );
   }
 
@@ -84,6 +93,7 @@ export class ProjectController extends BaseController {
       userId: req.user?.userId,
     } as CreateProjectDto;
     const project = await this.services.project.createProject(dto);
+
     return res.json(project);
   };
 
@@ -121,6 +131,7 @@ export class ProjectController extends BaseController {
       userId,
       page,
       limit
+
     );
     return res.json(members);
   };
@@ -133,7 +144,7 @@ export class ProjectController extends BaseController {
     await this.services.member.deleteMember(
       projectId,
       deletedUserId,
-      deleterId
+      deleterId,
     );
     return res.status(204).json();
   };
@@ -144,6 +155,7 @@ export class ProjectController extends BaseController {
     console.log(projectId, invitorId);
 
     const invitation = await this.services.invitation.inviteMember(projectId, invitorId);
+
     return res.status(201).json(invitation);
   };
 }

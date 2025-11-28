@@ -33,6 +33,7 @@ export class InvitationrController extends BaseController {
     const userId: number = Number(req.userId);
     const token: string = req.params.invitationId;
     await this.services.invitation.acceptInvitation(token, userId);
+
     return res.status(200).json();
   };
 

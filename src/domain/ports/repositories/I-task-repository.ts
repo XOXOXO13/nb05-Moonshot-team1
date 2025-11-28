@@ -1,14 +1,21 @@
-import { PersistTaskEntity } from "../../entities/task/persist-task-entity";
-import { ModifyTaskEntity } from "../../entities/task/task-entity";
 import {
-  ViewProjectTaskEntity,
-  ViewTaskEntity,
-} from "../../entities/task/view-task-entity";
+  NewTaskEntity,
+  PersistTaskEntity,
+} from "../../entities/task/task-entity";
 
 export interface ITaskRepository {
-  create(entity: ModifyTaskEntity): Promise<PersistTaskEntity>;
-  getProjectTasks(entity: ViewProjectTaskEntity): Promise<PersistTaskEntity[]>;
-  getTaskInfo(entity: ViewTaskEntity): Promise<PersistTaskEntity>;
-  update(entity: ModifyTaskEntity): Promise<PersistTaskEntity>;
-  delete(entity: ViewTaskEntity): Promise<void>;
+  create(entity: NewTaskEntity): Promise<PersistTaskEntity>;
+  getProjectTasks(params: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    assignee?: number;
+    keyword?: string;
+    order?: string;
+    order_by?: string;
+    projectId: number;
+  }): Promise<PersistTaskEntity[]>;
+  getTaskInfo(taskId: number): Promise<PersistTaskEntity>;
+  update(entity: PersistTaskEntity): Promise<PersistTaskEntity>;
+  delete(taskId: number): Promise<void>;
 }

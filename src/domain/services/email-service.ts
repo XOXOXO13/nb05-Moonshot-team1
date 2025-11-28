@@ -22,7 +22,7 @@ export class EmailService implements IEmailService {
   async sendInvitation(
     email: string,
     invitationLink: string,
-    projectName: string
+    projectName: string,
   ): Promise<void> {
     const mailOptions = {
       from: this.fromEmail,
