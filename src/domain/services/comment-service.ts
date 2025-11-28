@@ -1,8 +1,9 @@
 import { ICommentRepository } from "../ports/repositories/I-comment-repository";
+import { PersistCommentEntity } from "../entities/comment/comment-entity";
 
 export class CommentService {
   constructor(private repo: ICommentRepository) {}
-
+  // 댓글 추가
   async createComment(params: {
     taskId: number;
     userId: number;
@@ -10,11 +11,7 @@ export class CommentService {
   }) {
     const { taskId, userId, content } = params;
 
-    if (
-      !content ||
-      typeof content !== "string" ||
-      content.trim().length === 0
-    ) {
+    if (!content || typeof content !== "string" || content.trim().length === 0) {
       const err: any = new Error("잘못된 요청 형식");
       err.status = 400;
       throw err;
@@ -27,10 +24,7 @@ export class CommentService {
       throw err;
     }
 
-    const isMember = await this.repo.isUserProjectMember(
-      userId,
-      task.projectId,
-    );
+    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
@@ -61,19 +55,9 @@ export class CommentService {
     };
   }
 
-  async listComments(params: {
-    taskId: number;
-    userId: number;
-    page?: number;
-    limit?: number;
-  }) {
-    const { taskId, userId, page = 1, limit = 10 } = params;
-
-    if (Number.isNaN(taskId) || page <= 0 || limit <= 0) {
-      const err: any = new Error("잘못된 요청 형식");
-      err.status = 400;
-      throw err;
-    }
+  // 목록 조회
+  async listComments(params: { taskId: number; userId: number; page?: number; limit?: number }) {
+    const { taskId, userId, page = 1, limit = 20 } = params;
 
     const task = await this.repo.findTaskProjectId(taskId);
     if (!task) {
@@ -82,73 +66,71 @@ export class CommentService {
       throw err;
     }
 
-    const isMember = await this.repo.isUserProjectMember(
-      userId,
-      task.projectId,
-    );
+    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
       throw err;
     }
 
-    const { data, total } = await this.repo.listComments(taskId, page, limit);
+    const [comments, total] = await Promise.all([
+      this.repo.findCommentsByTask(taskId, page, limit),
+      this.repo.countCommentsByTask(taskId),
+    ]);
 
-    const results = await Promise.all(
-      data.map(async (c) => {
+    // 작성자 정보 조회
+    const result = await Promise.all(
+      comments.map(async (c) => {
         const author = await this.repo.findUserPublicInfo(c.userId);
         return {
           id: c.id,
           content: c.content,
           taskId: c.taskId,
-          author: {
-            id: author?.id ?? null,
-            name: author?.name ?? null,
-            email: author?.email ?? null,
-            profileImage: author?.profileImageUrl ?? null,
-          },
+          author: author
+            ? {
+                id: author.id,
+                name: author.name,
+                email: author.email,
+                profileImage: author.profileImageUrl ?? null,
+              }
+            : null,
           createdAt: c.createdAt.toISOString(),
           updatedAt: c.updatedAt.toISOString(),
         };
       }),
     );
 
-    return { data: results, total };
+    return {
+      data: result,
+      total,
+    };
   }
 
+  // 댓글 조회
   async getComment(params: { commentId: string; userId: number }) {
     const { commentId, userId } = params;
-    if (!commentId) {
-      const err: any = new Error("잘못된 요청 형식");
-      err.status = 400;
-      throw err;
-    }
-
-    const comment = await this.repo.findById(commentId);
-    if (!comment) {
-      const err: any = new Error("Not Found");
+    const found = await this.repo.findById(commentId);
+    if (!found) {
+      const err: any = new Error("Not found");
       err.status = 404;
       throw err;
     }
 
-    const task = await this.repo.findTaskProjectId(comment.taskId);
+    // 권한 체크
+    const task = await this.repo.findTaskProjectId(found.taskId);
     if (!task) {
       const err: any = new Error("잘못된 요청 형식");
       err.status = 400;
       throw err;
     }
-
-    const isMember = await this.repo.isUserProjectMember(
-      userId,
-      task.projectId,
-    );
+    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
       throw err;
     }
 
-    const author = await this.repo.findUserPublicInfo(comment.userId);
+    const author = await this.repo.findUserPublicInfo(found.userId);
     if (!author) {
       const err: any = new Error("잘못된 요청 형식");
       err.status = 400;
@@ -156,68 +138,58 @@ export class CommentService {
     }
 
     return {
-      id: comment.id,
-      content: comment.content,
-      taskId: comment.taskId,
+      id: found.id,
+      content: found.content,
+      taskId: found.taskId,
       author: {
         id: author.id,
         name: author.name,
         email: author.email,
         profileImage: author.profileImageUrl ?? null,
       },
-      createdAt: comment.createdAt.toISOString(),
-      updatedAt: comment.updatedAt.toISOString(),
+      createdAt: found.createdAt.toISOString(),
+      updatedAt: found.updatedAt.toISOString(),
     };
   }
 
-  async updateComment(params: {
-    commentId: string;
-    userId: number;
-    content: string;
-  }) {
+  // 수정
+  async updateComment(params: { commentId: string; userId: number; content: string }) {
     const { commentId, userId, content } = params;
 
-    if (
-      !content ||
-      typeof content !== "string" ||
-      content.trim().length === 0 ||
-      !commentId
-    ) {
+    if (!content || typeof content !== "string" || content.trim().length === 0) {
       const err: any = new Error("잘못된 요청 형식");
       err.status = 400;
       throw err;
     }
 
-    const comment = await this.repo.findById(commentId);
-    if (!comment) {
-      const err: any = new Error("Not Found");
+    const found = await this.repo.findById(commentId);
+    if (!found) {
+      const err: any = new Error("Not found");
       err.status = 404;
       throw err;
     }
 
-    const task = await this.repo.findTaskProjectId(comment.taskId);
+    // 프로젝트 멤버 여부 체크
+    const task = await this.repo.findTaskProjectId(found.taskId);
     if (!task) {
       const err: any = new Error("잘못된 요청 형식");
       err.status = 400;
       throw err;
     }
-    const isMember = await this.repo.isUserProjectMember(
-      userId,
-      task.projectId,
-    );
+    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
       throw err;
     }
 
-    if (comment.userId !== userId) {
+    if (found.userId !== userId) {
       const err: any = new Error("자신이 작성한 댓글만 수정할 수 있습니다");
       err.status = 403;
       throw err;
     }
 
-    const updated = await this.repo.updateContent(commentId, content.trim());
+    const updated = await this.repo.update(commentId, content.trim());
     const author = await this.repo.findUserPublicInfo(updated.userId);
     if (!author) {
       const err: any = new Error("잘못된 요청 형식");
@@ -240,38 +212,31 @@ export class CommentService {
     };
   }
 
+  // 삭제
   async deleteComment(params: { commentId: string; userId: number }) {
     const { commentId, userId } = params;
-    if (!commentId) {
-      const err: any = new Error("잘못된 요청 형식");
-      err.status = 400;
-      throw err;
-    }
-
-    const comment = await this.repo.findById(commentId);
-    if (!comment) {
-      const err: any = new Error("Not Found");
+    const found = await this.repo.findById(commentId);
+    if (!found) {
+      const err: any = new Error("Not found");
       err.status = 404;
       throw err;
     }
 
-    const task = await this.repo.findTaskProjectId(comment.taskId);
+    const task = await this.repo.findTaskProjectId(found.taskId);
     if (!task) {
       const err: any = new Error("잘못된 요청 형식");
       err.status = 400;
       throw err;
     }
-    const isMember = await this.repo.isUserProjectMember(
-      userId,
-      task.projectId,
-    );
+
+    const isMember = await this.repo.isUserProjectMember(userId, task.projectId);
     if (!isMember) {
       const err: any = new Error("프로젝트 멤버가 아닙니다");
       err.status = 403;
       throw err;
     }
 
-    if (comment.userId !== userId) {
+    if (found.userId !== userId) {
       const err: any = new Error("자신이 작성한 댓글만 삭제할 수 있습니다");
       err.status = 403;
       throw err;

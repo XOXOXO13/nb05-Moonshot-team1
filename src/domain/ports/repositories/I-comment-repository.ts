@@ -1,18 +1,9 @@
-import { PersistCommentEntity } from "../../entities/comment/comment-entity";
+import { NewCommentEntity, PersistCommentEntity } from "../../entities/comment/comment-entity";
 
 export interface ICommentRepository {
-  create(
-    taskId: number,
-    userId: number,
-    content: string,
-  ): Promise<PersistCommentEntity>;
-
-  findTaskProjectId(
-    taskId: number,
-  ): Promise<{ id: number; projectId: number } | null>;
-
+  create(taskId: number, userId: number, content: string): Promise<PersistCommentEntity>;
+  findTaskProjectId(taskId: number): Promise<{ id: number; projectId: number } | null>;
   isUserProjectMember(userId: number, projectId: number): Promise<boolean>;
-
   findUserPublicInfo(userId: number): Promise<{
     id: number;
     name: string;
@@ -20,25 +11,10 @@ export interface ICommentRepository {
     profileImageUrl?: string | null;
   } | null>;
 
-  //목록 조회(페이지네이션)
-  listComments(
-    taskId: number,
-    page?: number,
-    limit?: number,
-  ): Promise<{ data: PersistCommentEntity[]; total: number }>;
-
-  //아이디 확인
+  // 조회, 수정, 삭제 메서드
+  findCommentsByTask(taskId: number, page?: number, limit?: number): Promise<PersistCommentEntity[]>;
+  countCommentsByTask(taskId: number): Promise<number>;
   findById(commentId: string): Promise<PersistCommentEntity | null>;
-
-  //작성자 확인
-  findCommentAuthorId(commentId: string): Promise<number | null>;
-
-  //수정
-  updateContent(
-    commentId: string,
-    content: string,
-  ): Promise<PersistCommentEntity>;
-
-  //삭제
+  update(commentId: string, content: string): Promise<PersistCommentEntity>;
   delete(commentId: string): Promise<void>;
 }
