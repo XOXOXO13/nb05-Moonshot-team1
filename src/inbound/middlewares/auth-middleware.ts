@@ -6,6 +6,7 @@ import {
   BusinessException,
   BusinessExceptionType,
 } from "../../shared/exceptions/business-exception";
+import { threadCpuUsage } from "process";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -22,7 +23,7 @@ export class AuthMiddleware {
 
   static generateToken = (
     params: TokenGenerateParams,
-    utils: IUtils,
+    utils: IUtils
   ): string => {
     return utils.token.generateToken(params);
   };
@@ -64,13 +65,15 @@ export class AuthMiddleware {
         userId: number;
         email: string;
       };
-
       req.userId = payload.userId.toString();
       req.user = {
         userId: payload.userId,
         email: payload.email,
       };
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
+
     return next();
   };
 
@@ -79,8 +82,8 @@ export class AuthMiddleware {
       throw new BusinessException({
         type: BusinessExceptionType.INVALID_AUTH,
       });
+      
     }
-
     return next();
   };
   checkNotSignedInUser = (req: Request, res: Response, next: NextFunction) => {
@@ -90,11 +93,5 @@ export class AuthMiddleware {
       });
     }
     return next();
-  };
-
-  isUser = (req: Request, res: Response, next: NextFunction) => {
-    this.validateAccessToken(req, res, () => {
-      this.checkSignedInUser(req, res, next);
-    });
   };
 }

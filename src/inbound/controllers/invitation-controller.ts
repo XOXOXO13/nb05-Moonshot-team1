@@ -16,13 +16,15 @@ export class InvitationrController extends BaseController {
     // 멤버 초대 수락
     this.router.post(
       "/:invitationId/accept",
-      this.catch(this._authMiddlewares.isUser),
+      this.catch(this._authMiddlewares.validateAccessToken),
+      this.catch(this._authMiddlewares.checkSignedInUser),
       this.catch(this.acceptInvitation)
     );
     // 멤버 초대 삭제
     this.router.delete(
       "/:invitationId",
-      this.catch(this._authMiddlewares.isUser),
+      this.catch(this._authMiddlewares.validateAccessToken),
+      this.catch(this._authMiddlewares.checkSignedInUser),
       this.catch(this.deleteInvitation)
     );
   }
@@ -30,18 +32,14 @@ export class InvitationrController extends BaseController {
   acceptInvitation = async (req: Request, res: Response) => {
     const userId: number = Number(req.userId);
     const token: string = req.params.invitationId;
-
-    const newMember = await this.services.invitation.acceptInvitation(
-      token,
-      userId
-    );
+    await this.services.invitation.acceptInvitation(token, userId);
     return res.status(200).json();
   };
 
   deleteInvitation = async (req: Request, res: Response) => {
-    const creatorId: number = Number(req.userId);
+    const userId: number = Number(req.userId);
     const token: string = req.params.invitationId;
-    await this.services.invitation.deleteInvitation(token, creatorId);
+    await this.services.invitation.deleteInvitation(token, userId);
     return res.status(204).json();
   };
 }

@@ -1,5 +1,7 @@
 import { MemberRole } from "./member-entity";
-
+export type CreateInvitationData = {
+  
+}
 export type InvitationData = {
   token: string; // id 역할
   projectId: number;
@@ -26,36 +28,29 @@ export interface PersistInvitationEntity extends InvitationEntity {
 
 export class InvitationEntity {
   private _token: string;
-  private _createdAt?: Date;
-  private _updatedAt?: Date;
   private readonly _projectId: number;
-  private readonly _inviteeId: number;
-  private readonly _creatorId: number;
-  private readonly _role: MemberRole;
+  private readonly _invitorId: number;
   private readonly _expiresAt: Date;
+  private readonly _createdAt?: Date;
+  private  _role: MemberRole;
   private _version: number;
   private _isModified: boolean = false;
 
   constructor(attrs: {
     token: string;
     projectId: number;
-    inviteeId: number;
-    creatorId: number;
-    role: MemberRole;
+    invitorId: number;
     expiresAt: Date;
-    version: number;
     createdAt?: Date;
-    updatedAt?: Date;
+    role: MemberRole;
   }) {
     this._token = attrs.token;
     this._projectId = attrs.projectId;
-    this._inviteeId = attrs.inviteeId;
-    this._creatorId = attrs.creatorId;
-    this._role = attrs.role;
+    this._invitorId = attrs.invitorId;
     this._expiresAt = attrs.expiresAt;
-    this._version = attrs.version;
     this._createdAt = attrs.createdAt;
-    this._updatedAt = attrs.updatedAt;
+    this._role = attrs.role;
+    this._version = 1;
   }
 
   get token() {
@@ -64,29 +59,23 @@ export class InvitationEntity {
   get projectId() {
     return this._projectId;
   }
-  get inviteeId() {
-    return this._inviteeId;
+  get invitorId(){
+    return this._invitorId;
   }
-  get creatorId() {
-    return this._creatorId;
+  get expiresAt() {
+    return this._expiresAt;
   }
   get role() {
     return this._role;
   }
-  get expiresAt() {
-    return this._expiresAt;
+  get createdAt() {
+    return this._createdAt;
   }
   get version() {
     return this._version;
   }
   get isModified() {
     return this._isModified;
-  }
-  get createdAt() {
-    return this._createdAt;
-  }
-  get updatedAt() {
-    return this._updatedAt;
   }
 
   isExpired(): boolean {
@@ -99,57 +88,55 @@ export class InvitationEntity {
     }
   }
 
-  static createNew(params: {
-    token: string;
-    projectId: number;
-    inviteeId: number;
-    creatorId: number;
-    role: MemberRole;
-    expiresAt: Date;
-  }): NewInvitationEntity {
-    const { token, projectId, inviteeId, creatorId, role, expiresAt } = params;
-    const entity = new InvitationEntity({
-      token,
-      projectId,
-      inviteeId,
-      creatorId,
-      role,
-      expiresAt,
-      version: 1,
-    });
-    return entity;
-  }
+  // static createNew(params: {
+  //   token: string;
+  //   projectId: number;
+  //   invitorId: number;
+  //   expiresAt: Date;
+  // }): NewInvitationEntity {
+  //   const { token, projectId, inviteeId, creatorId, role, expiresAt } = params;
+  //   const entity = new InvitationEntity({
+  //     token,
+  //     projectId,
+  //     inviteeId,
+  //     creatorId,
+  //     role,
+  //     expiresAt,
+  //     version: 1,
+  //   });
+  //   return entity;
+  // }
 
-  static createPersist(
-    params: InvitationData & { createdAt: Date; updatedAt: Date },
-  ): PersistInvitationEntity {
-    const role: MemberRole = params.role || "MEMBER";
+  // static createPersist(
+  //   params: InvitationData & { createdAt: Date; updatedAt: Date },
+  // ): PersistInvitationEntity {
+  //   const role: MemberRole = params.role || "MEMBER";
 
-    return new InvitationEntity({
-      ...params,
-      role,
-    }) as PersistInvitationEntity;
-  }
+  //   return new InvitationEntity({
+  //     ...params,
+  //     role,
+  //   }) as PersistInvitationEntity;
+  // }
 
-  public toData(): Omit<InvitationData, "version"> & { version: number } {
-    return {
-      token: this._token,
-      projectId: this._projectId,
-      inviteeId: this._inviteeId,
-      creatorId: this._creatorId,
-      expiresAt: this._expiresAt,
-      role: this._role,
-      version: this._version,
-    };
-  }
+  // public toData(): Omit<InvitationData, "version"> & { version: number } {
+  //   return {
+  //     token: this._token,
+  //     projectId: this._projectId,
+  //     inviteeId: this._inviteeId,
+  //     creatorId: this._creatorId,
+  //     expiresAt: this._expiresAt,
+  //     role: this._role,
+  //     version: this._version,
+  //   };
+  // }
 
-  public toUpdateData(): InvitationUpdateData {
-    if (!this._isModified) {
-      return {};
-    }
-    const updateData: InvitationUpdateData = {
-      version: this._version,
-    };
-    return updateData;
-  }
+  // public toUpdateData(): InvitationUpdateData {
+  //   if (!this._isModified) {
+  //     return {};
+  //   }
+  //   const updateData: InvitationUpdateData = {
+  //     version: this._version,
+  //   };
+  //   return updateData;
+  // }
 }

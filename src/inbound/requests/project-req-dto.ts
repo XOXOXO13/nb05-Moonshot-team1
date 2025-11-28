@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { optional, z } from "zod";
 
 export const createProjectSchema = z.object({
   name: z.string(),

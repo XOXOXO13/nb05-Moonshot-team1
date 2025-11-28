@@ -7,6 +7,10 @@ import {
 } from "../../domain/entities/member/invitation-entity";
 import { InvitationMapper } from "../mappers/invitation-mapper";
 import { IInvitationRepository } from "../../domain/ports/repositories/I-invitation-repository";
+import {
+  TechnicalException,
+  TechnicalExceptionType,
+} from "../../shared/exceptions/technical.exception";
 
 export class InvitationRepository
   extends BaseRepository
@@ -15,9 +19,28 @@ export class InvitationRepository
   constructor(prismaClient: BasePrismaClient) {
     super(prismaClient);
   }
+
+  async createInviteCode(
+    projectId: number,
+    invitorId: number
+  ): Promise<string> {
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 7);
+    const inviteToken = await this._prismaClient.invitation.create({
+      data: {
+        projectId: projectId,
+        invitorId: invitorId,
+        expiresAt: expirationDate,
+      },
+      select: {
+        token: true,
+      },
+    });
+    return inviteToken.token;
+  }
   async findByProjectIdAndInviteeId(
     projectId: number,
-    inviteeId: number,
+    inviteeId: number
   ): Promise<InvitationEntity | null> {
     const prismaInvitation = await this._prismaClient.invitation.findUnique({
       where: {
@@ -34,30 +57,76 @@ export class InvitationRepository
     return InvitationMapper.toPersistEntity(prismaInvitation);
   }
 
-  async save(
-    invitation: NewInvitationEntity,
-  ): Promise<PersistInvitationEntity> {
-    const createData = InvitationMapper.toCreateData(invitation);
-
-    const prismaInvitation = await this._prismaClient.invitation.create({
-      data: createData,
+  async save(token: string, userId: number): Promise<void> {
+    try {
+      await this._prismaClient.invitation.update({
+        where: {
+          token: token,
+        },
+        data: {
+          inviteeId: userId,
+        },
+      });
+    } catch (error) {
+      throw new TechnicalException({
+        type: TechnicalExceptionType.DB_QUERY_FAILED,
+      });
+    }
+    const invitation = await this._prismaClient.invitation.findUnique({
+      where: {
+        token,
+      },
     });
-    return InvitationMapper.toPersistEntity(prismaInvitation);
+    if (!invitation) {
+      return;
+    }
+    const projectId = invitation?.projectId;
+    await this._prismaClient.member.create({
+      data: {
+        projectId: projectId,
+        userId: userId,
+        role: "MEMBER",
+        status: "ACTIVE",
+        joinedAt: new Date(),
+      },
+    });
+
+    await this._prismaClient.invitation.delete({
+      where: {
+        token,
+      },
+    });
   }
 
-  async findByToken(token: string): Promise<InvitationEntity | null> {
+  async findByToken(token: string): Promise<boolean> {
     const prismaInvitation = await this._prismaClient.invitation.findUnique({
       where: { token },
+      select: {
+        projectId: true,
+        expiresAt: true,
+      },
     });
     if (!prismaInvitation) {
-      return null;
+      return false;
     }
-    return InvitationMapper.toPersistEntity(prismaInvitation);
+    return true;
   }
 
   async delete(token: string): Promise<void> {
     await this._prismaClient.invitation.delete({
       where: { token },
     });
+  }
+
+  async getProjectIdByToken(token: string): Promise<number | null> {
+    const invite = await this._prismaClient.invitation.findUnique({
+      where: {
+        token,
+      },
+      select:{
+        projectId: true
+      }
+    });
+    return invite? invite.projectId : null;
   }
 }

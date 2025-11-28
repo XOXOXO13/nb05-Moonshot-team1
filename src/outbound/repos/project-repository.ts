@@ -4,12 +4,24 @@ import {
   NewProjectEntity,
   PersistProjectEntity,
   ProjectEntity,
+  ReturnProjectEntity,
+  UpdateProjectEntity,
 } from "../../domain/entities/project/project-entity";
-import { Member, Project } from "@prisma/client";
+import { Member, Project, Task } from "@prisma/client";
 import { ProjectMapper } from "../mappers/project-mapper";
+import {
+  TechnicalException,
+  TechnicalExceptionType,
+} from "../../shared/exceptions/technical.exception";
+import { CreatorMemverEntity } from "../../domain/entities/member/member-entity";
 
 export type PersistProject = Project & {
   members: Member[];
+};
+
+export type ReturnPersistProject = Project & {
+  members: Member[];
+  tasks: Task[];
 };
 
 export class ProjectRepository
@@ -20,58 +32,70 @@ export class ProjectRepository
     super(prismaClient);
   }
 
-  async findById(projectId: number): Promise<PersistProjectEntity | null> {
-    const project = (await this._prismaClient.project.findUnique({
+  async findById(projectId: number): Promise<ReturnProjectEntity | null> {
+    const project = await this._prismaClient.project.findUnique({
       where: {
         id: projectId,
       },
       include: {
         members: true,
+        tasks: true,
       },
-    })) as PersistProject | null;
-
-    return project ? ProjectMapper.toPersistEntity(project) : null;
+    });
+    return project ? ProjectEntity.createReturnPersist(project) : null;
   }
 
-  async create(entity: NewProjectEntity): Promise<PersistProjectEntity> {
+  async create(
+    entity: NewProjectEntity,
+    creator: CreatorMemverEntity
+  ): Promise<ReturnProjectEntity> {
     try {
-      const createData = ProjectMapper.toCreateData(entity);
-
-      const createdProject = (await this._prismaClient.project.create({
+      const createData = {
+        ...entity.toCreateData(),
+        members: {
+          create: {
+            userId: creator.userId,
+            role: creator.role,
+            status: creator.status,
+          },
+        },
+      };
+      const createdProject = await this._prismaClient.project.create({
         data: createData,
         include: {
           members: true,
+          tasks: true,
         },
-      })) as PersistProject;
-
-      return ProjectMapper.toPersistEntity(createdProject);
+      });
+      return ProjectEntity.createReturnPersist(createdProject);
     } catch (err) {
-      // 에러 처리 추후 구현
-      throw err;
+      throw new TechnicalException({
+        type: TechnicalExceptionType.DB_QUERY_FAILED,
+      });
     }
   }
 
-  async update(entity: ProjectEntity): Promise<PersistProjectEntity> {
+  async update(data: UpdateProjectEntity): Promise<ReturnProjectEntity> {
+    const { projectId, ...updateData } = data;
     try {
-      const dataToUpdate = ProjectMapper.toUpdateData(entity);
-      const updatedProject = (await this._prismaClient.project.update({
+      const updatedProject = await this._prismaClient.project.update({
         where: {
-          id: entity.id,
-          version: entity.version,
+          id: projectId,
         },
         data: {
-          ...dataToUpdate,
+          ...updateData,
           version: { increment: 1 },
         },
         include: {
           members: true,
+          tasks: true,
         },
-      })) as PersistProject;
-
-      return ProjectMapper.toPersistEntity(updatedProject);
+      });
+      return ProjectEntity.createReturnPersist(updatedProject);
     } catch (err) {
-      // 에러 처리 추후 구현
-      throw err;
+      throw new TechnicalException({
+        type: TechnicalExceptionType.DB_QUERY_FAILED,
+      });
     }
   }
 
@@ -83,8 +107,9 @@ export class ProjectRepository
         },
       });
     } catch (err) {
-      // 에러 처리 추후 구현
-      throw err;
+      throw new TechnicalException({
+        type: TechnicalExceptionType.DB_QUERY_FAILED,
+      });
     }
   }
 }
