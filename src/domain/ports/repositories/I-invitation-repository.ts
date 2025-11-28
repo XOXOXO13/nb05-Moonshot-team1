@@ -5,7 +5,7 @@ import {
 } from "../../entities/member/invitation-entity";
 
 export interface IInvitationRepository {
-  createInviteCode(projectId: number, invitorId: number): Promise<string>
+  createInviteCode(projectId: number, invitorId: number): Promise<string>;
   save(token: string, userId: number): Promise<void>;
   findByToken(token: string): Promise<boolean>;
   findByProjectIdAndInviteeId(
@@ -13,5 +13,5 @@ export interface IInvitationRepository {
     userId: number,
   ): Promise<InvitationEntity | null>;
   delete(token: string): Promise<void>;
-  getProjectIdByToken(token:string): Promise<number| null>
+  getProjectIdByToken(token: string): Promise<number | null>;
 }

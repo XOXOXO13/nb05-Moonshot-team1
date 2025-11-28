@@ -5,11 +5,11 @@ export interface IMemberService {
     projectId: number,
     userId: number,
     page: number,
-    limit: number
+    limit: number,
   ): Promise<PaginatedProjectMemberData>;
   deleteMember(
     projectId: number,
     deletedUserId: number,
-    deleterId: number
+    deleterId: number,
   ): Promise<void>;
 }

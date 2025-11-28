@@ -41,7 +41,7 @@ export class ProjectService implements IProjectService {
 
       const createdProject = await repos.projectRepository.create(
         newProject,
-        creator
+        creator,
       );
       return createdProject;
     }, false);
@@ -60,7 +60,7 @@ export class ProjectService implements IProjectService {
       const role: MemberRole | null =
         await this._unitOfWokr.repos.memberRepository.getRoleById(
           dto.projectId,
-          dto.userId
+          dto.userId,
         );
       if (role !== "OWNER") {
         throw new BusinessException({
@@ -113,7 +113,7 @@ export class ProjectService implements IProjectService {
       const role: MemberRole | null =
         await this._unitOfWokr.repos.memberRepository.getRoleById(
           projectId,
-          userId
+          userId,
         );
       if (role !== "OWNER") {
         throw new BusinessException({

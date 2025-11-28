@@ -6,7 +6,7 @@ export class CommentController extends BaseController {
   private commentService: CommentService;
 
   constructor(commentService: CommentService) {
-    super({ basePath: "/", services: (null as unknown) as any });
+    super({ basePath: "/", services: null as unknown as any });
     this.commentService = commentService;
     this.registerRoutes();
   }
@@ -45,8 +45,10 @@ export class CommentController extends BaseController {
 
       return res.status(200).json(result);
     } catch (err: any) {
-      if (err.status === 400) return res.status(400).json({ message: "잘못된 요청 형식" });
-      if (err.status === 403) return res.status(403).json({ message: "프로젝트 멤버가 아닙니다" });
+      if (err.status === 400)
+        return res.status(400).json({ message: "잘못된 요청 형식" });
+      if (err.status === 403)
+        return res.status(403).json({ message: "프로젝트 멤버가 아닙니다" });
       console.error(err);
       return res.status(500).json({ message: "서버 에러" });
     }
@@ -78,8 +80,10 @@ export class CommentController extends BaseController {
       });
       return res.status(200).json(result);
     } catch (err: any) {
-      if (err.status === 400) return res.status(400).json({ message: "잘못된 요청 형식" });
-      if (err.status === 403) return res.status(403).json({ message: "프로젝트 멤버가 아닙니다" });
+      if (err.status === 400)
+        return res.status(400).json({ message: "잘못된 요청 형식" });
+      if (err.status === 403)
+        return res.status(403).json({ message: "프로젝트 멤버가 아닙니다" });
       console.error(err);
       return res.status(500).json({ message: "서버 에러" });
     }
@@ -103,8 +107,10 @@ export class CommentController extends BaseController {
       });
       return res.status(200).json(result);
     } catch (err: any) {
-      if (err.status === 400) return res.status(400).json({ message: "잘못된 요청 형식" });
-      if (err.status === 403) return res.status(403).json({ message: "프로젝트 멤버가 아닙니다" });
+      if (err.status === 400)
+        return res.status(400).json({ message: "잘못된 요청 형식" });
+      if (err.status === 403)
+        return res.status(403).json({ message: "프로젝트 멤버가 아닙니다" });
       if (err.status === 404) return res.status(404).json();
       console.error(err);
       return res.status(500).json({ message: "서버 에러" });
@@ -131,9 +137,13 @@ export class CommentController extends BaseController {
       });
       return res.status(200).json(result);
     } catch (err: any) {
-      if (err.status === 400) return res.status(400).json({ message: "잘못된 요청 형식" });
+      if (err.status === 400)
+        return res.status(400).json({ message: "잘못된 요청 형식" });
       if (err.status === 403) {
-        const msg = err.message === "자신이 작성한 댓글만 수정할 수 있습니다" ? err.message : "프로젝트 멤버가 아닙니다";
+        const msg =
+          err.message === "자신이 작성한 댓글만 수정할 수 있습니다"
+            ? err.message
+            : "프로젝트 멤버가 아닙니다";
         return res.status(403).json({ message: msg });
       }
       if (err.status === 404) return res.status(404).json();
@@ -160,9 +170,13 @@ export class CommentController extends BaseController {
       });
       return res.status(204).send();
     } catch (err: any) {
-      if (err.status === 400) return res.status(400).json({ message: "잘못된 요청 형식" });
+      if (err.status === 400)
+        return res.status(400).json({ message: "잘못된 요청 형식" });
       if (err.status === 403) {
-        const msg = err.message === "자신이 작성한 댓글만 삭제할 수 있습니다" ? err.message : "프로젝트 멤버가 아닙니다";
+        const msg =
+          err.message === "자신이 작성한 댓글만 삭제할 수 있습니다"
+            ? err.message
+            : "프로젝트 멤버가 아닙니다";
         return res.status(403).json({ message: msg });
       }
       if (err.status === 404) return res.status(404).json();

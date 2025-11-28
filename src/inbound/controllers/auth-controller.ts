@@ -6,7 +6,6 @@ import { Utils } from "../../shared/utils-interface";
 import {
   RefreshTokenInput,
   SignInInput,
-  SignOutInput,
   SignUpInput,
   SignUpOrSignInSocialInput,
 } from "../ports/services/I-auth-service";
@@ -231,13 +230,18 @@ export class AuthController extends BaseController {
           error: "Unauthorized",
         });
       }
-      const input: SignOutInput = {
-        refreshToken: req.body?.refreshToken || req.cookies?.refreshToken,
-      };
 
-      await this.services.auth.signOut(input);
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      });
 
-      res.clearCookie("refreshToken");
+      res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      });
 
       return res.status(200).json({
         message: "Logged out successfully",

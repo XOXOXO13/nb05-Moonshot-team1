@@ -1,7 +1,5 @@
 import { MemberRole } from "./member-entity";
-export type CreateInvitationData = {
-  
-}
+export type CreateInvitationData = {};
 export type InvitationData = {
   token: string; // id 역할
   projectId: number;
@@ -32,7 +30,7 @@ export class InvitationEntity {
   private readonly _invitorId: number;
   private readonly _expiresAt: Date;
   private readonly _createdAt?: Date;
-  private  _role: MemberRole;
+  private _role: MemberRole;
   private _version: number;
   private _isModified: boolean = false;
 
@@ -59,7 +57,7 @@ export class InvitationEntity {
   get projectId() {
     return this._projectId;
   }
-  get invitorId(){
+  get invitorId() {
     return this._invitorId;
   }
   get expiresAt() {

@@ -22,7 +22,7 @@ export class InvitationRepository
 
   async createInviteCode(
     projectId: number,
-    invitorId: number
+    invitorId: number,
   ): Promise<string> {
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 7);
@@ -40,7 +40,7 @@ export class InvitationRepository
   }
   async findByProjectIdAndInviteeId(
     projectId: number,
-    inviteeId: number
+    inviteeId: number,
   ): Promise<InvitationEntity | null> {
     const prismaInvitation = await this._prismaClient.invitation.findUnique({
       where: {
@@ -123,10 +123,10 @@ export class InvitationRepository
       where: {
         token,
       },
-      select:{
-        projectId: true
-      }
+      select: {
+        projectId: true,
+      },
     });
-    return invite? invite.projectId : null;
+    return invite ? invite.projectId : null;
   }
 }

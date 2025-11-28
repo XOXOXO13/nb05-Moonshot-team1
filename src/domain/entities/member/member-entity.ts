@@ -178,7 +178,13 @@ export class MemberEntity {
     const status: MemberStatus = "ACTIVE";
     const invitationId = 1;
     return {
-      id, name, email, profileImage, taskCount, status, invitationId
+      id,
+      name,
+      email,
+      profileImage,
+      taskCount,
+      status,
+      invitationId,
     } as ProjectMemberData;
   }
   public toData(): MemberData {

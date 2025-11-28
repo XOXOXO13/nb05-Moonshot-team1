@@ -57,14 +57,22 @@ export class CommentEntity {
   }
 
   updateContent(newContent: string) {
-    if (!newContent || typeof newContent !== "string" || newContent.trim().length === 0) {
+    if (
+      !newContent ||
+      typeof newContent !== "string" ||
+      newContent.trim().length === 0
+    ) {
       throw new Error("잘못된 요청 형식");
     }
     this._content = newContent.trim();
   }
 
   static createNew(params: NewCommentEntity): NewCommentEntity {
-    if (!params.content || typeof params.content !== "string" || params.content.trim().length === 0) {
+    if (
+      !params.content ||
+      typeof params.content !== "string" ||
+      params.content.trim().length === 0
+    ) {
       throw new Error("잘못된 요청 형식");
     }
     return {

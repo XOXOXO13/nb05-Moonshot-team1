@@ -1,5 +1,8 @@
 import { MemberRole } from "@prisma/client";
-import { MemberEntity, ProjectMemberData } from "../../entities/member/member-entity";
+import {
+  MemberEntity,
+  ProjectMemberData,
+} from "../../entities/member/member-entity";
 
 export interface IMemberRepository {
   save(member: MemberEntity): Promise<MemberEntity>;
@@ -10,5 +13,9 @@ export interface IMemberRepository {
   delete(projectId: number, userId: number): Promise<void>;
   getProjectMembersId(projectId: number): Promise<number[] | null>;
   getRoleById(projectId: number, userId: number): Promise<MemberRole | null>;
-  getProjectMembers(projectId: number, page?:number, limit?:number): Promise<ProjectMemberData[]|null>
+  getProjectMembers(
+    projectId: number,
+    page?: number,
+    limit?: number,
+  ): Promise<ProjectMemberData[] | null>;
 }

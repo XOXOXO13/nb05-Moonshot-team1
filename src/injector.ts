@@ -106,7 +106,7 @@ export class DependencyInjector {
       usersController,
       invitationController,
       // 추가
-      commentController
+      commentController,
     ];
 
     const port = parseInt(process.env.PORT || "4000", 10);

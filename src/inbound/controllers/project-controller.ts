@@ -23,16 +23,14 @@ export class ProjectController extends BaseController {
       "/",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
-      this.catch(this.createProject)
-
+      this.catch(this.createProject),
     );
     // 프로젝트 조회
     this.router.get(
       "/:projectId",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
-      this.catch(this.getProject)
-
+      this.catch(this.getProject),
     );
 
     // 프로젝트 수정
@@ -40,8 +38,7 @@ export class ProjectController extends BaseController {
       "/:projectId",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
-      this.catch(this.updateProject)
-
+      this.catch(this.updateProject),
     );
 
     // 프로젝트 삭제
@@ -49,8 +46,7 @@ export class ProjectController extends BaseController {
       "/:projectId",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
-      this.catch(this.deleteProject)
-
+      this.catch(this.deleteProject),
     );
 
     // [멤버 관리]
@@ -59,24 +55,21 @@ export class ProjectController extends BaseController {
       "/:projectId/users",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
-      this.catch(this.getProjectMembers)
-
+      this.catch(this.getProjectMembers),
     );
     // 프로젝트에서 유저 제외하기
     this.router.delete(
       "/:projectId/users/:userId",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
-      this.catch(this.deleteMember)
-
+      this.catch(this.deleteMember),
     );
     // 프로젝트에 멤버 초대
     this.router.post(
       "/:projectId/invitations",
       this.catch(this._authMiddlewares.validateAccessToken),
       this.catch(this._authMiddlewares.checkSignedInUser),
-      this.catch(this.inviteMember)
-
+      this.catch(this.inviteMember),
     );
   }
 
@@ -130,8 +123,7 @@ export class ProjectController extends BaseController {
       projectId,
       userId,
       page,
-      limit
-
+      limit,
     );
     return res.json(members);
   };
@@ -154,7 +146,10 @@ export class ProjectController extends BaseController {
     const invitorId: number = Number(req.userId);
     console.log(projectId, invitorId);
 
-    const invitation = await this.services.invitation.inviteMember(projectId, invitorId);
+    const invitation = await this.services.invitation.inviteMember(
+      projectId,
+      invitorId,
+    );
 
     return res.status(201).json(invitation);
   };
