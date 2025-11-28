@@ -10,6 +10,25 @@ export type MemberData = {
 export type MemberRole = "OWNER" | "MEMBER" | "GUEST";
 export type MemberStatus = "ACTIVE" | "PENDING" | "REMOVED";
 
+export interface ProjectMemberData {
+  id: number;
+  name: string;
+  email: string;
+  profileImage: string;
+  taskCount: number;
+  status: MemberStatus;
+  invitationId: number;
+}
+export interface PaginatedProjectMemberData {
+  data: ProjectMemberData[];
+  total: number;
+}
+
+export type CreatorMemverEntity = {
+  userId: number;
+  role: MemberRole;
+  status: MemberStatus;
+};
 export class MemberEntity {
   private readonly _userId: number;
   private readonly _projectId: number;
@@ -138,6 +157,29 @@ export class MemberEntity {
   static createPersist(params: MemberData): MemberEntity {
     // 룰체크 추후 추가
     return new MemberEntity(params);
+  }
+  static createMemberData(params: {
+    id: number;
+    email: string;
+    password: string | null;
+    name: string;
+    refreshToken: string | null;
+    version: number;
+    profileImage: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    assignedTasks: any[];
+  }) {
+    const id = params.id;
+    const name = params.name;
+    const email = params.email;
+    const profileImage = params.profileImage;
+    const taskCount = params.assignedTasks.length;
+    const status: MemberStatus = "ACTIVE";
+    const invitationId = 1;
+    return {
+      id, name, email, profileImage, taskCount, status, invitationId
+    } as ProjectMemberData;
   }
   public toData(): MemberData {
     return {

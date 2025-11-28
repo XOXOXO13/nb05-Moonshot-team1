@@ -3,6 +3,12 @@ export enum BusinessExceptionType {
   INVALID_AUTH,
   ALREADY_AUTHENTICATED,
   EMAIL_DUPLICATE,
+  INVALID_PROJECTID,
+  UNAUTORIZED_REQUEST,
+  UPDATE_TARGET_NOT_FOUND,
+  NOT_MEMBER,
+  INVALID_TOKEN,
+  EXPIRED_TOKEN,
 }
 
 const BusinessExceptionTable: Record<
@@ -24,6 +30,30 @@ const BusinessExceptionTable: Record<
   [BusinessExceptionType.EMAIL_DUPLICATE]: {
     statusCode: 409,
     message: "중복된 이메일입니다.",
+  },
+  [BusinessExceptionType.INVALID_PROJECTID]: {
+    statusCode: 404,
+    message: "Project가 존재하지 않습니다.",
+  },
+  [BusinessExceptionType.UNAUTORIZED_REQUEST]: {
+    statusCode: 403,
+    message: "권한이 없습니다.",
+  },
+  [BusinessExceptionType.UPDATE_TARGET_NOT_FOUND]: {
+    statusCode: 404,
+    message: "업데이트 할 항목이 없습니다.",
+  },
+  [BusinessExceptionType.NOT_MEMBER]: {
+    statusCode: 403,
+    message: "프로젝트 멤버가 아닙니다",
+  },
+  [BusinessExceptionType.INVALID_TOKEN]: {
+    statusCode: 404,
+    message: "토큰이 존재하지 않습니다.",
+  },
+  [BusinessExceptionType.EXPIRED_TOKEN]: {
+    statusCode: 404,
+    message: "토큰이 만료기한기 지났습니다.",
   },
 };
 

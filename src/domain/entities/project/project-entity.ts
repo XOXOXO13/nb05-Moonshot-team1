@@ -14,10 +14,24 @@ export type ProjectUpdateData = {
   // members와 version은 별도 처리.
 };
 
-// 영속화 전
 export type NewProjectEntity = ProjectEntity;
 
-// 영속화 후
+export interface ReturnProjectEntity {
+  id: number;
+  name: string;
+  description: string;
+  memberCount: number;
+  todoCount: number;
+  inProgressCount: number;
+  doneCount: number;
+}
+
+export interface UpdateProjectEntity {
+  name: string;
+  description: string;
+  projectId: number;
+}
+
 export interface PersistProjectEntity extends ProjectEntity {
   id: number;
   createdAt: Date;
@@ -132,7 +146,6 @@ export class ProjectEntity {
     });
     return entity;
   }
-
   static createPersist(parmas: {
     id?: number;
     name: string;
@@ -145,6 +158,35 @@ export class ProjectEntity {
     version: number;
   }) {
     return new ProjectEntity(parmas) as PersistProjectEntity;
+  }
+
+  static createReturnPersist(params: {
+    id?: number;
+    name: string;
+    description?: string | null;
+    userId: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+    members: any[];
+    tasks?: any[];
+    version: number;
+  }) {
+    const id = params.id;
+    const name = params.name;
+    const description = params.description;
+    const memberCount = params.members.length;
+    const todoCount = params.tasks?.length ?? 0;
+    const inProgressCount = 0;
+    const doneCount = 0;
+    return {
+      id,
+      name,
+      description,
+      memberCount,
+      todoCount,
+      inProgressCount,
+      doneCount,
+    } as ReturnProjectEntity;
   }
 
   updateName(newName: string): void {
