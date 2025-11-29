@@ -1,7 +1,7 @@
 export enum TechnicalExceptionType {
   UNKNOWN_SERVER_ERROR,
   DB_QUERY_FAILED,
-  OPTIMISTIC_LOCK_FAILED
+  OPTIMISTIC_LOCK_FAILED,
 }
 
 const TechnicalExceptionTable: Record<TechnicalExceptionType, string> = {

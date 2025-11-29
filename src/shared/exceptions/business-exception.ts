@@ -11,7 +11,7 @@ export enum BusinessExceptionType {
   EXPIRED_TOKEN,
   INVALID_REQUEST,
   INVALID_TITLE,
-  INVALID_DESCRIPTION
+  INVALID_DESCRIPTION,
 }
 
 const BusinessExceptionTable: Record<
@@ -63,21 +63,20 @@ const BusinessExceptionTable: Record<
     statusCode: 400,
     message: "잘못된 요청 형식",
   },
-    [BusinessExceptionType.INVALID_TITLE]: {
+  [BusinessExceptionType.INVALID_TITLE]: {
     statusCode: 400,
     message: "제목 형식이 잘못됬습니다.",
   },
-    [BusinessExceptionType.INVALID_DESCRIPTION]: {
+  [BusinessExceptionType.INVALID_DESCRIPTION]: {
     statusCode: 400,
     message: "설명 형식이 잘못됬습니다.",
   },
 };
 
-
 export const INPUT_EXCEPTIONS: Record<string, BusinessExceptionType> = {
   title: BusinessExceptionType.INVALID_TITLE,
-  description: BusinessExceptionType.INVALID_DESCRIPTION
-}
+  description: BusinessExceptionType.INVALID_DESCRIPTION,
+};
 
 export class BusinessException extends Error {
   public readonly statusCode: number;
