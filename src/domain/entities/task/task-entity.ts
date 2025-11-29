@@ -1,3 +1,4 @@
+import { PersistTagEntity } from "../tag/tag-entity";
 import { AttachmentEntity } from "./attachment-entity";
 import { TaskTagVo } from "./task-tag-vo";
 import { UserVo } from "./user-vo";
@@ -17,6 +18,7 @@ export interface PersistTaskEntity extends TaskEntity {
 export class TaskEntity {
   private readonly _id?: number;
   private readonly _projectId: number;
+  private _version: number;
   private _title: string;
   private _description: string;
   private _startDate: Date;
@@ -31,6 +33,7 @@ export class TaskEntity {
 
   constructor(params: {
     id?: number;
+    version: number;
     projectId: number;
     title: string;
     description: string;
@@ -45,6 +48,7 @@ export class TaskEntity {
     updatedAt?: Date;
   }) {
     this._id = params.id;
+    this._version = params.version;
     this._projectId = params.projectId;
     this._title = params.title;
     this._description = params.description;
@@ -71,6 +75,7 @@ export class TaskEntity {
     assigneeId: number;
   }) {
     return new TaskEntity({
+      version: 1,
       projectId: params.projectId,
       title: params.title,
       description: params.description,
@@ -85,6 +90,7 @@ export class TaskEntity {
 
   static createPersist(params: {
     id: number;
+    version: number;
     projectId: number;
     title: string;
     description: string;
@@ -100,6 +106,7 @@ export class TaskEntity {
   }) {
     return new TaskEntity({
       id: params.id,
+      version: params.version,
       projectId: params.projectId,
       title: params.title,
       description: params.description,
@@ -116,25 +123,34 @@ export class TaskEntity {
   }
 
   update(params: {
-    title: string;
-    description: string;
-    startDate: Date;
-    endDate: Date;
-    status: string;
-    attachments: AttachmentEntity[];
-    taskTags: TaskTagVo[];
+    title?: string;
+    description?: string;
+    startDate?: Date;
+    endDate?: Date;
+    status?: string;
+    attachments?: AttachmentEntity[];
+    taskTags?: PersistTagEntity[];
   }) {
-    this._title = params.title;
-    this._description = params.description;
-    this._startDate = params.startDate;
-    this._endDate = params.endDate;
-    this._status = params.status;
-    this._attachments = params.attachments;
-    this._taskTags = params.taskTags;
+    if (params.title !== undefined) this._title = params.title;
+    if (params.description !== undefined)
+      this._description = params.description;
+    if (params.startDate !== undefined) this._startDate = params.startDate;
+    if (params.endDate !== undefined) this._endDate = params.endDate;
+    if (params.status !== undefined) this._status = params.status;
+    if (params.attachments !== undefined)
+      this._attachments = params.attachments;
+    if (params.taskTags !== undefined)
+      this._taskTags = params.taskTags.map((tag) => {
+        return TaskTagVo.createNew(tag);
+      });
   }
 
   get id() {
     return this._id;
+  }
+
+  get version() {
+    return this._version;
   }
 
   get projectId() {
