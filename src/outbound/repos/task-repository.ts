@@ -5,10 +5,15 @@ import {
   PersistTaskEntity,
 } from "../../domain/entities/task/task-entity";
 import { TaskMapper } from "../mappers/task-mapper";
+import { Prisma } from "@prisma/client";
+import {
+  TechnicalException,
+  TechnicalExceptionType,
+} from "../../shared/exceptions/technical.exception";
 
 const orderByParser = {
   created_at: "createdAt",
-  name: "title",
+  title: "title",
   end_date: "endDate",
 };
 
@@ -55,7 +60,7 @@ export class TaskRepository implements ITaskRepository {
     assignee: number;
     keyword: string;
     order: string;
-    order_by: "created_at" | "end_date" | "name";
+    order_by: "created_at" | "end_date" | "title";
     projectId: number;
   }): Promise<PersistTaskEntity[]> {
     const taskRecords = await this._prisma.task.findMany({
@@ -112,56 +117,68 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async update(entity: PersistTaskEntity): Promise<PersistTaskEntity> {
-    // 기존 태그 삭제한 후 새로운 태그 추가
+    try {
+      // 기존 태그 삭제한 후 새로운 태그 추가
+      await this._prisma.taskTags.deleteMany({
+        where: { taskId: entity.id },
+      });
 
-    const result = await this._prisma.taskTags.deleteMany({
-      where: { taskId: entity.id },
-    });
+      await this._prisma.taskTags.createMany({
+        data: entity.taskTags.map((tasktag) => ({
+          taskId: entity.id,
+          tagId: tasktag.tagId,
+        })),
+      });
 
-    console.log(result);
+      // 기존 첨부파일 삭제한 후 새로운 파일 추가
+      await this._prisma.attachment.deleteMany({
+        where: { taskId: entity.id },
+      });
+      await this._prisma.attachment.createMany({
+        data: entity.attachments.map((attachment) => ({
+          taskId: entity.id,
+          attachmentUrl: attachment.attachmentUrl,
+        })),
+      });
 
-    await this._prisma.taskTags.createMany({
-      data: entity.taskTags.map((tasktag) => ({
-        taskId: entity.id,
-        tagId: tasktag.tagId,
-      })),
-    });
-
-    // 기존 첨부파일 삭제한 후 새로운 파일 추가
-    await this._prisma.attachment.deleteMany({
-      where: { taskId: entity.id },
-    });
-    await this._prisma.attachment.createMany({
-      data: entity.attachments.map((attachment) => ({
-        taskId: entity.id,
-        attachmentUrl: attachment.attachmentUrl,
-      })),
-    });
-
-    // 할 일 수정하기
-    const updatedTask = await this._prisma.task.update({
-      where: {
-        id: entity.id,
-      },
-      data: {
-        projectId: entity.projectId,
-        title: entity.title,
-        description: entity.description,
-        startDate: entity.startDate,
-        endDate: entity.endDate,
-        status: entity.status,
-        assigneeId: 1,
-      },
-      include: {
-        attachments: true,
-        taskTags: {
-          include: { tag: true },
+      // 할 일 수정하기
+      const updatedTask = await this._prisma.task.update({
+        where: {
+          id: entity.id,
+          version: entity.version,
         },
-        assignee: true,
-      },
-    });
+        data: {
+          version: { increment: 1 },
+          projectId: entity.projectId,
+          title: entity.title,
+          description: entity.description,
+          startDate: entity.startDate,
+          endDate: entity.endDate,
+          status: entity.status,
+          assigneeId: entity.assigneeId,
+        },
+        include: {
+          attachments: true,
+          taskTags: {
+            include: { tag: true },
+          },
+          assignee: true,
+        },
+      });
 
-    return TaskMapper.toPersistEntity(updatedTask);
+      return TaskMapper.toPersistEntity(updatedTask);
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === "P2025"
+      ) {
+        throw new TechnicalException({
+          type: TechnicalExceptionType.OPTIMISTIC_LOCK_FAILED,
+          error: err,
+        });
+      }
+      throw err;
+    }
   }
 
   async delete(taskId: number): Promise<void> {

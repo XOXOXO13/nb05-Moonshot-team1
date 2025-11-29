@@ -59,6 +59,7 @@ export class TaskMapper {
       })[];
     } & {
       id: number;
+      version: number;
       projectId: number;
       title: string;
       description: string;
@@ -73,6 +74,7 @@ export class TaskMapper {
     // 파싱 및 task entity 반환
     const {
       id,
+      version,
       projectId,
       title,
       description,
@@ -89,6 +91,7 @@ export class TaskMapper {
 
     const persistTaskProps = {
       id,
+      version,
       projectId,
       title,
       description,
