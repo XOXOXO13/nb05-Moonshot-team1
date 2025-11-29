@@ -1,5 +1,3 @@
-import { MemberEntity } from "../../../domain/entites/member/member-entity";
-
 export interface IMemberService {
   getProjectMembers(
     projectId: number,

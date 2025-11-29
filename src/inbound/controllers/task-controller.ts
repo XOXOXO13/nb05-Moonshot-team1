@@ -59,8 +59,6 @@ export class TaskController extends BaseController {
     );
   }
 
-  // status : 기본값
-  //
   createTask = async (req: Request, res: Response) => {
     const body = this.validate(createTaskBodySchema, req.body);
     const params = this.validate(createTaskParamsSchema, req.params);
@@ -75,9 +73,6 @@ export class TaskController extends BaseController {
   };
 
   getProjectTasks = async (req: Request, res: Response) => {
-    console.log(req.params);
-    console.log(req.query);
-
     const params = this.validate(projectTaskParamsSchema, req.params);
     const query = this.validate(projectTaskQuerySchema, req.query);
 
@@ -91,7 +86,6 @@ export class TaskController extends BaseController {
   };
 
   getTaskInfo = async (req: Request, res: Response) => {
-    console.log(req.params);
     const params = this.validate(taskInfoParamsSchema, req.params);
     const taskResDto = await this.services.task.getTaskInfo({
       ...params,
@@ -101,7 +95,6 @@ export class TaskController extends BaseController {
   };
 
   editTaskInfo = async (req: Request, res: Response) => {
-    console.log(req.body);
     const body = this.validate(updateTaskBodySchema, req.body);
     const params = this.validate(updateTaskParamsSchema, req.params);
 

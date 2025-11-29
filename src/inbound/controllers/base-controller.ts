@@ -7,7 +7,11 @@ import express, {
 import { IServices } from "../ports/I-services";
 import { Utils } from "../../shared/utils-interface";
 import z from "zod";
-import { BusinessException, BusinessExceptionType, INPUT_EXCEPTIONS } from "../../shared/exceptions/business-exception";
+import {
+  BusinessException,
+  BusinessExceptionType,
+  INPUT_EXCEPTIONS,
+} from "../../shared/exceptions/business-exception";
 
 export class BaseController {
   private _basePath;
@@ -45,19 +49,18 @@ export class BaseController {
   validate<T extends z.ZodType>(schema: T, data: unknown) {
     const parsedData = schema.safeParse(data);
     if (!parsedData.success) {
-
       // default 에러
-      let errorType = BusinessExceptionType.INVALID_REQUEST;  
+      let errorType = BusinessExceptionType.INVALID_REQUEST;
 
       // 입력값에 대한 에러
-      const inputError: string = parsedData.error.issues[0].path[0].toString(); 
+      const inputError: string = parsedData.error.issues[0].path[0].toString();
       console.log(inputError);
       if (Object.keys(INPUT_EXCEPTIONS).includes(inputError)) {
-        errorType = INPUT_EXCEPTIONS[inputError]
+        errorType = INPUT_EXCEPTIONS[inputError];
         console.log(errorType);
       }
 
-      throw new BusinessException({ type : errorType });
+      throw new BusinessException({ type: errorType });
     }
 
     return parsedData.data;
