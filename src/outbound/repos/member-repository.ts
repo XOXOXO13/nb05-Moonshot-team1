@@ -1,5 +1,8 @@
 import { MemberRole } from "@prisma/client";
-import { MemberEntity } from "../../domain/entities/member/member-entity";
+import {
+  MemberEntity,
+  ProjectMemberData,
+} from "../../domain/entities/member/member-entity";
 import { IMemberRepository } from "../../domain/ports/repositories/I-member-repository";
 import { MemberMapper } from "../mappers/member-mapper";
 import { BasePrismaClient, BaseRepository } from "./base-repository";
@@ -11,11 +14,35 @@ export class MemberRepository
   constructor(prismaClient: BasePrismaClient) {
     super(prismaClient);
   }
-
   async getProjectMembers(
     projectId: number,
-    userId: number,
-  ): Promise<number[] | null> {
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<ProjectMemberData[] | null> {
+    const users = await this._prismaClient.member.findMany({
+      where: {
+        projectId: projectId,
+      },
+      select: {
+        user: {
+          include: {
+            assignedTasks: true,
+          },
+        },
+        status: true,
+      },
+    });
+
+    if (!users) {
+      return null;
+    }
+    const members = users.map((user) => user.user);
+    return members.map((member) => {
+      return MemberEntity.createMemberData(member);
+    });
+  }
+
+  async getProjectMembersId(projectId: number): Promise<number[] | null> {
     const members = await this._prismaClient.member.findMany({
       where: {
         projectId: projectId,
@@ -24,13 +51,9 @@ export class MemberRepository
         userId: true,
       },
     });
+    if (!members) return null;
     const userIds = members.map((member) => member.userId);
-    const isUserIncluded = userIds.includes(userId);
-    if (isUserIncluded) {
-      return userIds;
-    }
-
-    return null;
+    return userIds;
   }
 
   async save(member: MemberEntity): Promise<MemberEntity> {

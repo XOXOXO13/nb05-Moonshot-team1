@@ -28,6 +28,10 @@ import { InvitationrController } from "./inbound/controllers/invitation-controll
 import { smtpConfig } from "./shared/utils/smtp-util";
 import { TagRepository } from "./outbound/repos/tag-repository";
 import { FileController } from "./inbound/controllers/file-controller";
+// 추가
+import { CommentRepository } from "./outbound/repos/comment-repository";
+import { CommentService } from "./domain/services/comment-service";
+import { CommentController } from "./inbound/controllers/comment-controller";
 
 export class DependencyInjector {
   private _server: Server;
@@ -46,6 +50,10 @@ export class DependencyInjector {
     const utils = new Utils(configUtil, tokenUtil);
     const prisma = new PrismaClient();
     const smtp = smtpConfig;
+    // 추가
+    const commentRepository = new CommentRepository(prisma);
+    const commentService = new CommentService(commentRepository);
+    const commentController = new CommentController(commentService);
 
     const hashManager = new BcryptHashManager();
 
@@ -97,6 +105,8 @@ export class DependencyInjector {
       authController,
       usersController,
       invitationController,
+      // 추가
+      commentController,
     ];
 
     const port = parseInt(process.env.PORT || "4000", 10);

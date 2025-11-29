@@ -1,14 +1,11 @@
 import {
-  AuthTokenResponse,
   IAuthService,
-  RefreshTokenInput,
-  RefreshTokenResponse,
-  SignInInput,
-  SignInResponse,
-  SignOutInput,
   SignUpInput,
-  SignUpOrSignInSocialInput,
   SignUpResponse,
+  SignInInput,
+  SignUpOrSignInSocialInput,
+  RefreshTokenInput,
+  TokenResponse,
 } from "../../inbound/ports/services/I-auth-service";
 import { UserEntity } from "../entities/user/user-entity";
 import { IHashManager } from "../ports/managers/I-hash-manager";
@@ -45,7 +42,7 @@ export class AuthService implements IAuthService {
     };
   }
 
-  async signIn(input: SignInInput): Promise<SignInResponse> {
+  async signIn(input: SignInInput): Promise<TokenResponse> {
     const user = await this.userRepository.findByEmail(input.email);
     if (!user) {
       throw new Error("User not found");
@@ -67,21 +64,17 @@ export class AuthService implements IAuthService {
 
   async signUpOrSignInSocial(
     input: SignUpOrSignInSocialInput,
-  ): Promise<AuthTokenResponse> {
+  ): Promise<TokenResponse> {
     return {
       accessToken: "",
       refreshToken: "",
-      csrfToken: "",
     };
   }
 
-  async refreshTokens(input: RefreshTokenInput): Promise<RefreshTokenResponse> {
+  async refreshTokens(input: RefreshTokenInput): Promise<TokenResponse> {
     return {
       accessToken: "",
       refreshToken: "",
-      csrfToken: "",
     };
   }
-
-  async signOut(input: SignOutInput): Promise<void> {}
 }

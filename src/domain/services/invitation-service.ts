@@ -7,6 +7,10 @@ import { v4 as uuidv4 } from "uuid";
 import { MemberEntity } from "../entities/member/member-entity";
 import { IInvitationService } from "../../inbound/ports/services/I-invitation-service";
 import { IEmailService } from "../../inbound/ports/services/I-email-service";
+import {
+  BusinessException,
+  BusinessExceptionType,
+} from "../../shared/exceptions/business-exception";
 
 export class InvitationService implements IInvitationService {
   private readonly _unitOfWork;
@@ -17,127 +21,62 @@ export class InvitationService implements IInvitationService {
     this._emailService = emailService;
   }
 
-  async inviteMember(
-    projectId: number,
-    creatorId: number,
-    inviteeId: number,
-    inviteeEmail: string,
-    role: MemberRole,
-    projectName: string,
-    inviterRole: MemberRole,
-  ): Promise<PersistInvitationEntity> {
-    return this._unitOfWork.do(
-      async (repos: IRepositories) => {
-        if (inviterRole !== MemberRole.OWNER) {
-          // 권한 없음 에러
-          throw new Error();
-        }
-        if (creatorId === inviteeId) {
-          // 자기 자신 초대 불가
-          throw new Error();
-        }
-        const existingMember =
-          await repos.memberRepository.findByProjectIdAndUserId(
-            projectId,
-            inviteeId,
-          );
-        if (existingMember) {
-          // 이미 초대된 멤버 초대 불가
-          throw new Error();
-        }
-        const existingInvitation =
-          await repos.invitationRepository.findByProjectIdAndInviteeId(
-            projectId,
-            inviteeId,
-          );
+  async inviteMember(projectId: number, invitorId: number): Promise<string> {
+    const projectMembers =
+      await this._unitOfWork.repos.memberRepository.getProjectMembersId(
+        projectId,
+      );
 
-        if (existingInvitation) {
-          // 중복 초대 불가
-          throw new Error();
-        }
+    if (!projectMembers?.includes(invitorId)) {
+      throw new BusinessException({
+        type: BusinessExceptionType.NOT_MEMBER,
+      });
+    }
 
-        const token = uuidv4();
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + 7);
-
-        const newInvitation = InvitationEntity.createNew({
-          token,
-          projectId,
-          creatorId,
-          inviteeId,
-          role,
-          expiresAt,
-        });
-
-        const savedInvitation =
-          await repos.invitationRepository.save(newInvitation);
-        const invitationLink = `https://localhost:4000/invite?token=${savedInvitation.token}`;
-        try {
-          await this._emailService.sendInvitation(
-            inviteeEmail,
-            invitationLink,
-            projectName,
-          );
-        } catch (err) {
-          throw new Error();
-        }
-
-        return savedInvitation;
-      },
-      true,
-      "Serializable",
+    return await this._unitOfWork.repos.invitationRepository.createInviteCode(
+      projectId,
+      invitorId,
     );
   }
 
-  async acceptInvitation(token: string, userId: number): Promise<MemberEntity> {
+  async acceptInvitation(token: string, userId: number): Promise<void> {
     return this._unitOfWork.do(
       async (repos: IRepositories) => {
         const invitation = await repos.invitationRepository.findByToken(token);
         if (!invitation) {
-          // invalid invitation
-          throw new Error();
+          throw new BusinessException({
+            type: BusinessExceptionType.INVALID_TOKEN,
+          });
         }
 
-        const invitationData = invitation.toData();
-        if (invitationData.expiresAt.getTime() < Date.now()) {
-          await repos.invitationRepository.delete(token);
-          // invalid invitation
-          throw new Error();
-        }
-
-        const existingMember =
-          await repos.memberRepository.findByProjectIdAndUserId(
-            invitationData.projectId,
-            userId,
-          );
-        if (existingMember) {
-          await repos.invitationRepository.delete(token);
-          // 초대장만 삭제하고 이미 초대된 멤버 에러처리
-          throw new Error();
-        }
-
-        const newMember = MemberEntity.createNewInvited({
-          userId,
-          projectId: invitationData.projectId,
-          role: invitation.role,
-        });
-
-        const savedMember = await repos.memberRepository.save(newMember);
-        await repos.invitationRepository.delete(token);
-        return savedMember;
+        return await repos.invitationRepository.save(token, userId);
       },
       true,
       "Serializable",
     );
   }
 
-  async deleteInvitation(token: string, creatorId: number): Promise<void> {
+  async deleteInvitation(token: string, userID: number): Promise<void> {
     await this._unitOfWork.do(
       async (repos: IRepositories) => {
         const invitation = await repos.invitationRepository.findByToken(token);
-
         if (!invitation) {
-          return;
+          throw new BusinessException({
+            type: BusinessExceptionType.INVALID_TOKEN,
+          });
+        }
+        const projectId = Number(
+          await repos.invitationRepository.getProjectIdByToken,
+        );
+
+        const role = await repos.memberRepository.getRoleById(
+          projectId,
+          userID,
+        );
+        if (role !== "OWNER") {
+          throw new BusinessException({
+            type: BusinessExceptionType.INVALID_AUTH,
+          });
         }
         await repos.invitationRepository.delete(token);
       },

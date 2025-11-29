@@ -3,11 +3,12 @@ export enum BusinessExceptionType {
   INVALID_AUTH,
   ALREADY_AUTHENTICATED,
   EMAIL_DUPLICATE,
-
-  // 요청 값 에러
-  INVALID_REQUEST,
-  INVALID_TITLE,
-  INVALID_DESCRIPTION,
+  INVALID_PROJECTID,
+  UNAUTORIZED_REQUEST,
+  UPDATE_TARGET_NOT_FOUND,
+  NOT_MEMBER,
+  INVALID_TOKEN,
+  EXPIRED_TOKEN,
 }
 
 const BusinessExceptionTable: Record<
@@ -30,23 +31,30 @@ const BusinessExceptionTable: Record<
     statusCode: 409,
     message: "중복된 입니다.",
   },
-  [BusinessExceptionType.INVALID_REQUEST]: {
-    statusCode: 400,
-    message: "잘못된 요청 형식",
+  [BusinessExceptionType.INVALID_PROJECTID]: {
+    statusCode: 404,
+    message: "Project가 존재하지 않습니다.",
   },
-  [BusinessExceptionType.INVALID_TITLE]: {
-    statusCode: 400,
-    message: "제목 형식이 잘못됬습니다",
+  [BusinessExceptionType.UNAUTORIZED_REQUEST]: {
+    statusCode: 403,
+    message: "권한이 없습니다.",
   },
-  [BusinessExceptionType.INVALID_DESCRIPTION]: {
-    statusCode: 400,
-    message: "내용 형식이 잘못됬습니다",
+  [BusinessExceptionType.UPDATE_TARGET_NOT_FOUND]: {
+    statusCode: 404,
+    message: "업데이트 할 항목이 없습니다.",
   },
-};
-
-export const INPUT_EXCEPTIONS: Record<string, BusinessExceptionType> = {
-  title: BusinessExceptionType.INVALID_TITLE,
-  description: BusinessExceptionType.INVALID_DESCRIPTION,
+  [BusinessExceptionType.NOT_MEMBER]: {
+    statusCode: 403,
+    message: "프로젝트 멤버가 아닙니다",
+  },
+  [BusinessExceptionType.INVALID_TOKEN]: {
+    statusCode: 404,
+    message: "토큰이 존재하지 않습니다.",
+  },
+  [BusinessExceptionType.EXPIRED_TOKEN]: {
+    statusCode: 404,
+    message: "토큰이 만료기한기 지났습니다.",
+  },
 };
 
 export class BusinessException extends Error {

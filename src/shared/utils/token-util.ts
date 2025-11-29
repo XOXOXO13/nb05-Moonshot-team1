@@ -32,7 +32,8 @@ export class TokenUtil implements ITokenUtil {
   constructor(private _config: IConfigUtil) {}
 
   generateAccessToken(params: Omit<TokenGenerateParams, "expiresIn">): string {
-    return this.generateToken({ ...params, expiresIn: "15m" });
+    const expiresIn = this._config.parsed().ACCESS_TOKEN_EXPIRES_IN ?? "15m";
+    return this.generateToken({ ...params, expiresIn });
   }
   generateRefreshToken(params: Omit<TokenGenerateParams, "expiresIn">): string {
     return this.generateToken({ ...params, expiresIn: "7d" });
@@ -70,7 +71,6 @@ export class TokenUtil implements ITokenUtil {
     ignoreExpiration?: boolean;
   }): TokenPayload {
     const { token, ignoreExpiration = false } = params;
-
     const secret = this._config.parsed().TOKEN_SECRET;
     if (!secret || secret.length < 10) {
       throw new Error("유효하지 않은 토큰 시크릿입니다.");

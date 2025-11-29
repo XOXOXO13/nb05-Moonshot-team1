@@ -146,14 +146,15 @@ model Invitation {
   projectId Int
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  inviteeId Int
-  invitee   User   @relation(fields: [inviteeId], references: [id], onDelete: Cascade, name: "InviteeInvitations")
+  inviteeId Int?
+  invitee   User?   @relation(fields: [inviteeId], references: [id], onDelete: Cascade, name: "InviteeInvitations")
 
-  creatorId Int
-  creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade, name: "CreatorInvitations")
+  invitorId Int
+  invitor   User   @relation(fields: [invitorId], references: [id], onDelete: Cascade, name: "CreatorInvitations")
 
   expiresAt DateTime
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   role MemberRole @default(MEMBER)
 

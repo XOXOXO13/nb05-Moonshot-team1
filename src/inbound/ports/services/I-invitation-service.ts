@@ -3,15 +3,7 @@ import { PersistInvitationEntity } from "../../../domain/entities/member/invitat
 import { MemberEntity } from "../../../domain/entities/member/member-entity";
 
 export interface IInvitationService {
-  inviteMember(
-    projectId: number,
-    creatorId: number,
-    inviteeId: number,
-    inviteeEmail: string,
-    role: MemberRole,
-    projectName: string,
-    inviterRole: MemberRole,
-  ): Promise<PersistInvitationEntity>;
-  acceptInvitation(token: string, userId: number): Promise<MemberEntity>;
+  inviteMember(projectId: number, invitorId: number): Promise<string>;
+  acceptInvitation(token: string, userId: number): Promise<void>;
   deleteInvitation(token: string, creatorId: number): Promise<void>;
 }

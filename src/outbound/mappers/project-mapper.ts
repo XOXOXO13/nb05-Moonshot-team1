@@ -8,8 +8,12 @@ import {
   ProjectData,
   ProjectEntity,
   ProjectUpdateData,
+  ReturnProjectEntity,
 } from "../../domain/entities/project/project-entity";
-import { PersistProject } from "../repos/project-repository";
+import {
+  PersistProject,
+  ReturnPersistProject,
+} from "../repos/project-repository";
 
 export class ProjectMapper {
   static toPersistEntity(project: PersistProject): PersistProjectEntity {
@@ -39,15 +43,10 @@ export class ProjectMapper {
       members: members,
     }) as PersistProjectEntity;
   }
-
   static toCreateData(entity: NewProjectEntity) {
     const projectData = entity.toCreateData();
 
-    const prismaData = {
-      ...projectData,
-    };
-
-    return prismaData;
+    return projectData;
   }
   static toUpdateData(entity: ProjectEntity): ProjectUpdateData {
     const updateData = entity.toUpdateData();
