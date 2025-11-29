@@ -107,18 +107,41 @@ export class TaskService implements ITaskService {
     } = dto;
 
     // 날짜 파싱
-    const startDate = new Date(startYear, startMonth - 1, startDay);
-    const endDate = new Date(endYear, endMonth - 1, endDay);
+    const startDate =
+      startYear && startMonth && startDay
+        ? new Date(startYear, startMonth - 1, startDay)
+        : undefined;
+
+    const endDate =
+      endYear && endMonth && endDay
+        ? new Date(endYear, endMonth - 1, endDay)
+        : undefined;
+
+    // 새로운 태그와 첨부파일 생성
+    const tagEntities = tags ? TagMapper.toCreateEntities(tags) : undefined;
+
+    const attachmentEntities = attachments
+      ? AttachmentMapper.toCreateEntities(attachments)
+      : undefined;
 
     // @ transaction
     const task = await this._unitOfWork.do(async (repos) => {
+      // 유저 1 읽음 = 10000
+      // 유저 2 읽음 = 10000
+      // 유저 1 수정 = 20000
+      // 유저 2 수정 = 0
+
+      // 유저 1 = await repos.taskRepository.getTaskInfo(dto.taskId)
+      // 유저 2 = await repos.taskRepository.getTaskInfo(dto.taskId)
+      // 유저 1 = await repos.taskRepository.update(currentTask)
+      // 유저 2 = await repos.taskRepository.update(currentTask)
+
       // 현재 할 일 조회
       const currentTask = await repos.taskRepository.getTaskInfo(dto.taskId);
 
-      // 새로운 태그와 첨부파일 생성
-      const tagEntities = TagMapper.toCreateEntities(tags);
-      const createdTags = await repos.tagRepository.findOrCreate(tagEntities);
-      const attachmentEntities = AttachmentMapper.toCreateEntities(attachments);
+      const createdTags = tagEntities
+        ? await repos.tagRepository.findOrCreate(tagEntities)
+        : undefined;
 
       // 할 일 수정
       currentTask.update({
@@ -128,9 +151,7 @@ export class TaskService implements ITaskService {
         endDate,
         status,
         attachments: attachmentEntities,
-        taskTags: createdTags.map((tag) => {
-          return TaskTagVo.createNew(tag);
-        }),
+        taskTags: createdTags,
       });
 
       const task = await repos.taskRepository.update(currentTask);

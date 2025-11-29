@@ -9,6 +9,9 @@ export enum BusinessExceptionType {
   NOT_MEMBER,
   INVALID_TOKEN,
   EXPIRED_TOKEN,
+  INVALID_REQUEST,
+  INVALID_TITLE,
+  INVALID_DESCRIPTION,
 }
 
 const BusinessExceptionTable: Record<
@@ -21,7 +24,7 @@ const BusinessExceptionTable: Record<
   },
   [BusinessExceptionType.INVALID_AUTH]: {
     statusCode: 401,
-    message: "인증이 필요합니다.",
+    message: "로그인이 필요합니다.",
   },
   [BusinessExceptionType.ALREADY_AUTHENTICATED]: {
     statusCode: 400,
@@ -29,7 +32,7 @@ const BusinessExceptionTable: Record<
   },
   [BusinessExceptionType.EMAIL_DUPLICATE]: {
     statusCode: 409,
-    message: "중복된 이메일입니다.",
+    message: "중복된 입니다.",
   },
   [BusinessExceptionType.INVALID_PROJECTID]: {
     statusCode: 404,
@@ -55,6 +58,24 @@ const BusinessExceptionTable: Record<
     statusCode: 404,
     message: "토큰이 만료기한기 지났습니다.",
   },
+
+  [BusinessExceptionType.INVALID_REQUEST]: {
+    statusCode: 400,
+    message: "잘못된 요청 형식",
+  },
+  [BusinessExceptionType.INVALID_TITLE]: {
+    statusCode: 400,
+    message: "제목 형식이 잘못됬습니다.",
+  },
+  [BusinessExceptionType.INVALID_DESCRIPTION]: {
+    statusCode: 400,
+    message: "설명 형식이 잘못됬습니다.",
+  },
+};
+
+export const INPUT_EXCEPTIONS: Record<string, BusinessExceptionType> = {
+  title: BusinessExceptionType.INVALID_TITLE,
+  description: BusinessExceptionType.INVALID_DESCRIPTION,
 };
 
 export class BusinessException extends Error {

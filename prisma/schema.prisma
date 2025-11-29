@@ -81,6 +81,7 @@ model Project {
 
 model Task {
   id        Int    @id @default(autoincrement())
+  version     Int      @default(1)
   projectId Int
   title     String
   description  String

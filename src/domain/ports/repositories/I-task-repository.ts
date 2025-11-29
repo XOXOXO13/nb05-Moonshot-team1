@@ -5,6 +5,7 @@ import {
 
 export interface ITaskRepository {
   create(entity: NewTaskEntity): Promise<PersistTaskEntity>;
+
   getProjectTasks(params: {
     page?: number;
     limit?: number;
@@ -15,7 +16,13 @@ export interface ITaskRepository {
     order_by?: string;
     projectId: number;
   }): Promise<PersistTaskEntity[]>;
+
   getTaskInfo(taskId: number): Promise<PersistTaskEntity>;
+
+  /**
+   * @throws OPTIMISTIC_LOCK_FAILED
+   */
   update(entity: PersistTaskEntity): Promise<PersistTaskEntity>;
+
   delete(taskId: number): Promise<void>;
 }
