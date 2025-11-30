@@ -7,44 +7,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 model SocialAccount {
-  provider   String
+  provider          String
   providerAccountId String
-  createdAt  DateTime @default(now())
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  userId            Int
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, provider])
   @@unique([provider, providerAccountId])
 }
 
 model User {
-  id              Int     @id @default(autoincrement())
-  email           String   @unique
-  password        String?
-  name            String
-  refreshToken    String?
-  version         Int      @default(1)
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  password     String?
+  name         String
+  refreshToken String?
+  version      Int      @default(1)
   profileImage String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   socialAccounts      SocialAccount[]
   projects            Project[]
   members             Member[]
   assignedTasks       Task[]
   comments            Comment[]
-  invitationsCreated  Invitation[]      @relation("CreatorInvitations")
-  invitationsReceived  Invitation[]      @relation("InviteeInvitations")
+  invitationsCreated  Invitation[]    @relation("CreatorInvitations")
+  invitationsReceived Invitation[]    @relation("InviteeInvitations")
 }
 
 model Member {
   userId    Int
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   projectId Int
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   role      MemberRole @default(MEMBER)
 
   status   MemberStatus @default(ACTIVE)
@@ -66,55 +64,65 @@ enum MemberStatus {
 }
 
 model Project {
-  id          Int   @id @default(autoincrement()) 
+  id          Int          @id @default(autoincrement())
   name        String
   description String?
   userId      Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  version     Int @default(1)
-  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  version     Int          @default(1)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks       Task[]
   members     Member[]
   invitations Invitation[]
 }
 
 model Task {
-  id        Int    @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   version     Int      @default(1)
-  projectId Int
-  title     String
-  description  String
-  startDate DateTime
-  endDate   DateTime
-  status    String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  projectId   Int
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  assigneeId Int
-  assignee   User     @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
-  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  comments   Comment[]
-  attachments      Attachment[]
-  taskTags   TaskTags[]  
+  assigneeId  Int
+  assignee    User         @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  comments    Comment[]
+  attachments Attachment[]
+  taskTags    TaskTags[]
+  subTasks    SubTask[]
+}
+
+model SubTask {
+  id        Int      @id @default(autoincrement())
+  title     String
+  taskId    Int
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 model TaskTags {
   taskId Int
   tagId  Int
 
-  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([taskId, tagId])
-	@@map("TaskTags")
+  @@map("TaskTags")
 }
 
-
 model Tag {
-  id     Int   @id @default(autoincrement())
-  name   String  @unique
-  taskTags   TaskTags[] 
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  taskTags TaskTags[]
 }
 
 model Comment {
@@ -124,17 +132,15 @@ model Comment {
   updatedAt DateTime @updatedAt
 
   taskId Int
-  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   userId Int
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
-
 model Attachment {
-  id      Int   @id @default(autoincrement())
-  taskId  Int
-  task    Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  id            Int    @id @default(autoincrement())
+  taskId        Int
+  task          Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
   attachmentUrl String
 
   @@unique([taskId, attachmentUrl])
@@ -147,10 +153,10 @@ model Invitation {
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   inviteeId Int?
-  invitee   User?   @relation(fields: [inviteeId], references: [id], onDelete: Cascade, name: "InviteeInvitations")
+  invitee   User? @relation(fields: [inviteeId], references: [id], onDelete: Cascade, name: "InviteeInvitations")
 
   invitorId Int
-  invitor   User   @relation(fields: [invitorId], references: [id], onDelete: Cascade, name: "CreatorInvitations")
+  invitor   User @relation(fields: [invitorId], references: [id], onDelete: Cascade, name: "CreatorInvitations")
 
   expiresAt DateTime
   createdAt DateTime @default(now())
