@@ -27,7 +27,6 @@ export class TagRepository implements ITagRepository {
     const records = await this._prisma.tag.findMany({
       where: { name: { in: names } },
     });
-
     return TagMapper.toPersistEntites(records);
   }
 }

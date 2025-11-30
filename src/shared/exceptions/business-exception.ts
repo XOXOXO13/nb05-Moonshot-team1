@@ -12,6 +12,7 @@ export enum BusinessExceptionType {
   INVALID_REQUEST,
   INVALID_TITLE,
   INVALID_DESCRIPTION,
+  RECORD_NOT_FOUND,
 }
 
 const BusinessExceptionTable: Record<
@@ -70,6 +71,10 @@ const BusinessExceptionTable: Record<
   [BusinessExceptionType.INVALID_DESCRIPTION]: {
     statusCode: 400,
     message: "설명 형식이 잘못됬습니다.",
+  },
+  [BusinessExceptionType.RECORD_NOT_FOUND]: {
+    statusCode: 400,
+    message: "할 일을 찾을 수 없습니다.",
   },
 };
 

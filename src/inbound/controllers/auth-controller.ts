@@ -172,7 +172,7 @@ export class AuthController extends BaseController {
         });
       }
       return res.status(500).json({
-        error: "Internal server error",
+        error: " server error",
       });
     }
   };

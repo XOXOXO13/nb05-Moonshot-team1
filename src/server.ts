@@ -51,14 +51,17 @@ export class Server {
       (err: any, req: Request, res: Response, next: NextFunction) => {
         if (err instanceof BusinessException) {
           const { statusCode, message } = err;
+          console.warn("@ Business Exception has occurred!");
+          console.warn(err.message);
           return res.status(statusCode).json({ message });
+        } else if (err instanceof TechnicalException) {
+          console.warn("@ Technical Exception has occurred!");
+          console.warn(err.message);
+          return res.json(err.message);
         }
-
-        res.status(500).json({ message: "알 수 없는 서버 에러입니다." });
-        if (err instanceof TechnicalException) {
-          const { message } = err;
-          return res.status(400).json({ message });
-        }
+        console.warn("@ Internal Server Error (unknown error)");
+        console.warn(err.message);
+        return res.status(500).json(err.message);
       },
     );
   }

@@ -17,7 +17,7 @@ export interface ITaskRepository {
     projectId: number;
   }): Promise<PersistTaskEntity[]>;
 
-  getTaskInfo(taskId: number): Promise<PersistTaskEntity>;
+  getTaskInfo(taskId: number): Promise<PersistTaskEntity | null>;
 
   /**
    * @throws OPTIMISTIC_LOCK_FAILED
