@@ -57,8 +57,6 @@ export class CommentController extends BaseController {
 
   listComments = async (req: Request, res: Response) => {
     const user = (req as any).user;
-    console.log("user has been found");
-    console.log(user);
     if (!user || !user.userId) {
       return res.status(401).json({ message: "로그인이 필요합니다" });
     }
