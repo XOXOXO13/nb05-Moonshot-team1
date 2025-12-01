@@ -46,7 +46,7 @@ export class SubTaskService implements ISubTaskService {
     return SubTaskMapper.toResDto(subTask);
   }
 
-  async getSubTasks(dto: SubTasksDto): Promise<SubTaskResDtos> {
+  async getSubTasks(dto: SubTasksDto): Promise<SubTaskResDto[]> {
     const { page, limit, taskId } = dto;
     const subTasks = await this._unitOfWork.repos.subTaskRepository.getSubTasks(
       { page, limit, taskId },

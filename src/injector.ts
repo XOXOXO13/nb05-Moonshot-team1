@@ -56,7 +56,6 @@ export class DependencyInjector {
     // 추가
     const commentRepository = new CommentRepository(prisma);
     const commentService = new CommentService(commentRepository);
-    const commentController = new CommentController(commentService);
 
     const hashManager = new BcryptHashManager();
 
@@ -95,6 +94,7 @@ export class DependencyInjector {
     const authMiddleware = new AuthMiddleware(utils);
     const middlewares = [authMiddleware];
 
+    const commentController = new CommentController(commentService, authMiddleware);
     const fileController = new FileController(services);
     const taskController = new TaskController(services, authMiddleware);
     const subTaskController = new SubTaskController(services, authMiddleware);

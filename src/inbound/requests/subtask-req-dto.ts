@@ -41,7 +41,7 @@ export type SubTaskDto = z.infer<typeof subTaskInfoParamsSchema> & {
 
 // 세부 할 일 수정
 export const updateSubTaskBodySchema = z.object({
-  title: z.string(),
+  title: z.string().default(""),
   status: z.enum(["todo", "in_progress", "done"]).default("todo"),
 });
 
