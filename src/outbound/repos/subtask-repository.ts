@@ -92,7 +92,7 @@ export class SubTaskRepository implements ISubTaskRepository {
       const updatedSubTask = await this._prisma.subTask.update({
         where: { id: entity.subtaskId },
         data: {
-          status: entity.status
+          status: entity.status,
         },
       });
       return SubTaskMapper.toPersistEntity(updatedSubTask);

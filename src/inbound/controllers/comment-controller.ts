@@ -7,7 +7,6 @@ export class CommentController extends BaseController {
   private commentService: CommentService;
   private readonly _authMiddlewares;
 
-
   constructor(commentService: CommentService, authMiddleware: AuthMiddleware) {
     super({ basePath: "/", services: null as unknown as any });
     this.commentService = commentService;
@@ -23,7 +22,7 @@ export class CommentController extends BaseController {
     this.router.get(
       "/tasks/:taskId/comments",
       this._authMiddlewares.isUser,
-      this.listComments
+      this.listComments,
     );
     // 댓글 조회
     this.router.get("/comments/:commentId", this.getComment);
