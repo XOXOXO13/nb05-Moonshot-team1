@@ -26,6 +26,7 @@ export class CommentController extends BaseController {
 
   createComment = async (req: Request, res: Response) => {
     const user = (req as any).user;
+
     if (!user || !user.userId) {
       return res.status(401).json({ message: "로그인이 필요합니다" });
     }

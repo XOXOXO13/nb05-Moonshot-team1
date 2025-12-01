@@ -28,10 +28,10 @@ export class TaskRepository implements ITaskRepository {
     const { createTaskData, attachmentData, taskTagsData } =
       TaskMapper.toCreateData(entity);
 
-    // task, attachment, taskTags 데이터 추가
+    // 할 일, 첨부파일, 태그 데이터 추가
     const newTaskRecord = await this._prisma.task.create({
       data: {
-        ...createTaskData,
+        ...createTaskData, // 할 일 생성
         attachments: {
           create: attachmentData, // 첨부 파일 추가
         },
@@ -94,7 +94,7 @@ export class TaskRepository implements ITaskRepository {
     });
   }
 
-  async getTaskInfo(taskId: number): Promise<PersistTaskEntity> {
+  async getTaskInfo(taskId: number): Promise<PersistTaskEntity | null> {
     const record = await this._prisma.task.findUnique({
       where: {
         id: taskId,
@@ -108,12 +108,7 @@ export class TaskRepository implements ITaskRepository {
       },
     });
 
-    if (!record) {
-      throw new Error("할일이 존재하지 않습니다");
-    }
-    const taskEntity = TaskMapper.toPersistEntity(record);
-
-    return taskEntity;
+    return record ? TaskMapper.toPersistEntity(record) : null;
   }
 
   async update(entity: PersistTaskEntity): Promise<PersistTaskEntity> {
@@ -122,12 +117,12 @@ export class TaskRepository implements ITaskRepository {
       await this._prisma.taskTags.deleteMany({
         where: { taskId: entity.id },
       });
-
       await this._prisma.taskTags.createMany({
         data: entity.taskTags.map((tasktag) => ({
           taskId: entity.id,
           tagId: tasktag.tagId,
         })),
+        skipDuplicates: true,
       });
 
       // 기존 첨부파일 삭제한 후 새로운 파일 추가
@@ -139,6 +134,7 @@ export class TaskRepository implements ITaskRepository {
           taskId: entity.id,
           attachmentUrl: attachment.attachmentUrl,
         })),
+        skipDuplicates: true,
       });
 
       // 할 일 수정하기
@@ -170,7 +166,7 @@ export class TaskRepository implements ITaskRepository {
     } catch (err) {
       if (
         err instanceof Prisma.PrismaClientKnownRequestError &&
-        err.code === "P2025"
+        err.code === "P2025" // (버전이 불일치로) 할 일을 업데이트 할 수 없을때
       ) {
         throw new TechnicalException({
           type: TechnicalExceptionType.OPTIMISTIC_LOCK_FAILED,
