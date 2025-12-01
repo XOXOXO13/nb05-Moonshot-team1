@@ -47,7 +47,7 @@ export class ProjectRepository
 
   async create(
     entity: NewProjectEntity,
-    creator: CreatorMemverEntity
+    creator: CreatorMemverEntity,
   ): Promise<ReturnProjectEntity> {
     try {
       const createData = {

@@ -18,33 +18,38 @@ export class MemberService implements IMemberService {
     projectId: number,
     userId: number,
     page: number,
-    limit: number
+    limit: number,
   ): Promise<PaginatedProjectMemberData> {
     const projectMembersId =
       await this._unitOfWokr.repos.memberRepository.getProjectMembersId(
-        projectId
+        projectId,
       );
     if (!projectMembersId?.includes(userId)) {
       throw new BusinessException({
         type: BusinessExceptionType.NOT_MEMBER,
       });
     }
-    const members = await this._unitOfWokr.repos.memberRepository.getProjectMembers(projectId, page, limit);
+    const members =
+      await this._unitOfWokr.repos.memberRepository.getProjectMembers(
+        projectId,
+        page,
+        limit,
+      );
     return {
       data: members,
-      total: members?.length
+      total: members?.length,
     } as PaginatedProjectMemberData;
   }
 
   async deleteMember(
     projectId: number,
     deletedUserId: number,
-    deleterId: number
+    deleterId: number,
   ): Promise<void> {
     return await this._unitOfWokr.do(async (repos) => {
       const deleter = await repos.memberRepository.getRoleById(
         projectId,
-        deleterId
+        deleterId,
       );
 
       if (deleter !== "OWNER") {

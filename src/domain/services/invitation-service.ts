@@ -24,7 +24,7 @@ export class InvitationService implements IInvitationService {
   async inviteMember(projectId: number, invitorId: number): Promise<string> {
     const projectMembers =
       await this._unitOfWork.repos.memberRepository.getProjectMembersId(
-        projectId
+        projectId,
       );
 
     if (!projectMembers?.includes(invitorId)) {
@@ -35,7 +35,7 @@ export class InvitationService implements IInvitationService {
 
     return await this._unitOfWork.repos.invitationRepository.createInviteCode(
       projectId,
-      invitorId
+      invitorId,
     );
   }
 
@@ -52,7 +52,7 @@ export class InvitationService implements IInvitationService {
         return await repos.invitationRepository.save(token, userId);
       },
       true,
-      "Serializable"
+      "Serializable",
     );
   }
 
@@ -66,12 +66,12 @@ export class InvitationService implements IInvitationService {
           });
         }
         const projectId = Number(
-          await repos.invitationRepository.getProjectIdByToken
+          await repos.invitationRepository.getProjectIdByToken,
         );
 
         const role = await repos.memberRepository.getRoleById(
           projectId,
-          userID
+          userID,
         );
         if (role !== "OWNER") {
           throw new BusinessException({
@@ -81,7 +81,7 @@ export class InvitationService implements IInvitationService {
         await repos.invitationRepository.delete(token);
       },
       false,
-      "ReadCommitted"
+      "ReadCommitted",
     );
   }
 }

@@ -10,10 +10,12 @@ import {
   ProjectUpdateData,
   ReturnProjectEntity,
 } from "../../domain/entities/project/project-entity";
-import { PersistProject, ReturnPersistProject } from "../repos/project-repository";
+import {
+  PersistProject,
+  ReturnPersistProject,
+} from "../repos/project-repository";
 
 export class ProjectMapper {
-
   static toPersistEntity(project: PersistProject): PersistProjectEntity {
     let members: MemberEntity[] = [];
 

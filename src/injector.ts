@@ -28,6 +28,13 @@ import { InvitationrController } from "./inbound/controllers/invitation-controll
 import { smtpConfig } from "./shared/utils/smtp-util";
 import { TagRepository } from "./outbound/repos/tag-repository";
 import { FileController } from "./inbound/controllers/file-controller";
+// 추가
+import { CommentRepository } from "./outbound/repos/comment-repository";
+import { CommentService } from "./domain/services/comment-service";
+import { CommentController } from "./inbound/controllers/comment-controller";
+import { SubTaskRepository } from "./outbound/repos/subtask-repository";
+import { SubTaskService } from "./domain/services/subtask-service";
+import { SubTaskController } from "./inbound/controllers/subtask-controller";
 
 export class DependencyInjector {
   private _server: Server;
@@ -46,12 +53,17 @@ export class DependencyInjector {
     const utils = new Utils(configUtil, tokenUtil);
     const prisma = new PrismaClient();
     const smtp = smtpConfig;
+    // 추가
+    const commentRepository = new CommentRepository(prisma);
+    const commentService = new CommentService(commentRepository);
+    const commentController = new CommentController(commentService);
 
     const hashManager = new BcryptHashManager();
 
     const repoFactory = new RepositoryFactory({
       projectRepository: (prismaClient) => new ProjectRepository(prismaClient),
       taskRepository: (prismaClient) => new TaskRepository(prismaClient),
+      subTaskRepository: (prismaClient) => new SubTaskRepository(prismaClient),
       tagRepository: (prismaClient) => new TagRepository(prismaClient),
       userRepository: (prismaClient) => new UserRepository(prismaClient),
       invitationRepository: (prismaClient) =>
@@ -64,6 +76,7 @@ export class DependencyInjector {
 
     const emailService = new EmailService(smtp, "no-reply@moonshot.com");
     const taskService = new TaskService(unitOfWork);
+    const subTaskService = new SubTaskService(unitOfWork);
     const projectService = new ProjectService(unitOfWork);
     const userService = new UserService(unitOfWork.userRepository, hashManager);
     const authService = new AuthService(unitOfWork.userRepository, hashManager);
@@ -71,6 +84,7 @@ export class DependencyInjector {
     const memberService = new MemberService(unitOfWork);
     const services = new Services(
       taskService,
+      subTaskService,
       projectService,
       userService,
       authService,
@@ -83,6 +97,7 @@ export class DependencyInjector {
 
     const fileController = new FileController(services);
     const taskController = new TaskController(services, authMiddleware);
+    const subTaskController = new SubTaskController(services, authMiddleware);
     const projectController = new ProjectController(services, authMiddleware);
     const authController = new AuthController(services, authMiddleware, utils);
     const usersController = new UsersController(services, authMiddleware);
@@ -93,10 +108,13 @@ export class DependencyInjector {
     const controllers: any = [
       fileController,
       taskController,
+      subTaskController,
       projectController,
       authController,
       usersController,
       invitationController,
+      // 추가
+      commentController,
     ];
 
     const port = parseInt(process.env.PORT || "4000", 10);

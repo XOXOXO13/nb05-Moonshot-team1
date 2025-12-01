@@ -12,6 +12,10 @@ import { AttachmentMapper } from "../../outbound/mappers/attachment-mapper";
 import { TaskMapper } from "../../outbound/mappers/task-mapper";
 import { TaskResDto, TaskResDtos } from "../../inbound/responses/task-res-dto";
 import { TaskTagVo } from "../entities/task/task-tag-vo";
+import {
+  BusinessException,
+  BusinessExceptionType,
+} from "../../shared/exceptions/business-exception";
 
 export class TaskService implements ITaskService {
   private readonly _unitOfWork;
@@ -20,6 +24,7 @@ export class TaskService implements ITaskService {
   }
 
   async createTask(dto: CreateTaskDto): Promise<TaskResDto> {
+    // 필요한 정보 추출
     const {
       title,
       description,
@@ -35,20 +40,17 @@ export class TaskService implements ITaskService {
       projectId,
       userId,
     } = dto;
-
-    // 날짜 파싱
     const startDate = new Date(startYear, startMonth - 1, startDay);
     const endDate = new Date(endYear, endMonth - 1, endDay);
 
-    // 할 일 생성 (transaction)
-    const task = await this._unitOfWork.do(async (repos) => {
-      // 태그 생성하기
-      const tagEntities = TagMapper.toCreateEntities(tags);
-      const createdTags = await repos.tagRepository.findOrCreate(tagEntities);
+    const tagEntities = TagMapper.toCreateEntities(tags);
+    const attachmentEntities = AttachmentMapper.toCreateEntities(attachments);
 
-      // 할 일에 태그와 첨부파일 추가
-      const attachmentEntities = AttachmentMapper.toCreateEntities(attachments);
+    // 할 일 생성
+    const newTask = await this._unitOfWork.do(async (repos) => {
+      const createdTags = await repos.tagRepository.findOrCreate(tagEntities); // 태그 생성하기
       const taskEntity = TaskEntity.createNew({
+        // 할 일에 첨부파일과 태그 추가
         projectId,
         title,
         description,
@@ -57,41 +59,39 @@ export class TaskService implements ITaskService {
         status,
         attachments: attachmentEntities, // 첨부파일 추가
         taskTags: createdTags.map((tag) => {
-          // 태그 추가
-          return TaskTagVo.createNew(tag);
+          return TaskTagVo.createNew(tag); // 태그 추가
         }),
         assigneeId: userId,
       });
 
-      // 할 일 생성
-      const task = await repos.taskRepository.create(taskEntity);
+      const task = await repos.taskRepository.create(taskEntity); // 할 일 생성
       return task;
     });
 
-    return TaskMapper.toResDto(task);
+    return TaskMapper.toResDto(newTask);
   }
 
   async getProjectTasks(dto: ProjectTaskDto): Promise<TaskResDtos> {
-    const tasks = await this._unitOfWork.do(async (repos) => {
-      // 할 일 조회하기
-      const tasks = await repos.taskRepository.getProjectTasks({
-        ...dto,
-      });
-      return tasks;
+    const tasks = await this._unitOfWork.repos.taskRepository.getProjectTasks({
+      ...dto,
     });
     return TaskMapper.toResDtos(tasks);
   }
 
   async getTaskInfo(dto: TaskDto): Promise<TaskResDto> {
-    const task = await this._unitOfWork.do(async (repos) => {
-      // 할 일 조회하기
-      const tasks = await repos.taskRepository.getTaskInfo(dto.taskId);
-      return tasks;
-    });
+    const task = await this._unitOfWork.repos.taskRepository.getTaskInfo(
+      dto.taskId,
+    );
+    if (!task) {
+      throw new BusinessException({
+        type: BusinessExceptionType.RECORD_NOT_FOUND,
+      });
+    }
     return TaskMapper.toResDto(task);
   }
 
   async editTaskInfo(dto: UpdateTaskDto): Promise<TaskResDto> {
+    // 필요한 정보 파싱하기
     const {
       title,
       description,
@@ -106,19 +106,36 @@ export class TaskService implements ITaskService {
       attachments,
     } = dto;
 
-    // 날짜 파싱
-    const startDate = new Date(startYear, startMonth - 1, startDay);
-    const endDate = new Date(endYear, endMonth - 1, endDay);
+    const startDate =
+      startYear && startMonth && startDay
+        ? new Date(startYear, startMonth - 1, startDay)
+        : undefined;
+
+    const endDate =
+      endYear && endMonth && endDay
+        ? new Date(endYear, endMonth - 1, endDay)
+        : undefined;
+
+    // 새로운 태그와 첨부파일 생성
+    const tagEntities = tags ? TagMapper.toCreateEntities(tags) : undefined;
+    const attachmentEntities = attachments
+      ? AttachmentMapper.toCreateEntities(attachments)
+      : undefined;
 
     // @ transaction
     const task = await this._unitOfWork.do(async (repos) => {
       // 현재 할 일 조회
       const currentTask = await repos.taskRepository.getTaskInfo(dto.taskId);
 
-      // 새로운 태그와 첨부파일 생성
-      const tagEntities = TagMapper.toCreateEntities(tags);
-      const createdTags = await repos.tagRepository.findOrCreate(tagEntities);
-      const attachmentEntities = AttachmentMapper.toCreateEntities(attachments);
+      if (!currentTask) {
+        throw new BusinessException({
+          type: BusinessExceptionType.RECORD_NOT_FOUND,
+        });
+      }
+
+      const createdTags = tagEntities
+        ? await repos.tagRepository.findOrCreate(tagEntities)
+        : undefined;
 
       // 할 일 수정
       currentTask.update({
@@ -128,9 +145,7 @@ export class TaskService implements ITaskService {
         endDate,
         status,
         attachments: attachmentEntities,
-        taskTags: createdTags.map((tag) => {
-          return TaskTagVo.createNew(tag);
-        }),
+        taskTags: createdTags,
       });
 
       const task = await repos.taskRepository.update(currentTask);
@@ -141,9 +156,6 @@ export class TaskService implements ITaskService {
   }
 
   async deleteTaskInfo(dto: TaskDto): Promise<void> {
-    // 할 일 삭제하기
-    await this._unitOfWork.do(async (repos) => {
-      await repos.taskRepository.delete(dto.taskId);
-    });
+    await this._unitOfWork.repos.taskRepository.delete(dto.taskId);
   }
 }

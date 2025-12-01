@@ -3,6 +3,8 @@ import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import multer from "multer";
+import { BusinessException } from "./shared/exceptions/business-exception";
+import { TechnicalException } from "./shared/exceptions/technical.exception";
 
 export class Server {
   private _app: express.Application;
@@ -40,9 +42,28 @@ export class Server {
     this._app.use(express.json({ limit: "10mb" }));
     this._app.use(express.urlencoded({ extended: true }));
     this._app.use("/public", express.static("public"));
-
     this._app.use(morgan("dev"));
     this._app.use(express.json());
+  }
+
+  registerErrorHandlers() {
+    this._app.use(
+      (err: any, req: Request, res: Response, next: NextFunction) => {
+        if (err instanceof BusinessException) {
+          const { statusCode, message } = err;
+          console.warn("@ Business Exception has occurred!");
+          console.warn(err.message);
+          return res.status(statusCode).json({ message });
+        } else if (err instanceof TechnicalException) {
+          console.warn("@ Technical Exception has occurred!");
+          console.warn(err.message);
+          return res.json(err.message);
+        }
+        console.warn("@ Internal Server Error (unknown error)");
+        console.warn(err.message);
+        return res.status(500).json(err.message);
+      },
+    );
   }
 
   registerControllers() {
@@ -58,11 +79,9 @@ export class Server {
   }
 
   run() {
-    this._app.use((req: Request, res: Response, next: NextFunction) => {
-      next();
-    });
     this.registerMiddlewares();
     this.registerControllers();
+    this.registerErrorHandlers();
     this.listen();
   }
   get app() {

@@ -3,6 +3,10 @@ import { IRepositories } from "../domain/ports/repositories/I-repositories";
 import { UserRepository } from "./repos/user-repository";
 import { IUserRepository } from "../domain/ports/repositories/I-user-repository";
 import { RepositoryFactory } from "./repository-factory";
+import {
+  TechnicalException,
+  TechnicalExceptionType,
+} from "../shared/exceptions/technical.exception";
 
 export class UnitOfWork {
   private _prismaClient: PrismaClient;
@@ -34,7 +38,8 @@ export class UnitOfWork {
       | "RepeatableRead"
       | "Serializable" = "ReadCommitted",
   ): Promise<T> {
-    const maxRetries = isOptimistic ? 5 : 1;
+    const maxRetries = isOptimistic ? 7 : 1; // 최대 낙관적 락을 7번으로 설정
+    let lastErr;
 
     for (let i = 0; i < maxRetries; i++) {
       try {
@@ -48,37 +53,23 @@ export class UnitOfWork {
           },
         );
       } catch (err) {
-        if (this.isRetryableError(err) && isOptimistic && i < maxRetries - 1) {
+        if (
+          err instanceof TechnicalException &&
+          err.type === TechnicalExceptionType.OPTIMISTIC_LOCK_FAILED &&
+          isOptimistic &&
+          i < maxRetries
+        ) {
           console.warn(
             `트랜잭션 재시도 ${i + 1}/${maxRetries} - ${err instanceof Error ? err.message : "Unknown error"}`,
           );
           await this.delay(Math.pow(2, i) * 100);
           continue;
         }
-        throw err;
+        lastErr = err;
       }
     }
 
-    throw new Error("최대 시도 횟수를 초과했습니다.");
-  }
-
-  private isRetryableError(err: unknown): boolean {
-    if (!(err instanceof Error)) {
-      return false;
-    }
-
-    const retryableErrorCodes = [
-      "P2034", // 트랜잭션 충돌
-      "P2002", // 유니크 제약 조건 위반
-      "P1008", // 작업 타임아웃
-    ];
-
-    return (
-      retryableErrorCodes.some((code) => err.message.includes(code)) ||
-      err.message.includes("Transaction deadlock") ||
-      err.message.includes("could not serialize access") ||
-      err.message.includes("restart transaction")
-    );
+    throw lastErr;
   }
 
   private async delay(ms: number): Promise<void> {

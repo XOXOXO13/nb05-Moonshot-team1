@@ -10,7 +10,10 @@ import {
 export type LockType = "share" | "beta";
 
 export interface IProjectRepository {
-  create(entity: NewProjectEntity, creator: CreatorMemverEntity): Promise<ReturnProjectEntity>;
+  create(
+    entity: NewProjectEntity,
+    creator: CreatorMemverEntity,
+  ): Promise<ReturnProjectEntity>;
   findById(projectId: number): Promise<ReturnProjectEntity | null>;
   update(entity: UpdateProjectEntity): Promise<ReturnProjectEntity>;
   delete(projectId: number): Promise<void>;

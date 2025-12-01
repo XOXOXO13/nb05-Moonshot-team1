@@ -42,9 +42,9 @@ export const projectTaskQuerySchema = z.object({
   status: z.enum(["todo", "in_progress", "done"]).optional(),
   assignee: z.coerce.number().optional(),
   keyword: z.string().optional(),
-  order: z.enum(["asc", "desc"]).default("desc").optional(),
+  order: z.enum(["asc", "desc"]).default("asc").optional(),
   order_by: z
-    .enum(["created_at", "name", "end_date"])
+    .enum(["created_at", "title", "end_date"])
     .default("created_at")
     .optional(),
 });
@@ -69,17 +69,17 @@ export type TaskDto = z.infer<typeof taskInfoParamsSchema> & {
 
 // 할 일 수정
 export const updateTaskBodySchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  startYear: z.number().gte(2000).lte(2100),
-  startMonth: z.number().gte(1).lte(12),
-  startDay: z.number().gte(1).lte(31),
-  endYear: z.number().gte(2000).lte(2100),
-  endMonth: z.number().gte(1).lte(12),
-  endDay: z.number().gte(1).lte(31),
-  status: z.enum(["todo", "in_progress", "done"]).default("todo"),
-  tags: z.array(z.string()),
-  attachments: z.array(z.string()),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  startYear: z.number().gte(2000).lte(2100).optional(),
+  startMonth: z.number().gte(1).lte(12).optional(),
+  startDay: z.number().gte(1).lte(31).optional(),
+  endYear: z.number().gte(2000).lte(2100).optional(),
+  endMonth: z.number().gte(1).lte(12).optional(),
+  endDay: z.number().gte(1).lte(31).optional(),
+  status: z.enum(["todo", "in_progress", "done"]).default("todo").optional(),
+  tags: z.array(z.string()).optional(),
+  attachments: z.array(z.string()).optional(),
 });
 
 export const updateTaskParamsSchema = z.object({
