@@ -1,21 +1,29 @@
 import { Request, Response } from "express";
 import { CommentService } from "../../domain/services/comment-service";
 import { BaseController } from "./base-controller";
+import { AuthMiddleware } from "../middlewares/auth-middleware";
 
 export class CommentController extends BaseController {
   private commentService: CommentService;
+  private readonly _authMiddlewares;
 
-  constructor(commentService: CommentService) {
+  constructor(commentService: CommentService, authMiddleware: AuthMiddleware) {
     super({ basePath: "/", services: null as unknown as any });
     this.commentService = commentService;
-    this.registerRoutes();
+    this._authMiddlewares = authMiddleware;
+
+    // this.registerRoutes();
   }
 
   registerRoutes() {
     // 댓글 생성
     this.router.post("/tasks/:taskId/comments", this.createComment);
     // 댓글 목록 조회
-    this.router.get("/tasks/:taskId/comments", this.listComments);
+    this.router.get(
+      "/tasks/:taskId/comments",
+      this._authMiddlewares.isUser,
+      this.listComments,
+    );
     // 댓글 조회
     this.router.get("/comments/:commentId", this.getComment);
     // 댓글 수정
