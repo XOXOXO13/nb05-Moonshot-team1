@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { BaseController } from "./base-controller";
+
 import { AuthMiddleware } from "../middlewares/auth-middleware";
 import {
   createTaskBodySchema,
@@ -86,12 +87,10 @@ export class TaskController extends BaseController {
 
   getTaskInfo = async (req: Request, res: Response) => {
     const params = this.validate(taskInfoParamsSchema, req.params);
-
     const taskResDto = await this.services.task.getTaskInfo({
       ...params,
       userId: Number(req.userId),
     });
-
     res.json(taskResDto);
   };
 
@@ -110,12 +109,10 @@ export class TaskController extends BaseController {
 
   deleteTask = async (req: Request, res: Response) => {
     const params = this.validate(deleteTaskParamsSchema, req.params);
-
     await this.services.task.deleteTaskInfo({
       ...params,
       userId: Number(req.userId),
     });
-
     res.status(200).json();
   };
 }
