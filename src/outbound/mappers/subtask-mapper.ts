@@ -21,15 +21,15 @@ export class SubTaskMapper {
 
   static toResDtos(entities: PersistSubTaskEntity[]) {
     return entities.map((entity) => {
-        return new SubTaskResDto({
-          id: entity.id,
-          title: entity.title,
-          taskId: entity.taskId,
-          status: entity.status,
-          createdAt: entity.createdAt,
-          updatedAt: entity.updatedAt,
-        });
-      })
+      return new SubTaskResDto({
+        id: entity.id,
+        title: entity.title,
+        taskId: entity.taskId,
+        status: entity.status,
+        createdAt: entity.createdAt,
+        updatedAt: entity.updatedAt,
+      });
+    });
   }
 
   static toPersistEntity(params: {
