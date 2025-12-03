@@ -8,7 +8,7 @@ export type MemberData = {
 };
 
 export type MemberRole = "OWNER" | "MEMBER" | "GUEST";
-export type MemberStatus = "ACTIVE" | "PENDING" | "REMOVED";
+export type MemberStatus = "ACTIVE" | "PENDING" | "REMOVED" | "ACCEPTED" | "REJECTED";
 
 export interface ProjectMemberData {
   id: number;
@@ -132,7 +132,7 @@ export class MemberEntity {
       userId: params.userId,
       projectId: params.projectId,
       role: "OWNER",
-      status: "ACTIVE",
+      status: "ACCEPTED",
       joinedAt: new Date(),
       version: 1,
     });

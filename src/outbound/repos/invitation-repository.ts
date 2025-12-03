@@ -1,9 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { BasePrismaClient, BaseRepository } from "./base-repository";
 import {
   InvitationEntity,
-  NewInvitationEntity,
-  PersistInvitationEntity,
 } from "../../domain/entities/member/invitation-entity";
 import { InvitationMapper } from "../mappers/invitation-mapper";
 import { IInvitationRepository } from "../../domain/ports/repositories/I-invitation-repository";
@@ -23,13 +20,26 @@ export class InvitationRepository
   async createInviteCode(
     projectId: number,
     invitorId: number,
+    inviteeEmail: string
   ): Promise<string> {
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 7);
+    const invitee = await this._prismaClient.user.findUnique({
+      where: {
+        email: inviteeEmail
+      }
+    });
+
+    if(!invitee){
+      throw new TechnicalException({
+        type: TechnicalExceptionType.DB_QUERY_FAILED,
+      });
+    }
     const inviteToken = await this._prismaClient.invitation.create({
       data: {
         projectId: projectId,
         invitorId: invitorId,
+        inviteeId: invitee.id,
         expiresAt: expirationDate,
       },
       select: {
@@ -40,7 +50,7 @@ export class InvitationRepository
   }
   async findByProjectIdAndInviteeId(
     projectId: number,
-    inviteeId: number,
+    inviteeId: number
   ): Promise<InvitationEntity | null> {
     const prismaInvitation = await this._prismaClient.invitation.findUnique({
       where: {
@@ -58,20 +68,6 @@ export class InvitationRepository
   }
 
   async save(token: string, userId: number): Promise<void> {
-    try {
-      await this._prismaClient.invitation.update({
-        where: {
-          token: token,
-        },
-        data: {
-          inviteeId: userId,
-        },
-      });
-    } catch (error) {
-      throw new TechnicalException({
-        type: TechnicalExceptionType.DB_QUERY_FAILED,
-      });
-    }
     const invitation = await this._prismaClient.invitation.findUnique({
       where: {
         token,

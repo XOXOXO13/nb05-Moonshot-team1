@@ -36,7 +36,7 @@ export class ProjectService implements IProjectService {
       const creator: CreatorMemverEntity = {
         userId: dto.userId,
         role: "OWNER",
-        status: "ACTIVE",
+        status: "ACCEPTED",
       };
 
       const createdProject = await repos.projectRepository.create(
