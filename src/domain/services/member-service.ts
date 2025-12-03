@@ -20,15 +20,6 @@ export class MemberService implements IMemberService {
     page: number,
     limit: number,
   ): Promise<PaginatedProjectMemberData> {
-    const projectMembersId =
-      await this._unitOfWokr.repos.memberRepository.getProjectMembersId(
-        projectId,
-      );
-    if (!projectMembersId?.includes(userId)) {
-      throw new BusinessException({
-        type: BusinessExceptionType.NOT_MEMBER,
-      });
-    }
     const members =
       await this._unitOfWokr.repos.memberRepository.getProjectMembers(
         projectId,

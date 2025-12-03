@@ -22,7 +22,7 @@ import { AuthService } from "./domain/services/auth-service";
 import { InvitationRepository } from "./outbound/repos/invitation-repository";
 import { MemberRepository } from "./outbound/repos/member-repository";
 import { InvitationService } from "./domain/services/invitation-service";
-import { EmailService } from "./domain/services/email-service";
+import { Email } from "./outbound/email";
 import { MemberService } from "./domain/services/member-service";
 import { InvitationrController } from "./inbound/controllers/invitation-controller";
 import { smtpConfig } from "./shared/utils/smtp-util";
@@ -73,7 +73,7 @@ export class DependencyInjector {
     const unitOfWork: UnitOfWork = new UnitOfWork(prisma, repoFactory);
     const repositories = unitOfWork.repos;
 
-    const emailService = new EmailService(smtp, "no-reply@moonshot.com");
+    const emailService = new Email(smtp, "nb05-moonshot@naver.com");
     const taskService = new TaskService(unitOfWork);
     const subTaskService = new SubTaskService(unitOfWork);
     const projectService = new ProjectService(unitOfWork);

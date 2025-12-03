@@ -84,6 +84,7 @@ export class ProjectController extends BaseController {
       ...req.body,
       userId: req.user?.userId,
     } as CreateProjectDto;
+    console.log(dto.userId);
     const project = await this.services.project.createProject(dto);
 
     return res.json(project);
@@ -141,12 +142,14 @@ export class ProjectController extends BaseController {
   };
 
   inviteMember = async (req: Request, res: Response) => {
+    const inviteeEmail = req.body.email;
     const projectId: number = Number(req.params.projectId);
     const invitorId: number = Number(req.userId);
 
     const invitation = await this.services.invitation.inviteMember(
       projectId,
       invitorId,
+      inviteeEmail,
     );
 
     return res.status(201).json(invitation);

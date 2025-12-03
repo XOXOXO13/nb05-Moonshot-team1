@@ -59,8 +59,10 @@ enum MemberRole {
 
 enum MemberStatus {
   ACTIVE
+  ACCEPTED
   PENDING
   REMOVED
+  REJECTED
 }
 
 model Project {
