@@ -1,7 +1,5 @@
 import { BasePrismaClient, BaseRepository } from "./base-repository";
-import {
-  InvitationEntity,
-} from "../../domain/entities/member/invitation-entity";
+import { InvitationEntity } from "../../domain/entities/member/invitation-entity";
 import { InvitationMapper } from "../mappers/invitation-mapper";
 import { IInvitationRepository } from "../../domain/ports/repositories/I-invitation-repository";
 import {
@@ -26,11 +24,11 @@ export class InvitationRepository
     expirationDate.setDate(expirationDate.getDate() + 7);
     const invitee = await this._prismaClient.user.findUnique({
       where: {
-        email: inviteeEmail
-      }
+        email: inviteeEmail,
+      },
     });
 
-    if(!invitee){
+    if (!invitee) {
       throw new TechnicalException({
         type: TechnicalExceptionType.DB_QUERY_FAILED,
       });
@@ -46,6 +44,15 @@ export class InvitationRepository
         token: true,
       },
     });
+
+    await this._prismaClient.member.create({
+      data: {
+        userId: invitee.id,
+        projectId: projectId,
+        role: "MEMBER",
+      },
+    });
+
     return inviteToken.token;
   }
   async findByProjectIdAndInviteeId(
