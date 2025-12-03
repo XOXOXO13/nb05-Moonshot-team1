@@ -40,7 +40,7 @@ export class AuthController extends BaseController {
       this.catch(this._authMiddleware.validateAccessToken),
       this.catch(this.logout),
     );
-    this.router.post(
+    this.router.get(
       "/google",
       this.catch(this._authMiddleware.checkNotSignedInUser),
       this.catch(this.signInGoogle),
