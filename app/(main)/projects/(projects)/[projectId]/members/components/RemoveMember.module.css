@@ -1,0 +1,8 @@
+.removeMember {
+  color: #66666e;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 24px;
+  text-decoration: underline;
+  cursor: pointer;
+}

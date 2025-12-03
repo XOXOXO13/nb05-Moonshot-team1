@@ -1,0 +1,45 @@
+.hiddenInput {
+  display: none;
+}
+
+.container {
+  margin-top: 8px;
+}
+
+.container.preview {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  border-radius: 8px;
+}
+
+.container.blank {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.container.blank > .image {
+  flex-grow: 0;
+}
+
+.image {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  border: 1px solid #dddee4;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.removeButton {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  z-index: 1;
+  cursor: pointer;
+}

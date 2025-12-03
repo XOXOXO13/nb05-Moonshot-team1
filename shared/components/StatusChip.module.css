@@ -1,0 +1,23 @@
+.chip {
+  width: fit-content;
+  border-radius: 9999px;
+  padding: 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 21px;
+}
+
+.chip.status-todo {
+  background-color: #e5e5ea;
+  color: #66666e;
+}
+
+.chip.status-in_progress {
+  background-color: #e5e7ff;
+  color: #2d38ba;
+}
+
+.chip.status-done {
+  background-color: #d9f8de;
+  color: #00802b;
+}

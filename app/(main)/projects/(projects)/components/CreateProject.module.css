@@ -1,0 +1,44 @@
+.createProjectButton {
+  border-radius: 8px;
+  background-color: #ededf0;
+  border: none;
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 25px;
+  letter-spacing: -0.3px;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.title {
+  margin: 0;
+  color: #333236;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 4px;
+}
+
+.input,
+.button {
+  width: 100%;
+}

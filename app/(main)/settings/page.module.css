@@ -1,0 +1,13 @@
+.container {
+  margin: 80px auto;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.card {
+  padding: 40px;
+  border-radius: 16px;
+  border-right: 1px solid var(--neutral-gray-15, #ededf0);
+  background: var(--neutral-gray-00, #fff);
+  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.02);
+}

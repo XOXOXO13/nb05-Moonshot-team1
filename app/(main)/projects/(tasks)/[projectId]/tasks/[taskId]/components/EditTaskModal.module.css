@@ -1,0 +1,47 @@
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.title {
+  margin: 0;
+  color: #333236;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.twoColumn {
+  display: flex;
+  gap: 24px;
+}
+
+.twoColumn > .inputContainer {
+  flex-grow: 1;
+  width: 0;
+}
+
+.twoColumn > .inputContainer > .input {
+  width: 100%;
+  min-width: 0;
+}
+
+.input,
+.button {
+  width: 100%;
+}

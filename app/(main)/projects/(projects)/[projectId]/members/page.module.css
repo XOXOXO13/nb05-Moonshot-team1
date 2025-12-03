@@ -1,0 +1,12 @@
+.paginatorContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.invitationContainer {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}

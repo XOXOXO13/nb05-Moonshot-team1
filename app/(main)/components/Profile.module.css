@@ -1,0 +1,45 @@
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.profileImage {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.profileName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #66666e;
+}
+
+.menu {
+  min-width: 112px;
+  border-radius: 8px;
+  border: 1px solid #e5e5ea;
+  background: #fff;
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menuItem {
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  line-height: 27px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.menuItem:hover,
+.menuItem.active {
+  background-color: #ededf0;
+}

@@ -1,0 +1,16 @@
+.tag {
+  margin-right: 4px;
+  color: #2d38ba;
+}
+
+.chevronRight {
+  width: 24px;
+  height: 24px;
+  color: #c2c3cd;
+}
+
+.paginatorContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}

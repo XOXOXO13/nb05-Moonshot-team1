@@ -1,0 +1,57 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.header,
+.row {
+  gap: 24px;
+}
+
+.header {
+  padding: 0 16px;
+}
+
+.row {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e5ea;
+  background: #fff;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.02);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  color: #888893;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.3px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.cell {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.cell.align-center {
+  justify-content: center;
+}
+
+.cell.align-left {
+  justify-content: flex-start;
+}
+
+.cell.align-right {
+  justify-content: flex-end;
+}

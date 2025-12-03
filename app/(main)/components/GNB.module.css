@@ -1,0 +1,57 @@
+.nav {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--gray-100);
+  background-color: var(--gray-50);
+  padding: 24px 16px;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  border: none;
+  border-bottom: 1px solid #e5e5ea;
+  margin: 8px 0;
+}
+
+.logo {
+  height: 16px;
+  margin-bottom: 16px;
+}
+
+.menuLink {
+  font-size: 13px;
+  line-height: 21px;
+  margin: 0;
+  text-decoration: none;
+  color: #66666e;
+  padding: 8px 16px;
+}
+
+.projectMenuLink {
+  font-size: 13px;
+  line-height: 21px;
+  margin: 0;
+  text-decoration: none;
+  color: #66666e;
+  padding: 8px 16px;
+}
+
+.menuLink:hover,
+.menuLink.active {
+  border-radius: 4px;
+  background-color: #f6f6f8;
+}
+
+.projectHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding: 8px 16px;
+}

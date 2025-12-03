@@ -1,0 +1,33 @@
+.socialButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ddd;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.socialButtonImage {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.google {
+  background-color: #fff3f2;
+}
+
+.naver {
+  background-color: #ebf8f1;
+}
+
+.facebook {
+  background-color: #eaeffd;
+}
+
+.kakao {
+  background-color: #faf2e6;
+}

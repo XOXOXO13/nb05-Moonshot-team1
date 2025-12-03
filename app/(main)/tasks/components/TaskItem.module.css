@@ -1,0 +1,47 @@
+.task {
+  border-radius: 8px;
+  border: 1px solid #ededf0;
+  background: #fff;
+  padding: 12px 16px;
+}
+
+.title {
+  color: #333236;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 27px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.metadata {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #888893;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 27px;
+}
+
+.metadata .date {
+  flex-shrink: 0;
+}
+
+.metadata .divider {
+  width: 1px;
+  height: 16px;
+  border-right: 1px solid #ededf0;
+}
+
+.assignee {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
