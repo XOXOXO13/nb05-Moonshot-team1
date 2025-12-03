@@ -1,7 +1,7 @@
 "use client";
 
-import ChevronLeft from "@/public/assets/chevron-left.svg";
-import ChevronRight from "@/public/assets/chevron-right.svg";
+import ChevronLeft from "@/assets/chevron-left.svg";
+import ChevronRight from "@/assets/chevron-right.svg";
 import styles from "./Paginator.module.css";
 import classNames from "classnames/bind";
 import { useRouter } from "next/navigation";

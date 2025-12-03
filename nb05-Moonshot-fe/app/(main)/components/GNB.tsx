@@ -1,12 +1,12 @@
 import Link from "next/link";
 import classNames from "classnames/bind";
 
-import LogoImage from "@/public/assets/logo.svg";
+import LogoImage from "@/assets/logo.svg";
 import styles from "./GNB.module.css";
 import ProjectList from "./ProjectList";
 import Profile from "./Profile";
-import NavLink from "@/nb05-Moonshot-fe/shared/components/NavLink";
-import { User, Project } from "@/nb05-Moonshot-team1/types/entities";
+import NavLink from "@/shared/components/NavLink";
+import { User, Project } from "@/types/entities";
 
 const cx = classNames.bind(styles);
 

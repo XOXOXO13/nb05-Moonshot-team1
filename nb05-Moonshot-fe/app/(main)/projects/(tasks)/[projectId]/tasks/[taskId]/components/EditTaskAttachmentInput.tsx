@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "react-toastify";
-import FileInput from "@/nb05-Moonshot-fe/shared/components/FileInput";
+import FileInput from "@/shared/components/FileInput";
 import { updateTask } from "../actions";
 
 const EditTaskAttachmentInput = ({

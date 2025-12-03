@@ -4,10 +4,10 @@ import classNames from "classnames/bind";
 import { startTransition, useActionState } from "react";
 import { toast } from "react-toastify";
 import styles from "./SubTaskList.module.css";
-import CloseButton from "@/public/assets/close-button.svg";
-import Input from "@/nb05-Moonshot-fe/shared/components/Input";
-import { SubTask } from "@/nb05-Moonshot-team1/types/entities";
-import { TaskStatus } from "@/nb05-Moonshot-team1/types/TaskStatus";
+import CloseButton from "@/assets/close-button.svg";
+import Input from "@/shared/components/Input";
+import { SubTask } from "@/types/entities";
+import { TaskStatus } from "@/types/TaskStatus";
 import { createSubtask, deleteSubtask, updateSubtask } from "../actions";
 
 const cx = classNames.bind(styles);

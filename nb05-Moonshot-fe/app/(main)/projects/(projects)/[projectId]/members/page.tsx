@@ -7,10 +7,10 @@ import {
 import styles from "./page.module.css";
 import classNames from "classnames/bind";
 import { getProjectUsers } from "./actions";
-import { UserWithCounts } from "@/nb05-Moonshot-team1/types/entities";
+import { UserWithCounts } from "@/types/entities";
 import Paginator from "../components/Paginator";
 import RemoveMember from "./components/RemoveMember";
-import UserProjectStatus from "@/nb05-Moonshot-team1/types/UserProjectStatus";
+import UserProjectStatus from "@/types/UserProjectStatus";
 import RemoveInvitation from "./components/RemoveInvitation";
 
 const cx = classNames.bind(styles);

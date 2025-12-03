@@ -1,7 +1,7 @@
 "use server";
 
-import ActionResult from "@/nb05-Moonshot-team1/types/ActionResult";
-import * as api from "@/nb05-Moonshot-fe/shared/api";
+import ActionResult from "@/types/ActionResult";
+import * as api from "@/shared/api";
 
 export const uploadFiles = async (
   files: File[]

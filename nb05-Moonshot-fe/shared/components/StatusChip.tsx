@@ -1,4 +1,4 @@
-import { TaskStatus } from "@/nb05-Moonshot-team1/types/TaskStatus";
+import { TaskStatus } from "@/types/TaskStatus";
 import styles from "./StatusChip.module.css";
 import classNames from "classnames/bind";
 

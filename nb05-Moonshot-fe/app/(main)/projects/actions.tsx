@@ -1,6 +1,6 @@
-import * as api from "@/nb05-Moonshot-fe/shared/api";
-import { Project } from "@/nb05-Moonshot-team1/types/entities";
-import ActionResult from "@/nb05-Moonshot-team1/types/ActionResult";
+import * as api from "@/shared/api";
+import { Project } from "@/types/entities";
+import ActionResult from "@/types/ActionResult";
 
 export const getProjectById = async (
   projectId: number

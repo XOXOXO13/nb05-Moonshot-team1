@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import { Task } from "@/nb05-Moonshot-team1/types/entities";
+import { Task } from "@/types/entities";
 import styles from "./CalendarView.module.css";
 import TaskItem from "./TaskItem";
 

@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
-import StatusChip from "@/nb05-Moonshot-fe/shared/components/StatusChip";
+import StatusChip from "@/shared/components/StatusChip";
 import styles from "./TaskItem.module.css";
-import { Task } from "@/nb05-Moonshot-team1/types/entities";
+import { Task } from "@/types/entities";
 import Link from "next/link";
 
 const cx = classNames.bind(styles);

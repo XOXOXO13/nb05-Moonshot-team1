@@ -3,8 +3,8 @@
 import classNames from "classnames/bind";
 import Link from "next/link";
 import Image from "next/image";
-import BlankProfile from "@/public/assets/blank-profile.svg";
-import { User } from "@/nb05-Moonshot-team1/types/entities";
+import BlankProfile from "@/assets/blank-profile.svg";
+import { User } from "@/types/entities";
 import styles from "./Profile.module.css";
 import { Popover } from "react-tiny-popover";
 import { useState } from "react";

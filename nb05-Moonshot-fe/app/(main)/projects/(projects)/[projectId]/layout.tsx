@@ -1,13 +1,13 @@
 import classNames from "classnames/bind";
 import styles from "./layout.module.css";
-import ChevronLeft from "@/public/assets/chevron-left.svg";
-import ProjectIcon from "@/nb05-Moonshot-fe/shared/components/ProjectIcon";
+import ChevronLeft from "@/assets/chevron-left.svg";
+import ProjectIcon from "@/shared/components/ProjectIcon";
 import MoreMenu from "./components/MoreMenu";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import ProjectTab from "./components/ProjectTab";
-import { getProjectById } from "@/nb05-Moonshot-team1/app/(main)/projects/actions";
-import { Project } from "@/nb05-Moonshot-team1/types/entities";
+import { getProjectById } from "@/app/(main)/projects/actions";
+import { Project } from "@/types/entities";
 import { getProjectUsers } from "./members/actions";
 
 const cx = classNames.bind(styles);

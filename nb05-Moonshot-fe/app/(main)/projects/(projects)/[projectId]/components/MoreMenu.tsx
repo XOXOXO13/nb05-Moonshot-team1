@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import classNames from "classnames/bind";
-import { Project } from "@/nb05-Moonshot-team1/types/entities";
-import PopoverMenu from "@/nb05-Moonshot-fe/shared/components/PopoverMenu";
-import MoreVertical from "@/public/assets/more-vertical.svg";
+import { Project } from "@/types/entities";
+import PopoverMenu from "@/shared/components/PopoverMenu";
+import MoreVertical from "@/assets/more-vertical.svg";
 import styles from "../layout.module.css";
 import EditProjectModal from "./EditProjectModal";
 import DeleteProjectModal from "./DeleteProjectModal";

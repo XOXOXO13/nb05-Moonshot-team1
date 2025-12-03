@@ -4,11 +4,11 @@ import styles from "./page.module.css";
 import BoardView from "./components/BoardView";
 import CalendarView from "./components/CalendarView";
 import { getMyProjectsWithCounts, getMyTasks } from "../action";
-import { TaskStatus } from "@/nb05-Moonshot-team1/types/TaskStatus";
-import { FindMyTasksQuery } from "@/nb05-Moonshot-team1/types/pagination";
-import { getCurrentWeek } from "@/nb05-Moonshot-fe/shared/utils";
+import { TaskStatus } from "@/types/TaskStatus";
+import { FindMyTasksQuery } from "@/types/pagination";
+import { getCurrentWeek } from "@/shared/utils";
 import { getProjectUsers } from "../action";
-import { UserWithCounts } from "@/nb05-Moonshot-team1/types/entities";
+import { UserWithCounts } from "@/types/entities";
 const cx = classNames.bind(styles);
 
 const MyTaskListPage = async ({

@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import ActionResult from "@/nb05-Moonshot-team1/types/ActionResult";
-import { User } from "@/nb05-Moonshot-team1/types/entities";
-import * as api from "@/nb05-Moonshot-fe/shared/api";
+import ActionResult from "@/types/ActionResult";
+import { User } from "@/types/entities";
+import * as api from "@/shared/api";
 
 export const updateMe = async (payload: {
   name?: string;

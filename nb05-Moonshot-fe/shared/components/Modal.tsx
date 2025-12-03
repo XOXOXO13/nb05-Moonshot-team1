@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import classNames from "classnames/bind";
-import CloseButton from "@/public/assets/close-button.svg";
+import CloseButton from "@/assets/close-button.svg";
 import styles from "./Modal.module.css";
 
 const cx = classNames.bind(styles);

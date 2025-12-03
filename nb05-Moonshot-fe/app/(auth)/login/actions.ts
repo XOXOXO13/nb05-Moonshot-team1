@@ -1,8 +1,8 @@
 "use server";
 
-import * as api from "@/nb05-Moonshot-fe/shared/api";
-import { setAuthCookies } from "@/nb05-Moonshot-fe/shared/auth";
-import ActionResult from "@/nb05-Moonshot-team1/types/ActionResult";
+import * as api from "@/shared/api";
+import { setAuthCookies } from "@/shared/auth";
+import ActionResult from "@/types/ActionResult";
 
 export interface LoginInput {
   email: string;

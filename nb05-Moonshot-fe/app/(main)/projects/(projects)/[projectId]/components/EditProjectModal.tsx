@@ -2,13 +2,13 @@
 
 import classNames from "classnames/bind";
 import { useActionState } from "react";
-import Modal from "@/nb05-Moonshot-fe/shared/components/Modal";
-import Label from "@/nb05-Moonshot-fe/shared/components/Label";
-import Input from "@/nb05-Moonshot-fe/shared/components/Input";
-import Button from "@/nb05-Moonshot-fe/shared/components/Button";
+import Modal from "@/shared/components/Modal";
+import Label from "@/shared/components/Label";
+import Input from "@/shared/components/Input";
+import Button from "@/shared/components/Button";
 import styles from "./EditProjectModal.module.css";
 import { updateProject } from "../actions";
-import { Project } from "@/nb05-Moonshot-team1/types/entities";
+import { Project } from "@/types/entities";
 import { toast } from "react-toastify";
 
 const cx = classNames.bind(styles);

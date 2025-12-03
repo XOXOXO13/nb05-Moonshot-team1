@@ -1,7 +1,7 @@
 "use server";
 
-import * as api from "@/nb05-Moonshot-fe/shared/api";
-import ActionResult from "@/nb05-Moonshot-team1/types/ActionResult";
+import * as api from "@/shared/api";
+import ActionResult from "@/types/ActionResult";
 
 export interface RegisterInput {
   email: string;

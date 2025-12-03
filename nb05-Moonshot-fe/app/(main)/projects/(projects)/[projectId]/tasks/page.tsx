@@ -1,4 +1,4 @@
-import StatusChip from "@/nb05-Moonshot-fe/shared/components/StatusChip";
+import StatusChip from "@/shared/components/StatusChip";
 import {
   FlexTable,
   FlexTableCell,
@@ -7,12 +7,12 @@ import {
 } from "../components/FlexTable";
 import styles from "./page.module.css";
 import classNames from "classnames/bind";
-import ChevronRight from "@/public/assets/chevron-right.svg";
+import ChevronRight from "@/assets/chevron-right.svg";
 import Link from "next/link";
-import { getTasksByProjectId } from "@/nb05-Moonshot-team1/app/(main)/action";
+import { getTasksByProjectId } from "@/app/(main)/action";
 import Paginator from "../components/Paginator";
 import { redirect } from "next/navigation";
-import { TaskStatus } from "@/nb05-Moonshot-team1/types/TaskStatus";
+import { TaskStatus } from "@/types/TaskStatus";
 
 const cx = classNames.bind(styles);
 

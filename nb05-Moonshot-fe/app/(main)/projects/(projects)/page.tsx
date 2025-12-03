@@ -1,9 +1,9 @@
 import classNames from "classnames/bind";
-import ProjectIcon from "@/nb05-Moonshot-fe/shared/components/ProjectIcon";
+import ProjectIcon from "@/shared/components/ProjectIcon";
 import styles from "./page.module.css";
 import SortButton from "./components/SortButton";
 import CreateProject from "./components/CreateProject";
-import { ProjectWithCounts } from "@/nb05-Moonshot-team1/types/entities";
+import { ProjectWithCounts } from "@/types/entities";
 import Link from "next/link";
 import { getMyProjectsWithCounts } from "./actions";
 const cx = classNames.bind(styles);

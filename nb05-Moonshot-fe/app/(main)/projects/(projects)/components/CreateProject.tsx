@@ -4,10 +4,10 @@ import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
 import classNames from "classnames/bind";
 import { toast } from "react-toastify";
-import Modal from "@/nb05-Moonshot-fe/shared/components/Modal";
-import Label from "@/nb05-Moonshot-fe/shared/components/Label";
-import Input from "@/nb05-Moonshot-fe/shared/components/Input";
-import Button from "@/nb05-Moonshot-fe/shared/components/Button";
+import Modal from "@/shared/components/Modal";
+import Label from "@/shared/components/Label";
+import Input from "@/shared/components/Input";
+import Button from "@/shared/components/Button";
 import { createProject, CreateProjectInput } from "../actions";
 import styles from "./CreateProject.module.css";
 

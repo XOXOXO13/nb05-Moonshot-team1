@@ -1,4 +1,4 @@
-import { getTextFromChildren } from "@/nb05-Moonshot-fe/shared/utils";
+import { getTextFromChildren } from "@/shared/utils";
 import styles from "./FlexTable.module.css";
 import classNames from "classnames/bind";
 

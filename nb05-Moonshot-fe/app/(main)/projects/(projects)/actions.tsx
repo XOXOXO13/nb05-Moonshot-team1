@@ -1,11 +1,11 @@
 "use server";
 
-import * as api from "@/nb05-Moonshot-fe/shared/api";
-import ActionResult from "@/nb05-Moonshot-team1/types/ActionResult";
+import * as api from "@/shared/api";
+import ActionResult from "@/types/ActionResult";
 import {
   Project,
   ProjectWithCounts,
-} from "@/nb05-Moonshot-team1/types/entities";
+} from "@/types/entities";
 import { revalidatePath } from "next/cache";
 
 export interface CreateProjectInput {

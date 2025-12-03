@@ -2,12 +2,12 @@
 
 import classNames from "classnames/bind";
 import { useActionState } from "react";
-import ImageInput from "@/nb05-Moonshot-fe/shared/components/ImageInput";
-import Input from "@/nb05-Moonshot-fe/shared/components/Input";
-import Label from "@/nb05-Moonshot-fe/shared/components/Label";
-import Button from "@/nb05-Moonshot-fe/shared/components/Button";
+import ImageInput from "@/shared/components/ImageInput";
+import Input from "@/shared/components/Input";
+import Label from "@/shared/components/Label";
+import Button from "@/shared/components/Button";
 import styles from "./SettingsForm.module.css";
-import { User } from "@/nb05-Moonshot-team1/types/entities";
+import { User } from "@/types/entities";
 import { toast } from "react-toastify";
 import { updateMe } from "../actions";
 

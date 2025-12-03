@@ -21,13 +21,8 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "typeRoots": ["nb05-Moonshot-team1/types", "./node_modules/@types"]
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
-  "include": [
-    "nb05-Moonshot-team1/next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

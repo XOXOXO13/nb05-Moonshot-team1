@@ -1,9 +1,9 @@
 "use server";
 
-import * as api from "@/nb05-Moonshot-fe/shared/api";
-import ActionResult from "@/nb05-Moonshot-team1/types/ActionResult";
-import { UserWithCounts } from "@/nb05-Moonshot-team1/types/entities";
-import { PaginationResponse } from "@/nb05-Moonshot-team1/types/pagination";
+import * as api from "@/shared/api";
+import ActionResult from "@/types/ActionResult";
+import { UserWithCounts } from "@/types/entities";
+import { PaginationResponse } from "@/types/pagination";
 import { revalidatePath } from "next/cache";
 
 export const getProjectUsers = async (

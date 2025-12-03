@@ -1,8 +1,8 @@
 "use client";
 
 import classNames from "classnames/bind";
-import Modal from "@/nb05-Moonshot-fe/shared/components/Modal";
-import Button from "@/nb05-Moonshot-fe/shared/components/Button";
+import Modal from "@/shared/components/Modal";
+import Button from "@/shared/components/Button";
 import styles from "./RemoveMemberModal.module.css";
 import { removeMember } from "../actions";
 import { useActionState } from "react";

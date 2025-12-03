@@ -1,11 +1,11 @@
 "use client";
 
 import classNames from "classnames/bind";
-import Modal from "@/nb05-Moonshot-fe/shared/components/Modal";
-import Label from "@/nb05-Moonshot-fe/shared/components/Label";
-import Input from "@/nb05-Moonshot-fe/shared/components/Input";
-import Button from "@/nb05-Moonshot-fe/shared/components/Button";
-import { Comment } from "@/nb05-Moonshot-team1/types/entities";
+import Modal from "@/shared/components/Modal";
+import Label from "@/shared/components/Label";
+import Input from "@/shared/components/Input";
+import Button from "@/shared/components/Button";
+import { Comment } from "@/types/entities";
 import styles from "./EditCommentModal.module.css";
 import { updateComment } from "../actions";
 import { useActionState } from "react";

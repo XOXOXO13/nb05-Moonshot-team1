@@ -1,14 +1,14 @@
 "use server";
 
-import * as api from "@/nb05-Moonshot-fe/shared/api";
-import ActionResult from "@/nb05-Moonshot-team1/types/ActionResult";
+import * as api from "@/shared/api";
+import ActionResult from "@/types/ActionResult";
 import {
   Comment,
   SubTask,
   Task,
   UpdateTaskPayload,
-} from "@/nb05-Moonshot-team1/types/entities";
-import { TaskStatus } from "@/nb05-Moonshot-team1/types/TaskStatus";
+} from "@/types/entities";
+import { TaskStatus } from "@/types/TaskStatus";
 import { revalidatePath } from "next/cache";
 
 export const getTaskById = async (

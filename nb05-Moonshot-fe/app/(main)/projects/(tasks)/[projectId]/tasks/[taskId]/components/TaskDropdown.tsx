@@ -1,7 +1,7 @@
 "use client";
 import { startTransition, useActionState } from "react";
-import Dropdown from "@/nb05-Moonshot-fe/shared/components/Dropdown";
-import { TaskStatus } from "@/nb05-Moonshot-team1/types/TaskStatus";
+import Dropdown from "@/shared/components/Dropdown";
+import { TaskStatus } from "@/types/TaskStatus";
 import { updateTask } from "../actions";
 import { toast } from "react-toastify";
 

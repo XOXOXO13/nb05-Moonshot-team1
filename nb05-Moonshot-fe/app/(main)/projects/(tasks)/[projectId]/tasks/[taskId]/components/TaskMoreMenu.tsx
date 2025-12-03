@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import classNames from "classnames/bind";
-import PopoverMenu from "@/nb05-Moonshot-fe/shared/components/PopoverMenu";
-import MoreVertical from "@/public/assets/more-vertical.svg";
-import { Task } from "@/nb05-Moonshot-team1/types/entities";
+import PopoverMenu from "@/shared/components/PopoverMenu";
+import MoreVertical from "@/assets/more-vertical.svg";
+import { Task } from "@/types/entities";
 import EditTaskModal from "./EditTaskModal";
 import DeleteTaskModal from "./DeleteTaskModal";
 import styles from "./TaskMoreMenu.module.css";

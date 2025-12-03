@@ -4,16 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import classNames from "classnames/bind";
-import Input from "@/nb05-Moonshot-fe/shared/components/Input";
-import Dropdown from "@/nb05-Moonshot-fe/shared/components/Dropdown";
-import PopoverMenu from "@/nb05-Moonshot-fe/shared/components/PopoverMenu";
-import SortIcon from "@/public/assets/sort.svg";
-import SearchIcon from "@/public/assets/search.svg";
-import PlusIcon from "@/public/assets/plus.svg";
+import Input from "@/shared/components/Input";
+import Dropdown from "@/shared/components/Dropdown";
+import PopoverMenu from "@/shared/components/PopoverMenu";
+import SortIcon from "@/assets/sort.svg";
+import SearchIcon from "@/assets/search.svg";
+import PlusIcon from "@/assets/plus.svg";
 import styles from "./ProjectTab.module.css";
 import CreateTaskModal from "./CreateTaskModal";
 import MemberTabMenu from "./MemberTabMenu";
-import { User } from "@/nb05-Moonshot-team1/types/entities";
+import { User } from "@/types/entities";
 
 const cx = classNames.bind(styles);
 

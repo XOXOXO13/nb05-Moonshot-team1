@@ -4,9 +4,9 @@ import { useRef, useState } from "react";
 import classNames from "classnames/bind";
 import { toast } from "react-toastify";
 import Image from "next/image";
-import { uploadFiles } from "@/nb05-Moonshot-team1/app/actions";
-import CloseButton from "@/public/assets/close-button.svg";
-import BlankProfile from "@/public/assets/blank-profile.svg";
+import { uploadFiles } from "@/app/actions";
+import CloseButton from "@/assets/close-button.svg";
+import BlankProfile from "@/assets/blank-profile.svg";
 import styles from "./ImageInput.module.css";
 import Button from "./Button";
 

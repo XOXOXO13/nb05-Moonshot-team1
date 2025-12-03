@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import ChevronRight from "@/public/assets/chevron-right.svg";
+import ChevronRight from "@/assets/chevron-right.svg";
 import SubTaskList from "./components/SubTaskList";
 import CommentList from "./components/CommentList";
 import MoreMenu from "./components/TaskMoreMenu";
@@ -11,7 +11,7 @@ import {
   getSubTasksByTaskId,
   getTaskById,
 } from "./actions";
-import { getProjectById } from "@/nb05-Moonshot-team1/app/(main)/projects/actions";
+import { getProjectById } from "@/app/(main)/projects/actions";
 import TaskDropdown from "./components/TaskDropdown";
 import EditTaskAttachmentInput from "./components/EditTaskAttachmentInput";
 

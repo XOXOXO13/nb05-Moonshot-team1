@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
-import { TaskStatus } from "@/nb05-Moonshot-team1/types/TaskStatus";
-import { Task } from "@/nb05-Moonshot-team1/types/entities";
+import { TaskStatus } from "@/types/TaskStatus";
+import { Task } from "@/types/entities";
 import styles from "./BoardView.module.css";
 import TaskItem from "./TaskItem";
 

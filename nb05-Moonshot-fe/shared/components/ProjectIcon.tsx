@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
-import FolderImage from "@/public/assets/folder.svg";
-import { simpleHash } from "@/nb05-Moonshot-fe/shared/utils";
+import FolderImage from "@/assets/folder.svg";
+import { simpleHash } from "@/shared/utils";
 import styles from "./ProjectIcon.module.css";
 
 const cx = classNames.bind(styles);

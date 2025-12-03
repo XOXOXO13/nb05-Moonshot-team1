@@ -2,14 +2,14 @@
 
 import { useActionState, useState } from "react";
 import classNames from "classnames/bind";
-import Modal from "@/nb05-Moonshot-fe/shared/components/Modal";
-import Label from "@/nb05-Moonshot-fe/shared/components/Label";
-import Input, { Textarea } from "@/nb05-Moonshot-fe/shared/components/Input";
-import Button from "@/nb05-Moonshot-fe/shared/components/Button";
-import TagInput from "@/nb05-Moonshot-fe/shared/components/TagInput";
-import FileInput from "@/nb05-Moonshot-fe/shared/components/FileInput";
+import Modal from "@/shared/components/Modal";
+import Label from "@/shared/components/Label";
+import Input, { Textarea } from "@/shared/components/Input";
+import Button from "@/shared/components/Button";
+import TagInput from "@/shared/components/TagInput";
+import FileInput from "@/shared/components/FileInput";
 import styles from "./EditTaskModal.module.css";
-import { UpdateTaskPayload, Task } from "@/nb05-Moonshot-team1/types/entities";
+import { UpdateTaskPayload, Task } from "@/types/entities";
 import { updateTask } from "../actions";
 import { toast } from "react-toastify";
 

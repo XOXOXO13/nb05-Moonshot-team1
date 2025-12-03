@@ -1,7 +1,7 @@
 "use client";
 
-import PopoverMenu from "@/nb05-Moonshot-fe/shared/components/PopoverMenu";
-import SortIcon from "@/public/assets/sort.svg";
+import PopoverMenu from "@/shared/components/PopoverMenu";
+import SortIcon from "@/assets/sort.svg";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const SortButton = () => {

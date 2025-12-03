@@ -1,11 +1,11 @@
 "use client";
 
 import classNames from "classnames/bind";
-import KakaoImage from "@/public/assets/kakao.png";
-import GoogleImage from "@/public/assets/google.png";
-import NaverImage from "@/public/assets/naver.png";
-import FacebookImage from "@/public/assets/facebook.png";
-import OAuthProvider from "@/nb05-Moonshot-team1/types/OAuthProivder";
+import KakaoImage from "@/assets/kakao.png";
+import GoogleImage from "@/assets/google.png";
+import NaverImage from "@/assets/naver.png";
+import FacebookImage from "@/assets/facebook.png";
+import OAuthProvider from "@/types/OAuthProivder";
 import styles from "./SocialButton.module.css";
 import Image from "next/image";
 const cx = classNames.bind(styles);

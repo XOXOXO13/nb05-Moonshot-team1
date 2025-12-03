@@ -2,10 +2,10 @@
 
 import { useActionState, useState } from "react";
 import classNames from "classnames/bind";
-import Button from "@/nb05-Moonshot-fe/shared/components/Button";
-import Input from "@/nb05-Moonshot-fe/shared/components/Input";
-import Label from "@/nb05-Moonshot-fe/shared/components/Label";
-import Modal from "@/nb05-Moonshot-fe/shared/components/Modal";
+import Button from "@/shared/components/Button";
+import Input from "@/shared/components/Input";
+import Label from "@/shared/components/Label";
+import Modal from "@/shared/components/Modal";
 import styles from "./ProjectTab.module.css";
 import { inviteMember } from "../actions";
 import { toast } from "react-toastify";

@@ -3,8 +3,8 @@
 import classNames from "classnames/bind";
 import { useActionState } from "react";
 import { toast } from "react-toastify";
-import Modal from "@/nb05-Moonshot-fe/shared/components/Modal";
-import Button from "@/nb05-Moonshot-fe/shared/components/Button";
+import Modal from "@/shared/components/Modal";
+import Button from "@/shared/components/Button";
 import styles from "./DeleteProjectModal.module.css";
 import { deleteProject } from "../actions";
 

@@ -4,8 +4,8 @@ import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import classNames from "classnames/bind";
-import CloseButton from "@/public/assets/close-button.svg";
-import { uploadFiles } from "@/nb05-Moonshot-team1/app/actions";
+import CloseButton from "@/assets/close-button.svg";
+import { uploadFiles } from "@/app/actions";
 import styles from "./FileInput.module.css";
 
 const cx = classNames.bind(styles);

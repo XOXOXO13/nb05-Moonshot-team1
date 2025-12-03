@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./Dropdown.module.css";
-import ChevronDownIcon from "@/public/assets/chevron-down.svg";
+import ChevronDownIcon from "@/assets/chevron-down.svg";
 const cx = classNames.bind(styles);
 
 interface DropdownProps {

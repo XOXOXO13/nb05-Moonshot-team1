@@ -2,11 +2,11 @@ import classNames from "classnames/bind";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ToastContainer } from "react-toastify";
-import * as api from "@/nb05-Moonshot-fe/shared/api";
+import * as api from "@/shared/api";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./layout.module.css";
 import "../globals.css";
-import { User } from "@/nb05-Moonshot-team1/types/entities";
+import { User } from "@/types/entities";
 
 const cx = classNames.bind(styles);
 

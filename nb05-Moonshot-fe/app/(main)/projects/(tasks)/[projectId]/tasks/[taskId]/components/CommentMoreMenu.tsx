@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import PopoverMenu from "@/nb05-Moonshot-fe/shared/components/PopoverMenu";
-import MoreVertical from "@/public/assets/more-vertical.svg";
+import PopoverMenu from "@/shared/components/PopoverMenu";
+import MoreVertical from "@/assets/more-vertical.svg";
 import classNames from "classnames/bind";
 import EditCommentModal from "./EditCommentModal";
 import DeleteCommentModal from "./DeleteCommentModal";
 import styles from "./CommentMoreMenu.module.css";
-import { Comment } from "@/nb05-Moonshot-team1/types/entities";
+import { Comment } from "@/types/entities";
 
 const cx = classNames.bind(styles);
 

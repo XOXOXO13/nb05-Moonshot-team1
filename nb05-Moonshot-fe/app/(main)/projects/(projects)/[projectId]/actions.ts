@@ -1,8 +1,8 @@
 "use server";
 
-import * as api from "@/nb05-Moonshot-fe/shared/api";
-import ActionResult from "@/nb05-Moonshot-team1/types/ActionResult";
-import { Project, Task } from "@/nb05-Moonshot-team1/types/entities";
+import * as api from "@/shared/api";
+import ActionResult from "@/types/ActionResult";
+import { Project, Task } from "@/types/entities";
 import { revalidatePath } from "next/cache";
 
 interface CreateTaskInput {

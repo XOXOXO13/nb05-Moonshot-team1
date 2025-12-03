@@ -3,7 +3,7 @@ import { axios } from "./axios";
 import {
   PaginationResponse,
   FindMyTasksQuery,
-} from "@/nb05-Moonshot-team1/types/pagination";
+} from "@/types/pagination";
 import {
   Comment,
   Project,
@@ -13,8 +13,8 @@ import {
   UpdateTaskPayload,
   User,
   UserWithCounts,
-} from "@/nb05-Moonshot-team1/types/entities";
-import { TaskStatus } from "@/nb05-Moonshot-team1/types/TaskStatus";
+} from "@/types/entities";
+import { TaskStatus } from "@/types/TaskStatus";
 
 const logError = (error: unknown) => {
   if (error instanceof AxiosError) {

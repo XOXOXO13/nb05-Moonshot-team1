@@ -1,8 +1,8 @@
 import classNames from "classnames/bind";
 import styles from "./ProjectList.module.css";
-import ProjectIcon from "@/nb05-Moonshot-fe/shared/components/ProjectIcon";
-import NavLink from "@/nb05-Moonshot-fe/shared/components/NavLink";
-import { Project } from "@/nb05-Moonshot-team1/types/entities";
+import ProjectIcon from "@/shared/components/ProjectIcon";
+import NavLink from "@/shared/components/NavLink";
+import { Project } from "@/types/entities";
 
 const cx = classNames.bind(styles);
 

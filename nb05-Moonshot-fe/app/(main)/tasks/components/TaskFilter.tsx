@@ -5,12 +5,12 @@ import styles from "./TaskFilter.module.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Input from "@/nb05-Moonshot-fe/shared/components/Input";
-import Dropdown from "@/nb05-Moonshot-fe/shared/components/Dropdown";
-import SearchIcon from "@/public/assets/search.svg";
-import ProjectIcon from "@/nb05-Moonshot-fe/shared/components/ProjectIcon";
-import { ProjectWithCounts } from "@/nb05-Moonshot-team1/types/entities";
-import { User } from "@/nb05-Moonshot-team1/types/entities";
+import Input from "@/shared/components/Input";
+import Dropdown from "@/shared/components/Dropdown";
+import SearchIcon from "@/assets/search.svg";
+import ProjectIcon from "@/shared/components/ProjectIcon";
+import { ProjectWithCounts } from "@/types/entities";
+import { User } from "@/types/entities";
 const cx = classNames.bind(styles);
 
 const TaskFilter = ({
