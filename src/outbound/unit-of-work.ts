@@ -7,6 +7,7 @@ import {
   TechnicalException,
   TechnicalExceptionType,
 } from "../shared/exceptions/technical.exception";
+import { unknown } from "zod";
 
 export class UnitOfWork {
   private _prismaClient: PrismaClient;
@@ -38,7 +39,7 @@ export class UnitOfWork {
       | "RepeatableRead"
       | "Serializable" = "ReadCommitted",
   ): Promise<T> {
-    const maxRetries = isOptimistic ? 7 : 1; // 최대 낙관적 락을 7번으로 설정
+    const maxRetries = isOptimistic ? 5 : 1; // 최대 낙관적 락을 2번으로 설정
     let lastErr;
 
     for (let i = 0; i < maxRetries; i++) {
@@ -56,19 +57,23 @@ export class UnitOfWork {
         if (
           err instanceof TechnicalException &&
           err.type === TechnicalExceptionType.OPTIMISTIC_LOCK_FAILED &&
-          isOptimistic &&
-          i < maxRetries
+          isOptimistic
         ) {
           console.warn(
             `트랜잭션 재시도 ${i + 1}/${maxRetries} - ${err instanceof Error ? err.message : "Unknown error"}`,
           );
-          await this.delay(Math.pow(2, i) * 100);
+          const baseDelay = Math.pow(2, i) * 1000;
+          const jitter = Math.random() * 300;
+          await this.delay(baseDelay + jitter);
           continue;
+        } else {
+          lastErr = err;
         }
-        lastErr = err;
       }
     }
-
+    if (!lastErr) {
+      throw new Error("최대 낙관적 락 횟수를 초과했습니다");
+    }
     throw lastErr;
   }
 
