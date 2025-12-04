@@ -10,6 +10,7 @@ import {
 } from "../../domain/entities/task/task-entity";
 import { UserVo } from "../../domain/entities/task/user-vo";
 import { TaskTagVo } from "../../domain/entities/task/task-tag-vo";
+import { PersistArticle } from "../repos/task-repository";
 
 export type CreateTaskData = {
   projectId: number;
@@ -30,47 +31,7 @@ export type TaskTagsData = {
 };
 
 export class TaskMapper {
-  static toPersistEntity(
-    record: {
-      assignee: {
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        name: string;
-        email: string;
-        password: string | null;
-        refreshToken: string | null;
-        version: number;
-        profileImage: string | null;
-      };
-      attachments: {
-        id: number;
-        attachmentUrl: string;
-        taskId: number;
-      }[];
-      taskTags: ({
-        tag: {
-          id: number;
-          name: string;
-        };
-      } & {
-        tagId: number;
-        taskId: number;
-      })[];
-    } & {
-      id: number;
-      version: number;
-      projectId: number;
-      title: string;
-      description: string;
-      startDate: Date;
-      endDate: Date;
-      status: string;
-      assigneeId: number;
-      createdAt: Date;
-      updatedAt: Date;
-    },
-  ) {
+  static toPersistEntity(record: PersistArticle) {
     // 파싱 및 task entity 반환
     const {
       id,
