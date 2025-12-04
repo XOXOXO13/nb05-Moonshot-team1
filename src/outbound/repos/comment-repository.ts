@@ -22,11 +22,11 @@ export class CommentRepository implements ICommentRepository {
       data: {
         taskId,
         content,
-        userId
+        userId,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
 
     return CommentMapper.toPersistComment(comment);
@@ -47,8 +47,6 @@ export class CommentRepository implements ICommentRepository {
   //   return comment ? CommentMapper.toPersistComment(comment) : null;
   // }
 
-
-
   // 조회, 수정, 삭제 메서드
   async findCommentsByTask(
     taskId: number,
@@ -57,26 +55,26 @@ export class CommentRepository implements ICommentRepository {
   ): Promise<PersistCommentEntity[]> {
     const comments = await this.prisma.comment.findMany({
       where: {
-        taskId
+        taskId,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
 
     return comments.map((comment) => {
-      return CommentMapper.toPersistComment(comment)
+      return CommentMapper.toPersistComment(comment);
     });
   }
 
   async findById(commentId: number): Promise<PersistCommentEntity | null> {
     const comment = await this.prisma.comment.findUnique({
       where: {
-        id: commentId
+        id: commentId,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
 
     if (!comment) {
@@ -86,28 +84,30 @@ export class CommentRepository implements ICommentRepository {
     return CommentMapper.toPersistComment(comment);
   }
 
-  async update(commentId: number, content: string): Promise<PersistCommentEntity> {
+  async update(
+    commentId: number,
+    content: string,
+  ): Promise<PersistCommentEntity> {
     const comment = await this.prisma.comment.update({
       where: {
-        id: commentId
+        id: commentId,
       },
       data: {
-        content
+        content,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
 
     return CommentMapper.toPersistComment(comment);
   }
 
-
   async delete(commentId: number): Promise<void> {
     await this.prisma.comment.delete({
       where: {
-        id: commentId
-      }
+        id: commentId,
+      },
     });
   }
 }

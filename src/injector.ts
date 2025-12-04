@@ -55,7 +55,6 @@ export class DependencyInjector {
     const smtp = smtpConfig;
     // 추가
 
-
     const hashManager = new BcryptHashManager();
 
     const repoFactory = new RepositoryFactory({
@@ -95,10 +94,7 @@ export class DependencyInjector {
     const authMiddleware = new AuthMiddleware(utils);
     const middlewares = [authMiddleware];
 
-    const commentController = new CommentController(
-      services,
-      authMiddleware,
-    );
+    const commentController = new CommentController(services, authMiddleware);
     const fileController = new FileController(services);
     const taskController = new TaskController(services, authMiddleware);
     const subTaskController = new SubTaskController(services, authMiddleware);

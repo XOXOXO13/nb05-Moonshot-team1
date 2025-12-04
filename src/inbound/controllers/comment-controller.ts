@@ -2,7 +2,14 @@ import { Request, Response } from "express";
 import { BaseController } from "./base-controller";
 import { AuthMiddleware } from "../middlewares/auth-middleware";
 import { IServices } from "../ports/I-services";
-import { createCommentBodySchema, createCommentParamsSchema, taskCommentParamschema, taskCommentQuerySchema, updateCommentBodySchema, updateCommentParamsSchema } from "../requests/comment-req-dto";
+import {
+  createCommentBodySchema,
+  createCommentParamsSchema,
+  taskCommentParamschema,
+  taskCommentQuerySchema,
+  updateCommentBodySchema,
+  updateCommentParamsSchema,
+} from "../requests/comment-req-dto";
 
 export class CommentController extends BaseController {
   private readonly _authMiddlewares;
@@ -18,7 +25,7 @@ export class CommentController extends BaseController {
     this.router.post(
       "/tasks/:taskId/comments",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.createComment)
+      this.catch(this.createComment),
     );
 
     // 댓글 목록 조회
@@ -32,21 +39,21 @@ export class CommentController extends BaseController {
     this.router.get(
       "/comments/:commentId",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.getComment)
+      this.catch(this.getComment),
     );
 
     // 댓글 수정
     this.router.patch(
       "/comments/:commentId",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.updateComment)
+      this.catch(this.updateComment),
     );
 
     // 댓글 삭제
     this.router.delete(
       "/comments/:commentId",
       this.catch(this._authMiddlewares.isUser),
-      this.catch(this.deleteComment)
+      this.catch(this.deleteComment),
     );
   }
 
@@ -57,7 +64,7 @@ export class CommentController extends BaseController {
     const commentResDto = this.services.comment.createComment({
       ...body,
       ...params,
-      userId: Number(req.userId)
+      userId: Number(req.userId),
     });
 
     return res.json(commentResDto);
@@ -70,18 +77,17 @@ export class CommentController extends BaseController {
     const commentResDto = this.services.comment.getCommentList({
       ...query,
       ...params,
-      userId: Number(req.userId)
-    })
+      userId: Number(req.userId),
+    });
 
     return res.json(commentResDto);
   };
 
-
-
-
   getComment = async (req: Request, res: Response) => {
     const { commentId } = req.params;
-    const commentResDto = this.services.comment.getCommentDetail(Number(commentId));
+    const commentResDto = this.services.comment.getCommentDetail(
+      Number(commentId),
+    );
     return res.json(commentResDto);
   };
 
@@ -92,12 +98,11 @@ export class CommentController extends BaseController {
     const commentResDto = this.services.comment.editComment({
       ...body,
       ...params,
-      userId: Number(req.userId)
+      userId: Number(req.userId),
     });
 
     return res.json(commentResDto);
   };
-
 
   deleteComment = async (req: Request, res: Response) => {
     const { commentId } = req.params;

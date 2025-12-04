@@ -1,22 +1,17 @@
 import { Prisma } from "@prisma/client";
 import { AuthorVo } from "./author-vo";
 
-
 const commentRecord = Prisma.validator<Prisma.CommentInclude>()({
-  user: true
-
+  user: true,
 });
 export type PersistComment = Prisma.CommentGetPayload<{
   include: typeof commentRecord;
 }>;
 
-
-
 export type NewCommentEntity = Omit<
   CommentEntity,
   "id" | "createdAt" | "updatedAt" | "author"
 >;
-
 
 export type PersistCommentEntity = {
   id: number;
@@ -89,7 +84,7 @@ export class CommentEntity {
     return new CommentEntity({
       content: params.content,
       taskId: params.taskId,
-      userId: params.userId
+      userId: params.userId,
     }) as NewCommentEntity;
   }
 

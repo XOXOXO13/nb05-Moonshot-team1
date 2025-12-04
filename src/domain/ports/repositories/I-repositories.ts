@@ -8,7 +8,7 @@ import { ITaskRepository } from "./I-task-repository";
 import { IUserRepository } from "./I-user-repository";
 
 export interface IRepositories {
-  commentRepository : ICommentRepository;
+  commentRepository: ICommentRepository;
   projectRepository: IProjectRepository;
   taskRepository: ITaskRepository;
   subTaskRepository: ISubTaskRepository;

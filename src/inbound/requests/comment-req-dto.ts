@@ -13,47 +13,44 @@ import { z } from "zod";
 
 // 댓글 생성
 export const createCommentBodySchema = z.object({
-    content: z.string()
+  content: z.string(),
 });
 
 export const createCommentParamsSchema = z.object({
-    taskId: z.coerce.number(),
+  taskId: z.coerce.number(),
 });
 
 export type CreateCommentDto = z.infer<typeof createCommentBodySchema> &
-    z.infer<typeof createCommentParamsSchema> & {
-        userId: number;
-    };
+  z.infer<typeof createCommentParamsSchema> & {
+    userId: number;
+  };
 
 // 할 일에 달린 댓글 조회
 export const taskCommentQuerySchema = z.object({
-    page: z.coerce.number().gt(0).default(1).optional(),
-    limit: z.coerce.number().gt(1).default(10).optional()
+  page: z.coerce.number().gt(0).default(1).optional(),
+  limit: z.coerce.number().gt(1).default(10).optional(),
 });
 
 export const taskCommentParamschema = z.object({
-    taskId: z.coerce.number()
+  taskId: z.coerce.number(),
 });
 
-
 export type TaskCommentDto = z.infer<typeof taskCommentQuerySchema> &
-    z.infer<typeof taskCommentParamschema> & {
-        userId: number;
-    };
-
-
+  z.infer<typeof taskCommentParamschema> & {
+    userId: number;
+  };
 
 // 댓글 수정
 
 export const updateCommentBodySchema = z.object({
-    content: z.string()
+  content: z.string(),
 });
 
 export const updateCommentParamsSchema = z.object({
-    commentId: z.coerce.number(),
+  commentId: z.coerce.number(),
 });
 
 export type updateCommentDto = z.infer<typeof updateCommentBodySchema> &
-    z.infer<typeof updateCommentParamsSchema> & {
-        userId: number;
-    };
+  z.infer<typeof updateCommentParamsSchema> & {
+    userId: number;
+  };
