@@ -11,6 +11,10 @@ export interface ITaskService {
   createTask(reqDto: CreateTaskDto): Promise<TaskResDto>;
   getProjectTasks(reqDto: ProjectTaskDto): Promise<TaskResDtos>;
   getTaskInfo(reqDto: TaskDto): Promise<TaskResDto>;
+
+  //   /**
+  //    * @throws OPTIMISTIC_LOCK_FAILED
+  //    */
   editTaskInfo(reqDto: UpdateTaskDto): Promise<TaskResDto>;
   deleteTaskInfo(reqDto: TaskDto): Promise<void>;
 }

@@ -16,6 +16,7 @@ import {
   BusinessException,
   BusinessExceptionType,
 } from "../../shared/exceptions/business-exception";
+import { unknown } from "zod";
 
 export class TaskService implements ITaskService {
   private readonly _unitOfWork;
@@ -75,6 +76,13 @@ export class TaskService implements ITaskService {
     const tasks = await this._unitOfWork.repos.taskRepository.getProjectTasks({
       ...dto,
     });
+
+    if (!tasks) {
+      throw new BusinessException({
+        type: BusinessExceptionType.RECORD_NOT_FOUND,
+      });
+    }
+
     return TaskMapper.toResDtos(tasks);
   }
 
@@ -116,7 +124,7 @@ export class TaskService implements ITaskService {
         ? new Date(endYear, endMonth - 1, endDay)
         : undefined;
 
-    // 새로운 태그와 첨부파일 생성
+    // 새로운 태그와 첨부파일 데이터 생성
     const tagEntities = tags ? TagMapper.toCreateEntities(tags) : undefined;
     const attachmentEntities = attachments
       ? AttachmentMapper.toCreateEntities(attachments)
@@ -133,6 +141,7 @@ export class TaskService implements ITaskService {
         });
       }
 
+      // 태그 생성
       const createdTags = tagEntities
         ? await repos.tagRepository.findOrCreate(tagEntities)
         : undefined;

@@ -1,6 +1,6 @@
 import * as nodemailer from "nodemailer";
 
-export class Email{
+export class Email {
   private transporter: nodemailer.Transporter;
   private readonly fromEmail: string;
 

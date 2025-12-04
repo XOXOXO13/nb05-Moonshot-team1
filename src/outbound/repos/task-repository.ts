@@ -172,8 +172,11 @@ export class TaskRepository implements ITaskRepository {
           type: TechnicalExceptionType.OPTIMISTIC_LOCK_FAILED,
           error: err,
         });
+      } else {
+        console.log("!!! DB에서 오류 발생했습니다");
+        console.log(err);
+        throw err;
       }
-      throw err;
     }
   }
 

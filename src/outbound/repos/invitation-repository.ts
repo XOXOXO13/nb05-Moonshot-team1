@@ -18,7 +18,7 @@ export class InvitationRepository
   async createInviteCode(
     projectId: number,
     invitorId: number,
-    inviteeEmail: string
+    inviteeEmail: string,
   ): Promise<string> {
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 7);
@@ -57,7 +57,7 @@ export class InvitationRepository
   }
   async findByProjectIdAndInviteeId(
     projectId: number,
-    inviteeId: number
+    inviteeId: number,
   ): Promise<InvitationEntity | null> {
     const prismaInvitation = await this._prismaClient.invitation.findUnique({
       where: {
