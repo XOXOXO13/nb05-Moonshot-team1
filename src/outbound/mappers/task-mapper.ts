@@ -161,11 +161,11 @@ export class TaskMapper {
     );
     //   }
   }
-  static toResDtos(entities: PersistTaskEntity[]): TaskResDtos {
-    const taskResDto = entities.map((entity) => {
+  static toResDtos(entities: PersistTaskEntity[]): TaskResDto[] {
+    return entities.map((entity) => {
       return TaskMapper.toResDto(entity);
     });
-    const taskResDtos = new TaskResDtos(taskResDto);
-    return taskResDtos;
+    // const taskResDtos = new TaskResDtos(taskResDto);
+    // return taskResDtos;
   }
 }

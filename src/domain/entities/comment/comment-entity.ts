@@ -1,30 +1,41 @@
-export type NewCommentEntity = {
-  content: string;
-  taskId: number;
-  userId: number;
-};
+import { Prisma } from "@prisma/client";
+import { AuthorVo } from "./author-vo";
+
+const commentRecord = Prisma.validator<Prisma.CommentInclude>()({
+  user: true,
+});
+export type PersistComment = Prisma.CommentGetPayload<{
+  include: typeof commentRecord;
+}>;
+
+export type NewCommentEntity = Omit<
+  CommentEntity,
+  "id" | "createdAt" | "updatedAt" | "author"
+>;
 
 export type PersistCommentEntity = {
-  id: string;
+  id: number;
   content: string;
   taskId: number;
-  userId: number;
+  author: AuthorVo;
   createdAt: Date;
   updatedAt: Date;
 };
 
 export class CommentEntity {
-  private readonly _id?: string;
+  private readonly _id?: number;
   private readonly _taskId: number;
-  private readonly _userId: number;
+  private readonly _userId?: number;
+  private readonly _author?: AuthorVo;
   private _content: string;
   private readonly _createdAt?: Date;
   private readonly _updatedAt?: Date;
 
   constructor(attrs: {
-    id?: string;
+    id?: number;
     taskId: number;
-    userId: number;
+    userId?: number;
+    author?: AuthorVo;
     content: string;
     createdAt?: Date;
     updatedAt?: Date;
@@ -32,6 +43,7 @@ export class CommentEntity {
     this._id = attrs.id;
     this._taskId = attrs.taskId;
     this._userId = attrs.userId;
+    this._author = attrs.author;
     this._content = attrs.content;
     this._createdAt = attrs.createdAt;
     this._updatedAt = attrs.updatedAt;
@@ -56,51 +68,42 @@ export class CommentEntity {
     return this._updatedAt;
   }
 
-  updateContent(newContent: string) {
-    if (
-      !newContent ||
-      typeof newContent !== "string" ||
-      newContent.trim().length === 0
-    ) {
-      throw new Error("잘못된 요청 형식");
-    }
-    this._content = newContent.trim();
+  get author() {
+    return this._author;
   }
 
-  static createNew(params: NewCommentEntity): NewCommentEntity {
-    if (
-      !params.content ||
-      typeof params.content !== "string" ||
-      params.content.trim().length === 0
-    ) {
-      throw new Error("잘못된 요청 형식");
-    }
-    return {
+  update(content: string) {
+    this._content = content;
+  }
+
+  static createNew(params: {
+    content: string;
+    taskId: number;
+    userId: number;
+  }) {
+    return new CommentEntity({
+      content: params.content,
       taskId: params.taskId,
       userId: params.userId,
-      content: params.content.trim(),
-    };
+    }) as NewCommentEntity;
   }
 
-  static createPersist(record: PersistCommentEntity): CommentEntity {
+  static createPersist(params: {
+    id: number;
+    taskId: number;
+    userId: number;
+    author: AuthorVo;
+    content: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
     return new CommentEntity({
-      id: record.id,
-      taskId: record.taskId,
-      userId: record.userId,
-      content: record.content,
-      createdAt: record.createdAt,
-      updatedAt: record.updatedAt,
-    });
-  }
-
-  toJSON(): PersistCommentEntity {
-    return {
-      id: this._id as string,
-      taskId: this._taskId,
-      userId: this._userId,
-      content: this._content,
-      createdAt: this._createdAt as Date,
-      updatedAt: this._updatedAt as Date,
-    };
+      id: params.id,
+      taskId: params.taskId,
+      author: params.author,
+      content: params.content,
+      createdAt: params.createdAt,
+      updatedAt: params.updatedAt,
+    }) as PersistCommentEntity;
   }
 }

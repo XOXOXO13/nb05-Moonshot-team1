@@ -72,7 +72,7 @@ export class TaskService implements ITaskService {
     return TaskMapper.toResDto(newTask);
   }
 
-  async getProjectTasks(dto: ProjectTaskDto): Promise<TaskResDtos> {
+  async getProjectTasks(dto: ProjectTaskDto): Promise<TaskResDto[]> {
     const tasks = await this._unitOfWork.repos.taskRepository.getProjectTasks({
       ...dto,
     });

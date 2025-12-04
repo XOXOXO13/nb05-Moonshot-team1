@@ -6,9 +6,11 @@ import { IAuthService } from "../inbound/ports/services/I-auth-service";
 import { IInvitationService } from "../inbound/ports/services/I-invitation-service";
 import { IMemberService } from "../inbound/ports/services/I-member-service";
 import { ISubTaskService } from "../inbound/ports/services/I-subtask-service";
+import { ICommentService } from "../inbound/ports/services/I-comment-service";
 
 export class Services implements IServices {
   constructor(
+    public readonly comment: ICommentService,
     public readonly task: ITaskService,
     public readonly subtask: ISubTaskService,
     public readonly project: IProjectService,

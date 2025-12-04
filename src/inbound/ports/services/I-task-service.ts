@@ -9,7 +9,7 @@ import { TaskResDto, TaskResDtos } from "../../responses/task-res-dto";
 
 export interface ITaskService {
   createTask(reqDto: CreateTaskDto): Promise<TaskResDto>;
-  getProjectTasks(reqDto: ProjectTaskDto): Promise<TaskResDtos>;
+  getProjectTasks(reqDto: ProjectTaskDto): Promise<TaskResDto[]>;
   getTaskInfo(reqDto: TaskDto): Promise<TaskResDto>;
 
   //   /**

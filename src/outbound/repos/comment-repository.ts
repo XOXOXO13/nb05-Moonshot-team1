@@ -1,14 +1,15 @@
-import { PrismaClient } from "@prisma/client";
 import {
   NewCommentEntity,
   PersistCommentEntity,
 } from "../../domain/entities/comment/comment-entity";
 import { ICommentRepository } from "../../domain/ports/repositories/I-comment-repository";
+import { CommentMapper } from "../mappers/comment-mapper";
+import { BasePrismaClient } from "./base-repository";
 
 export class CommentRepository implements ICommentRepository {
-  private prisma: PrismaClient;
+  private prisma: BasePrismaClient;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: BasePrismaClient) {
     this.prisma = prisma;
   }
 
@@ -17,134 +18,96 @@ export class CommentRepository implements ICommentRepository {
     userId: number,
     content: string,
   ): Promise<PersistCommentEntity> {
-    const created = await this.prisma.comment.create({
+    const comment = await this.prisma.comment.create({
       data: {
-        content,
         taskId,
+        content,
         userId,
       },
-    });
-
-    return {
-      id: created.id,
-      content: created.content,
-      taskId: created.taskId,
-      userId: created.userId,
-      createdAt: created.createdAt,
-      updatedAt: created.updatedAt,
-    };
-  }
-
-  async findTaskProjectId(
-    taskId: number,
-  ): Promise<{ id: number; projectId: number } | null> {
-    const task = await this.prisma.task.findUnique({
-      where: { id: taskId },
-      select: { id: true, projectId: true },
-    });
-    return task ? { id: task.id, projectId: task.projectId } : null;
-  }
-
-  async isUserProjectMember(
-    userId: number,
-    projectId: number,
-  ): Promise<boolean> {
-    const member = await this.prisma.member.findFirst({
-      where: {
-        userId,
-        projectId,
-        status: "ACTIVE",
-      },
-    });
-    return !!member;
-  }
-
-  async findUserPublicInfo(userId: number) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        profileImage: true,
-      },
-    });
-    if (!user) return null;
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      profileImageUrl: user.profileImage,
-    };
-  }
-
-  async findCommentsByTask(
-    taskId: number,
-    page: number = 1,
-    limit: number = 20,
-  ): Promise<PersistCommentEntity[]> {
-    const skip = (page - 1) * limit;
-    const records = await this.prisma.comment.findMany({
-      where: { taskId },
       include: {
         user: true,
       },
-      orderBy: { createdAt: "desc" },
-      skip,
-      take: limit,
     });
 
-    return records.map((r) => ({
-      id: r.id,
-      content: r.content,
-      taskId: r.taskId,
-      userId: r.userId,
-      createdAt: r.createdAt,
-      updatedAt: r.updatedAt,
-    }));
+    return CommentMapper.toPersistComment(comment);
   }
 
-  async countCommentsByTask(taskId: number): Promise<number> {
-    return await this.prisma.comment.count({ where: { taskId } });
-  }
+  // async findTaskProjectId(
+  //   taskId: number,
+  // ): Promise<PersistCommentEntity | null> {
+  //   const comment = await this.prisma.comment.findFirst({
+  //     where: {
+  //       taskId
+  //     },
+  //     include: {
+  //       user: true
+  //     }
+  //   });
 
-  async findById(commentId: string): Promise<PersistCommentEntity | null> {
-    const found = await this.prisma.comment.findUnique({
-      where: { id: commentId },
-      include: { user: true },
+  //   return comment ? CommentMapper.toPersistComment(comment) : null;
+  // }
+
+  // 조회, 수정, 삭제 메서드
+  async findCommentsByTask(
+    taskId: number,
+    page?: number,
+    limit?: number,
+  ): Promise<PersistCommentEntity[]> {
+    const comments = await this.prisma.comment.findMany({
+      where: {
+        taskId,
+      },
+      include: {
+        user: true,
+      },
     });
-    if (!found) return null;
-    return {
-      id: found.id,
-      content: found.content,
-      taskId: found.taskId,
-      userId: found.userId,
-      createdAt: found.createdAt,
-      updatedAt: found.updatedAt,
-    };
+
+    return comments.map((comment) => {
+      return CommentMapper.toPersistComment(comment);
+    });
+  }
+
+  async findById(commentId: number): Promise<PersistCommentEntity | null> {
+    const comment = await this.prisma.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!comment) {
+      throw new Error("댓글이 존재하지 않습니다");
+    }
+
+    return CommentMapper.toPersistComment(comment);
   }
 
   async update(
-    commentId: string,
+    commentId: number,
     content: string,
   ): Promise<PersistCommentEntity> {
-    const updated = await this.prisma.comment.update({
-      where: { id: commentId },
-      data: { content },
+    const comment = await this.prisma.comment.update({
+      where: {
+        id: commentId,
+      },
+      data: {
+        content,
+      },
+      include: {
+        user: true,
+      },
     });
-    return {
-      id: updated.id,
-      content: updated.content,
-      taskId: updated.taskId,
-      userId: updated.userId,
-      createdAt: updated.createdAt,
-      updatedAt: updated.updatedAt,
-    };
+
+    return CommentMapper.toPersistComment(comment);
   }
 
-  async delete(commentId: string): Promise<void> {
+  async delete(commentId: number): Promise<void> {
     await this.prisma.comment.delete({
-      where: { id: commentId },
+      where: {
+        id: commentId,
+      },
     });
   }
 }
