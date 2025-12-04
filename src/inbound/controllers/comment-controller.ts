@@ -61,7 +61,7 @@ export class CommentController extends BaseController {
     const body = this.validate(createCommentBodySchema, req.body);
     const params = this.validate(createCommentParamsSchema, req.params);
 
-    const commentResDto = this.services.comment.createComment({
+    const commentResDto = await this.services.comment.createComment({
       ...body,
       ...params,
       userId: Number(req.userId),
@@ -74,7 +74,7 @@ export class CommentController extends BaseController {
     const query = this.validate(taskCommentQuerySchema, req.query);
     const params = this.validate(taskCommentParamschema, req.params);
 
-    const commentResDto = this.services.comment.getCommentList({
+    const commentResDto = await this.services.comment.getCommentList({
       ...query,
       ...params,
       userId: Number(req.userId),
@@ -85,7 +85,7 @@ export class CommentController extends BaseController {
 
   getComment = async (req: Request, res: Response) => {
     const { commentId } = req.params;
-    const commentResDto = this.services.comment.getCommentDetail(
+    const commentResDto = await this.services.comment.getCommentDetail(
       Number(commentId),
     );
     return res.json(commentResDto);
@@ -95,7 +95,7 @@ export class CommentController extends BaseController {
     const body = this.validate(updateCommentBodySchema, req.body);
     const params = this.validate(updateCommentParamsSchema, req.params);
 
-    const commentResDto = this.services.comment.editComment({
+    const commentResDto = await this.services.comment.editComment({
       ...body,
       ...params,
       userId: Number(req.userId),
@@ -106,7 +106,7 @@ export class CommentController extends BaseController {
 
   deleteComment = async (req: Request, res: Response) => {
     const { commentId } = req.params;
-    this.services.comment.deleteComment(Number(commentId));
+    await this.services.comment.deleteComment(Number(commentId));
     return res.json();
   };
 }
