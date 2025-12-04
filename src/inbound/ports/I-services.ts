@@ -5,8 +5,10 @@ import { IInvitationService } from "./services/I-invitation-service";
 import { IMemberService } from "./services/I-member-service";
 import { IProjectService } from "./services/I-project-service";
 import { ISubTaskService } from "./services/I-subtask-service";
+import { ICommentService } from "./services/I-comment-service";
 
 export interface IServices {
+  comment: ICommentService;
   task: ITaskService;
   subtask: ISubTaskService;
   project: IProjectService;

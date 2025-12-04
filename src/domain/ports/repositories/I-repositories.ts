@@ -1,3 +1,4 @@
+import { ICommentRepository } from "./I-comment-repository";
 import { IInvitationRepository } from "./I-invitation-repository";
 import { IMemberRepository } from "./I-member-repository";
 import { IProjectRepository } from "./I-project-repository";
@@ -7,6 +8,7 @@ import { ITaskRepository } from "./I-task-repository";
 import { IUserRepository } from "./I-user-repository";
 
 export interface IRepositories {
+  commentRepository : ICommentRepository;
   projectRepository: IProjectRepository;
   taskRepository: ITaskRepository;
   subTaskRepository: ISubTaskRepository;

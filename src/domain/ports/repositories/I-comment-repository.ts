@@ -9,16 +9,10 @@ export interface ICommentRepository {
     userId: number,
     content: string,
   ): Promise<PersistCommentEntity>;
-  findTaskProjectId(
-    taskId: number,
-  ): Promise<{ id: number; projectId: number } | null>;
-  isUserProjectMember(userId: number, projectId: number): Promise<boolean>;
-  findUserPublicInfo(userId: number): Promise<{
-    id: number;
-    name: string;
-    email: string;
-    profileImageUrl?: string | null;
-  } | null>;
+
+  // findTaskProjectId(
+  //   taskId: number,
+  // ): Promise<PersistCommentEntity | null>
 
   // 조회, 수정, 삭제 메서드
   findCommentsByTask(
@@ -26,8 +20,8 @@ export interface ICommentRepository {
     page?: number,
     limit?: number,
   ): Promise<PersistCommentEntity[]>;
-  countCommentsByTask(taskId: number): Promise<number>;
-  findById(commentId: string): Promise<PersistCommentEntity | null>;
-  update(commentId: string, content: string): Promise<PersistCommentEntity>;
-  delete(commentId: string): Promise<void>;
+
+  findById(commentId: number): Promise<PersistCommentEntity | null>;
+  update(commentId: number, content: string): Promise<PersistCommentEntity>;
+  delete(commentId: number): Promise<void>;
 }

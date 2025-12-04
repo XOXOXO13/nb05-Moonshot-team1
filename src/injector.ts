@@ -54,12 +54,12 @@ export class DependencyInjector {
     const prisma = new PrismaClient();
     const smtp = smtpConfig;
     // 추가
-    const commentRepository = new CommentRepository(prisma);
-    const commentService = new CommentService(commentRepository);
+
 
     const hashManager = new BcryptHashManager();
 
     const repoFactory = new RepositoryFactory({
+      commentRepository: (prismaClient) => new CommentRepository(prismaClient),
       projectRepository: (prismaClient) => new ProjectRepository(prismaClient),
       taskRepository: (prismaClient) => new TaskRepository(prismaClient),
       subTaskRepository: (prismaClient) => new SubTaskRepository(prismaClient),
@@ -71,8 +71,8 @@ export class DependencyInjector {
     });
 
     const unitOfWork: UnitOfWork = new UnitOfWork(prisma, repoFactory);
-    const repositories = unitOfWork.repos;
 
+    const commentService = new CommentService(unitOfWork);
     const emailService = new Email(smtp, "nb05-moonshot@naver.com");
     const taskService = new TaskService(unitOfWork);
     const subTaskService = new SubTaskService(unitOfWork);
@@ -82,6 +82,7 @@ export class DependencyInjector {
     const invitationService = new InvitationService(unitOfWork, emailService);
     const memberService = new MemberService(unitOfWork);
     const services = new Services(
+      commentService,
       taskService,
       subTaskService,
       projectService,
@@ -95,7 +96,7 @@ export class DependencyInjector {
     const middlewares = [authMiddleware];
 
     const commentController = new CommentController(
-      commentService,
+      services,
       authMiddleware,
     );
     const fileController = new FileController(services);
