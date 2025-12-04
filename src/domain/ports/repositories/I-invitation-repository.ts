@@ -1,9 +1,11 @@
-import {
-  InvitationEntity,
-} from "../../entities/member/invitation-entity";
+import { InvitationEntity } from "../../entities/member/invitation-entity";
 
 export interface IInvitationRepository {
-  createInviteCode(projectId: number, invitorId: number, inviteeEmail: string): Promise<string>;
+  createInviteCode(
+    projectId: number,
+    invitorId: number,
+    inviteeEmail: string,
+  ): Promise<string>;
   save(token: string, userId: number): Promise<void>;
   findByToken(token: string): Promise<boolean>;
   findByProjectIdAndInviteeId(

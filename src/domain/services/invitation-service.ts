@@ -15,7 +15,7 @@ export class InvitationService implements IInvitationService {
   constructor(
     unitOfWork: UnitOfWork,
     emailService: Email,
-    baseUrl: string = "http://localhost:3001/invitations" // 실제 프론트엔드 url 로 변경해야함.
+    baseUrl: string = "http://localhost:3001/invitations", // 실제 프론트엔드 url 로 변경해야함.
   ) {
     this._unitOfWork = unitOfWork;
     this._emailService = emailService;
@@ -25,11 +25,11 @@ export class InvitationService implements IInvitationService {
   async inviteMember(
     projectId: number,
     invitorId: number,
-    inviteeEmail: string
+    inviteeEmail: string,
   ): Promise<string> {
     const projectMembers =
       await this._unitOfWork.repos.memberRepository.getProjectMembersId(
-        projectId
+        projectId,
       );
     const project =
       await this._unitOfWork.repos.projectRepository.findById(projectId);
@@ -55,7 +55,7 @@ export class InvitationService implements IInvitationService {
     this._emailService.sendInvitation(
       inviteeEmail,
       invitationLink,
-      projectName
+      projectName,
     );
     return token;
   }
@@ -73,7 +73,7 @@ export class InvitationService implements IInvitationService {
         return await repos.invitationRepository.save(token, userId);
       },
       true,
-      "Serializable"
+      "Serializable",
     );
   }
 
@@ -87,12 +87,12 @@ export class InvitationService implements IInvitationService {
           });
         }
         const projectId = Number(
-          await repos.invitationRepository.getProjectIdByToken
+          await repos.invitationRepository.getProjectIdByToken,
         );
 
         const role = await repos.memberRepository.getRoleById(
           projectId,
-          userID
+          userID,
         );
         if (role !== "OWNER") {
           throw new BusinessException({
@@ -102,7 +102,7 @@ export class InvitationService implements IInvitationService {
         await repos.invitationRepository.delete(token);
       },
       false,
-      "ReadCommitted"
+      "ReadCommitted",
     );
   }
 }

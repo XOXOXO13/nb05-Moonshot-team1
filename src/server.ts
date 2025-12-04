@@ -57,7 +57,7 @@ export class Server {
         } else if (err instanceof TechnicalException) {
           console.warn("@ Technical Exception has occurred!");
           console.warn(err.message);
-          return res.json(err.message);
+          return res.status(500).json(err.message);
         }
         console.warn("@ Internal Server Error (unknown error)");
         console.warn(err.message);

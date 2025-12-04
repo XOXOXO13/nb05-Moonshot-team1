@@ -8,7 +8,12 @@ export type MemberData = {
 };
 
 export type MemberRole = "OWNER" | "MEMBER" | "GUEST";
-export type MemberStatus = "ACTIVE" | "PENDING" | "REMOVED" | "ACCEPTED" | "REJECTED";
+export type MemberStatus =
+  | "ACTIVE"
+  | "PENDING"
+  | "REMOVED"
+  | "ACCEPTED"
+  | "REJECTED";
 
 export interface ProjectMemberData {
   id: number;

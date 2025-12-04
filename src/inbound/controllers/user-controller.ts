@@ -159,21 +159,21 @@ export class UsersController extends BaseController {
       const prisma = this._prisma;
 
       try {
-    // 모든 프로젝트를 조회합니다.
-    const projects = await prisma.project.findMany({
-        // where 조건 제거: 특정 userId에 대한 필터링이 없어집니다.
-        // where: { /* 기존 조건 삭제 */ }, 
-        
-        include: {
+        // 모든 프로젝트를 조회합니다.
+        const projects = await prisma.project.findMany({
+          // where 조건 제거: 특정 userId에 대한 필터링이 없어집니다.
+          // where: { /* 기존 조건 삭제 */ },
+
+          include: {
             members: true,
             tasks: true,
-        },
-        orderBy: {
+          },
+          orderBy: {
             [order_by === "created_at" ? "createdAt" : "name"]: order,
-        },
-        skip: (page - 1) * limit,
-        take: limit,
-    });
+          },
+          skip: (page - 1) * limit,
+          take: limit,
+        });
 
         const total = await prisma.project.count({
           where: {
