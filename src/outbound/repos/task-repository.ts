@@ -17,6 +17,18 @@ const orderByParser = {
   end_date: "endDate",
 };
 
+const taskInclude = Prisma.validator<Prisma.TaskInclude>()({
+  attachments: true,
+  taskTags: {
+    include: { tag: true },
+  },
+  assignee: true,
+});
+
+export type PersistArticle = Prisma.TaskGetPayload<{
+  include: typeof taskInclude;
+}>;
+
 export class TaskRepository implements ITaskRepository {
   private _prisma;
 
@@ -41,13 +53,7 @@ export class TaskRepository implements ITaskRepository {
           })),
         },
       },
-      include: {
-        attachments: true,
-        taskTags: {
-          include: { tag: true },
-        },
-        assignee: true,
-      },
+      include: taskInclude,
     });
 
     return TaskMapper.toPersistEntity(newTaskRecord);
@@ -79,13 +85,7 @@ export class TaskRepository implements ITaskRepository {
         [orderByParser[params.order_by]]: params.order,
       },
 
-      include: {
-        attachments: true,
-        taskTags: {
-          include: { tag: true },
-        },
-        assignee: true,
-      },
+      include: taskInclude,
     });
 
     // 파싱 및 task entity 반환
@@ -99,13 +99,7 @@ export class TaskRepository implements ITaskRepository {
       where: {
         id: taskId,
       },
-      include: {
-        attachments: true,
-        taskTags: {
-          include: { tag: true },
-        },
-        assignee: true,
-      },
+      include: taskInclude,
     });
 
     return record ? TaskMapper.toPersistEntity(record) : null;
@@ -153,13 +147,7 @@ export class TaskRepository implements ITaskRepository {
           status: entity.status,
           assigneeId: entity.assigneeId,
         },
-        include: {
-          attachments: true,
-          taskTags: {
-            include: { tag: true },
-          },
-          assignee: true,
-        },
+        include: taskInclude,
       });
 
       return TaskMapper.toPersistEntity(updatedTask);
